@@ -19,8 +19,8 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    public function index(){
-   $damain=$_SERVER['SERVER_NAME'];
+    public function index(){ 
+         $damain=$_SERVER['SERVER_NAME'];
         $this->assign('data',$damain); 
 	    $url="http://".$damain.__ROOT__;
         M("config")->where("name='DOMAIN'")->setField('value',$url);

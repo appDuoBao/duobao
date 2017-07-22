@@ -46,7 +46,9 @@
   
   <ul class="main-nav">
     <volist name="__MENU__.main" id="menu">
+         <if condition="$menu.title neq '推广'">
       <li class="{$menu.class|default=''}"><a href="{$menu.url|get_nav_url}">{$menu.title}</a></li>
+    </if>
     </volist>
 <!--     <li><a href="{:get_index_url()}" target="_blank">网站首页</a></li> -->
   </ul>

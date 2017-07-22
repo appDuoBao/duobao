@@ -46,6 +46,7 @@ class Think {
           $content =  '';
           // 读取应用模式
           $mode   =   include is_file(CONF_PATH.'core.php')?CONF_PATH.'core.php':MODE_PATH.APP_MODE.'.php';
+		  
           // 加载核心文件
           foreach ($mode['core'] as $file){
               if(is_file($file)) {
@@ -104,14 +105,16 @@ class Think {
 
       // 设置系统时区
       date_default_timezone_set(C('DEFAULT_TIMEZONE'));
-
+		
       // 检查应用目录结构 如果不存在则自动创建
       if(C('CHECK_APP_DIR')) {
           $module     =   defined('BIND_MODULE') ? BIND_MODULE : C('DEFAULT_MODULE');
-          if(!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)){
+		  if(!is_dir(APP_PATH.$module) || !is_dir(LOG_PATH)){
               // 检测应用目录结构
+			 
               Build::checkDir($module);
           }
+		   
       }
 
       // 记录加载文件时间

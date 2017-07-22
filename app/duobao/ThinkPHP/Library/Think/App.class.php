@@ -59,7 +59,7 @@ class App {
      * @return void
      */
     static public function exec() {
-    
+			
         if(!preg_match('/^[A-Za-z](\/|\w)*$/',CONTROLLER_NAME)){ // 安全检测
             $module  =  false;
         }elseif(C('ACTION_BIND_CLASS')){
@@ -85,7 +85,7 @@ class App {
             $action  =  'run';
         }else{
             //创建控制器实例
-            $module  =  controller(CONTROLLER_NAME,CONTROLLER_PATH);                
+            $module  =  controller(CONTROLLER_NAME,CONTROLLER_PATH);             
         }
 
         if(!$module) {
