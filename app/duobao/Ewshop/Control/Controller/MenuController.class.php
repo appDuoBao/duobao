@@ -41,7 +41,6 @@ class MenuController extends ControlController {
             $this->assign('list',$list);	
         }
 		**/
-		
 		$menus =   array(); //设置子节点
 		//生成child树
 		$groups = M('Menu')->where(array('pid' =>$pid))->distinct(true)->getField("group",true);

@@ -13,7 +13,7 @@
 <div class="alert">
 	<div class="content">
 		<!--<div class="chead">手机注册</div>-->
-		<form role="form" action="/Weixin/User/register" method="post" id="formUser">
+		<form role="form" action="/index.php?s=Weixin/User/register" method="post" id="formUser">
 			<input type="hidden" name="">
 			<div class="main">
 				<div class="tel">

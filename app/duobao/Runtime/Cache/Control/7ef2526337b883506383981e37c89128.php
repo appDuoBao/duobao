@@ -127,10 +127,10 @@
     </div>
     <div class="cf">
         <div class="fl">
-            <a class="btn" href="<?php echo U('add');?>">新 增</a>
+          <!--  <a class="btn" href="<?php echo U('add');?>">新 增</a>
              <button class="btn ajax-post" url="<?php echo U('changeStatus?method=resumeUser');?>" target-form="ids">启 用</button>
              <button class="btn ajax-post" url="<?php echo U('changeStatus?method=forbidUser');?>" target-form="ids">禁 用</button>
-            <button class="btn ajax-post confirm" url="<?php echo U('changeStatus?method=deleteUser');?>" target-form="ids">删 除</button>
+            <button class="btn ajax-post confirm" url="<?php echo U('changeStatus?method=deleteUser');?>" target-form="ids">删 除</button> -->
             <!--<a href="<?php echo U('export');?>" class="btn">导出会员</a>-->
         </div>
         <!-- 高级搜索 -->
@@ -162,19 +162,25 @@
                         <td><input class="ids" type="checkbox" name="id[]" value="<?php echo ($vo["uid"]); ?>" /></td>
                         <td><?php echo ($vo["uid"]); ?></td>
                         <td><?php echo ($vo["mobile"]); ?></td>
-                        <td><?php echo ($vo["nickname"]); ?></td>
+						<td>
+						<a href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">
+						    <?php if($vo["nickname"] == '' ): echo ($vo["mobile"]); ?>
+							<?php else: ?> 
+						<?php echo ($vo["nickname"]); endif; ?></a>
+                        </td>
+						
                         <td><?php echo ($vo["login"]); ?></td>
                         <td><span><?php echo (time_format($vo["last_login_time"])); ?></span></td>
                         <td><span><?php echo long2ip($vo['last_login_ip']);?></span></td>
                         <td><?php echo ($vo["status_text"]); ?></td>
                         <td>
-                            <a title="编辑" href="<?php echo U('edit?id='.$vo['uid']);?>">编辑</a>
+                          <!--  <a title="编辑" href="<?php echo U('edit?id='.$vo['uid']);?>">编辑</a> 
                             <?php if(($vo["status"]) == "1"): ?><a href="<?php echo U('User/changeStatus?method=forbidUser&id='.$vo['uid']);?>" class="ajax-get">禁用</a>
                                 <?php else: ?>
-                                <a href="<?php echo U('User/changeStatus?method=resumeUser&id='.$vo['uid']);?>" class="ajax-get">启用</a><?php endif; ?>
+                                <a href="<?php echo U('User/changeStatus?method=resumeUser&id='.$vo['uid']);?>" class="ajax-get">启用</a><?php endif; ?> -->
 							<a title="分享会员" href="<?php echo U('fenxianguser?puid='.$vo['uid']);?>">分享会员</a>
                             <a title="佣金记录" href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">佣金记录</a>
-                            <a href="<?php echo U('User/changeStatus?method=deleteUser&id='.$vo['uid']);?>" class="confirm ajax-get">删除</a>
+                          <!--  <a href="<?php echo U('User/changeStatus?method=deleteUser&id='.$vo['uid']);?>" class="confirm ajax-get">删除</a>-->
                         </td>
                     </tr><?php endforeach; endif; else: echo "" ;endif; ?>
                 <?php else: ?>
@@ -205,7 +211,7 @@
 
             "ROOT"   : "", //当前网站地址
 
-            "APP"    : "/index.php?s=", //当前项目地址
+            "APP"    : "/control.php?s=", //当前项目地址
 
             "PUBLIC" : "/Public", //项目公共目录地址
 

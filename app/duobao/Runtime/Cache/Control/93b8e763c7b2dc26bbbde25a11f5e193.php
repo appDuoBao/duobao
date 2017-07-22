@@ -191,7 +191,7 @@
 
             "ROOT"   : "", //当前网站地址
 
-            "APP"    : "/index.php?s=", //当前项目地址
+            "APP"    : "/control.php?s=", //当前项目地址
 
             "PUBLIC" : "/Public", //项目公共目录地址
 

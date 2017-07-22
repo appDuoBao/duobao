@@ -69,6 +69,7 @@ class AdminController extends ControlController {
 
     public function add(){
         if(IS_POST){
+           
 			$Admin = D('Admin');
             if(false !== $Admin->update()){
                 $this->success('新增成功！', U('index'));

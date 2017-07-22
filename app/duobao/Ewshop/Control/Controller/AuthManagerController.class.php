@@ -157,10 +157,12 @@ class AuthManagerController extends ControlController{
         }
         $_POST['module'] =  'admin';
         $_POST['type']   =  AuthGroupModel::TYPE_ADMIN;
+        $_POST['rules']  = 0;
         $AuthGroup       =  D('AuthGroup');
         $data = $AuthGroup->create();
         if ( $data ) {
             if ( empty($data['id']) ) {
+                $data['rules'] = 1;
                 $r = $AuthGroup->add();
             }else{
                 $r = $AuthGroup->save();

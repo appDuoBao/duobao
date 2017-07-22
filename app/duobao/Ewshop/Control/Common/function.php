@@ -452,3 +452,32 @@ function get_action_type($type, $all = false){
 	}
 	return $list[$type];
 }
+
+
+function getfxuser($uid){//根据id获取下级分销会员，无限级别获取
+	global $memberlist; 
+	$map['parent_id']=$uid; 
+	$members = M('Member')->field('uid')->where($map)->select();
+	//根据id获取下级用户
+	if($members){
+		if($memberlist){
+			$memberlist = array_merge($memberlist, $members);
+		}else{
+			$memberlist = $members;	
+		}
+		foreach ($members as $k => $v ) {
+			getfxuser($v['uid']);
+		}	
+	}
+	return $memberlist;
+}
+
+function getxse($fxuids, $dates){//根据uid\日期获取获得的所有销售额  时间戳
+	$map['uid']  = array('in',$fxuids);
+	$map['status']  = 2;//1：返佣 2：购买
+	if( $dates){
+		$map['create_time']  = array(array('egt',$dates),array('lt',$dates+(24*60*60)));
+	}
+	$zong =M('AccountLog')->where($map)->Sum('money_p');
+	return $zong;//总销售额
+}
