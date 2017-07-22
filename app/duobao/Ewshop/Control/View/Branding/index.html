@@ -29,9 +29,7 @@
                 <th class="">UID</th>
                 <th class="">电话</th>
                 <th class="">用户名</th>
-                <th class="">登录次数</th>
-                <th class="">最后登录时间</th>
-                <th class="">最后登录IP</th>
+               
                 <th class="">状态</th>
                 <th class="">操作</th>
             </tr>
@@ -40,32 +38,26 @@
             <notempty name="_list">
                 <volist name="_list" id="vo">
                     <tr>
-                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.uid}" /></td>
-                        <td>{$vo.uid}</td>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
+                        <td>{$vo.id}</td>
                         <td>{$vo.mobile}</td>
 						<td>
-						<a href="{:U('fenyonglog?puid='.$vo['uid'])}">
-						    <if condition="$vo.nickname eq '' ">
-						{$vo.mobile}
-							<else /> 
-						{$vo.nickname}
-					</if></a>
+						
+						{$vo.username}
+					
                         </td>
 						
-                        <td>{$vo.login}</td>
-                        <td><span>{$vo.last_login_time|time_format}</span></td>
-                        <td><span>{:long2ip($vo['last_login_ip'])}</span></td>
                         <td>{$vo.status_text}</td>
                         <td>
-                          <!--  <a title="编辑" href="{:U('edit?id='.$vo['uid'])}">编辑</a> 
-                            <eq name="vo.status" value="1">
+                           <a title="编辑" href="{:U('edit?id='.$vo['id'])}">编辑</a> 
+                           <!--  <eq name="vo.status" value="1">
                                 <a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="ajax-get">禁用</a>
                                 <else/>
                                 <a href="{:U('User/changeStatus?method=resumeUser&id='.$vo['uid'])}" class="ajax-get">启用</a>
                             </eq> -->
-							<a title="分享会员" href="{:U('fenxianguser?puid='.$vo['uid'])}">分享会员</a>
+						<!--	<a title="分享会员" href="{:U('fenxianguser?puid='.$vo['uid'])}">分享会员</a>
                             <a title="佣金记录" href="{:U('fenyonglog?puid='.$vo['uid'])}">佣金记录</a>
-                          <!--  <a href="{:U('User/changeStatus?method=deleteUser&id='.$vo['uid'])}" class="confirm ajax-get">删除</a>-->
+                            <a href="{:U('User/changeStatus?method=deleteUser&id='.$vo['uid'])}" class="confirm ajax-get">删除</a>-->
                         </td>
                     </tr>
                 </volist>
