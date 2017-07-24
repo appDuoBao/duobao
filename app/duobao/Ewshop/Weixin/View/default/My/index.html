@@ -15,7 +15,7 @@
             <div class="tximg"><img src="{$data.headimgurl}" alt=""></div>
         </div>
         
-            <p class="tx-name">{$data.nickname}【{$usertype}】</p>
+            <p class="tx-name">{$data.nickname}<!--【{$usertype}】--></p>
     </div>
     <ul class="centerlis">
     	<li class="centerlis-1">
@@ -39,32 +39,36 @@
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
         </li></a>
         -->
+       
+        <if condition="$isjoin neq true">
         <a href="{:U('My/join')}" class="atop"><li>
             <p class="li-img"><img src="__IMG__/join.jpg" alt=""></p>
-            <p class="li-p">申请加盟</p>
+            <p class="li-p">合作申请</p>
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
-        </li></a>        
+        </li></a> 
+        </if>
+             
         <if condition="$isjoin eq true">
         <a href="{:U('My/mylink')}"><li>
             <p class="li-img"><img src="__IMG__/fenxiao.jpg" alt=""></p>
-            <p class="li-p">分销链接</p>
+            <p class="li-p">二维码</p>
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
         </li></a>
         <a href="{:U('My/yongjinlog')}"><li>
             <p class="li-img"><img src="__IMG__/money.jpg" alt=""></p>
-            <p class="li-p">佣金明细</p>
+            <p class="li-p">我的收益</p>
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
         </li></a>  
         <a href="{:U('My/fxuser')}"><li>
             <p class="li-img"><img src="__IMG__/money.jpg" alt=""></p>
-            <p class="li-p">分销会员</p>
+            <p class="li-p">我的朋友</p>
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
-        </li></a>      
+        </li></a> 
          <a href="{:U('My/branding')}"><li>
             <p class="li-img"><img src="__IMG__/money.jpg" alt=""></p>
-            <p class="li-p">推广管理</p>
+            <p class="li-p">我的友商</p>
             <p class="li-r"><img src="__IMG__/c-right_03.png" alt="" /></p>
-        </li></a>            
+        </li></a>                
         </if>       
 
         <a href="{:U('Index/introduce')}" class="atop"><li>
