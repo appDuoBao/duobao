@@ -22,28 +22,26 @@ class BrandingManageController extends ControlController {
      */
     public function index(){
         //当前管理员id
-        $gid = $_SESSION['onethink_admin']['user_auth']['uid'];
-        $groupid = M('admin')->where(array('uid'=>$gid))->getField('groupid');
-        if($groupid == 7){    //是企业分销管理员
-            $uid = M('Join')->where(array('gid'=>$gid,'is_delete'=>0,'status'=>1))->getField('uid');
-            $map['parent_id'] = $uid;
-        }
+        $gid = $_SESSION['user_brand']['id'];
+        
 		
-        $puid = I('puid');
+        $puid = $gid;
         $puid = trim($puid);
         if ($puid) {
-            $map['puid'] = array("eq", $puid);
+            
+            $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
+            $list = $Model->query("select id,username,mobile,uid,m.last_login_ip,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id = " .$puid);
+		      // print_r($list);exit;
+             int_to_string($list);
+
+             $this->assign('_list' , $list);
+             $this->assign('puid',$puid);
         }else{
-            $map['puid'] = array('GT','1');    
+               
         }		
        
         
-		$list = $this->lists('BrandingMember' , $map);
-		       //print_r($list);exit;
-        int_to_string($list);
-
-        $this->assign('_list' , $list);
-        $this->assign('puid',$puid);
+		
         $this->meta_title = '用户信息';
         $this->display();
     }
@@ -201,6 +199,7 @@ class BrandingManageController extends ControlController {
      * @author ew_xiaoxiao
      */
     public function add(){
+        $loginuid = $_SESSION['onethink_admin']['user_auth']['uid'];
         if (IS_POST) {
             /* 检测密码 */
             $password = I('password');
@@ -212,12 +211,13 @@ class BrandingManageController extends ControlController {
             /* 调用注册接口注册用户 */
             //$User = new UserApi;
             //$uid  = $User->register($username , $password , $email);
+            
             $puid = I('puid');
             $username = I('username');
             $mobile = I('mobile');
             $email = I('email');
-            if ( $puid) { //注册成功
-                $user = array ('puid' => $puid , 'username' => $username ,'password'=>md5($password), 'moblie' => $moblie,'email'=>$email);
+            if ($puid == $loginuid) { //注册成功
+                $user = array ('puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password,UC_AUTH_KEY), 'moblie' => $moblie,'email'=>$email);
                 if (!M('BrandingMember')->add($user)) {
                     $this->error('用户添加失败！');
                 } else {
@@ -228,8 +228,8 @@ class BrandingManageController extends ControlController {
             }
         } else {
             $this->meta_title = '新增用户';
-            $puid = I('puid','');
-            $this->assign('puid',$puid);
+            //$puid = I('puid','');
+            $this->assign('puid',$loginuid);
             $this->display();
         }
     }

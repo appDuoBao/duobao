@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author:
 // +----------------------------------------------------------------------
-namespace Control\Controller;
+namespace Branding\Controller;
 use Think\Controller;
 use Control\Model\AuthRuleModel;
 use Control\Model\AuthGroupModel;
@@ -22,7 +22,7 @@ class ControlController extends Controller {
     protected function _initialize(){
         // 获取当前用户ID
         if(defined('UID')) return ;
-        define('UID',is_login());
+        define('UID',$_SESSION['user_brand']['id']);
         if( !UID ){// 还没登录 跳转到登录页面
             $this->redirect('Public/login');
         }
@@ -35,7 +35,7 @@ class ControlController extends Controller {
         C($config); //添加配置
 
         // 是否是超级管理员
-        define('IS_ROOT',   is_administrator());
+        define('IS_ROOT',   1);
         if(!IS_ROOT && C('ADMIN_ALLOW_IP')){
             // 检查IP地址访问
             if(!in_array(get_client_ip(),explode(',',C('ADMIN_ALLOW_IP')))){
@@ -52,10 +52,10 @@ class ControlController extends Controller {
                 //检测非动态权限
                 $rule  = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
                 if ( !$this->checkRule($rule,array('in','1,2')) ){
-                    $this->error('未授权访问!');
+                  //  $this->error('未授权访问!');
                 }
             }elseif( $dynamic === false ){
-                $this->error('未授权访问!');
+               // $this->error('未授权访问!');
             }
         }
         $this->assign('__MENU__', $this->getMenus());
@@ -242,7 +242,7 @@ class ControlController extends Controller {
      * @author ew_xiaoxiao
      */
     final public function getMenus($controller=CONTROLLER_NAME){
-        $menus  =   session('ADMIN_MENU_LIST'.$controller);
+        $menus  =   session('ADMIN_MENU_LIST'.$controller);print_r($menus);exit;
         if(empty($menus)){
             // 获取主菜单
             $where['pid']   =   0;
@@ -262,7 +262,7 @@ class ControlController extends Controller {
                     $menus['main'][$key]['class']='current';
                 }
             }
-
+           
             // 查找当前子菜单
             $pid = M('Menu')->where("pid !=0 AND url like '%{$controller}/".ACTION_NAME."%'")->getField('pid');
             if($pid){

@@ -134,7 +134,7 @@ class BiddingController extends ControlController
         $this->assign('wdhprice', $wdhprice);
 
 
-        $this->meta_title = '订单列表';
+        $this->meta_title = '订单列表';//exit('tet');
         $this->display();
     }
 
@@ -527,22 +527,31 @@ class BiddingController extends ControlController
 			$map['buy_time']  = array('lt',strtotime($end_date)+(24*60*60));
 		}		 
 		 
-        $nickname = I('nickname');
+        $uid = I('uid');
         //兑换码
         $exchange_number = I('exchange_number');
-        $nickname = trim($nickname);
-        if ($nickname) {
-            $uid = M('Member')->field("uid")->where("nickname LIKE '%$nickname%'")->select();
-            $newuid = "";
-            if ($uid) {
-                foreach ($uid as $b) {
-                    $newuid[] = $b['uid'];
-                }
-                $map['uid'] = array("in", $newuid);
-            } else {
-                $map['uid'] = '';
-            }
+        $uid = trim($uid);
+        if ($uid) {
+           $map['uid'] = array('eq',$uid);
+        }else{
+            //搜索
+            $nickname = I('nickname');
+            $nickname = trim($nickname);
+            if($nickname){
+                    $uid = M('Member')->field("uid")->where("nickname LIKE '%$nickname%'")->select();
+                if(is_array($uid)){
+                    foreach($uid as $b){
+                        $newuid[] = $b['uid'];    
+                    }
+                    $map['uid'] = array('in',$newuid);    
+                }else{ 
+                    $map['uid'] = array('neq',0);
+                } 
+            }else{   
+                     $map['uid'] = array('neq',0);
+             }
         }
+        //print_r($map);exit;
         if(!empty($exchange_number)){
             $map['exchange_number'] = $exchange_number;
         }

@@ -178,6 +178,9 @@
                             <?php if(($vo["status"]) == "1"): ?><a href="<?php echo U('User/changeStatus?method=forbidUser&id='.$vo['uid']);?>" class="ajax-get">禁用</a>
                                 <?php else: ?>
                                 <a href="<?php echo U('User/changeStatus?method=resumeUser&id='.$vo['uid']);?>" class="ajax-get">启用</a><?php endif; ?> -->
+                            <a title="购买记录" href="<?php echo U('Bidding/index?uid='.$vo['uid']);?>">购买记录</a>
+                           <a title="兑换记录" href="<?php echo U('Bidding/exchange?uid='.$vo['uid']);?>">兑换记录</a>
+                            
 							<a title="分享会员" href="<?php echo U('fenxianguser?puid='.$vo['uid']);?>">分享会员</a>
                             <a title="佣金记录" href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">佣金记录</a>
                           <!--  <a href="<?php echo U('User/changeStatus?method=deleteUser&id='.$vo['uid']);?>" class="confirm ajax-get">删除</a>-->

@@ -10,6 +10,7 @@
 namespace Weixin\Controller;
 use Workerman\Worker;
 use OT\DataDictionary;
+use User\Api\UserApi;
 
 
 
@@ -688,5 +689,75 @@ class MyController extends HomeController {
 		$nums = M('Member')->where($map)->count();
 		$this->assign('nums',$nums);
 		$this->display();
+    }
+    
+    public function branding(){
+        
+            $login_uid = $_SESSION['onethink_home']['user_auth']['uid'];
+            if($login_uid){
+               $list = M('brandingMember')->where(sprintf('puid = %d',$login_uid))->select();    
+            }
+            $nickname = M('Member')->field('nickname')->where(sprintf('uid = %d',$login_uid))->find();
+           // print_r($list);exit;
+            $this->assign('username',$nickname['nickname']);
+            $this->assign('list',$list);
+            $this->display();
+    }
+    public function addbranding(){
+        if (IS_POST) {
+            /* 检测密码 */
+            $password = I('password');
+            $repassword = I('reppassword');
+            if ($password != $repassword) {
+                $this->error('密码和重复密码不一致！');
+            }
+
+            /* 调用注册接口注册用户 */
+            $User = new UserApi;
+            //$uid  = $User->register($username , $password , $email);
+            
+            $puid  = $_SESSION['onethink_home']['user_auth']['uid'];
+            $username = I('username');
+            $mobile = I('mobile');
+            $email = I('email');
+            //var_dump($mobile,$email);exit;
+            if ($puid) { //注册成功
+                $user = array ('puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password,UC_AUTH_KEY), 'mobile' => $moblie,'email'=>$email,'ctime'=>time());
+                $newuid  = M('BrandingMember')->add($user);
+                if (!$newuid) {
+                    $this->error('用户添加失败！');
+                } else {
+                    $url = $this->makeCodeLogo($newuid);
+                    M('BrandingMember')->where('id = '.$newuid)->save(array('ewm'=>$url));
+                    //print_r($newuid);exit;
+                    $this->success('用户添加成功！' , U('branding'));
+                }
+            } else { //注册失败，显示错误信息
+                $this->error($this->showRegError($uid));
+            }
+        } else {
+            
+            $this->display();
+        }
+            //$this->display();    
+    }
+    
+    private function makeShareCode($uid){
+         $uid = $_SESSION['onethink_home']['uid'];
+        $config = M('Wxsetting')->where(array('id'=>1))->find();
+        $userinfo = M('BrandingMember')->where(array('id'=>$uid))->find();
+        if($userinfo['ewm']){
+            $url = $userinfo['ewm'];
+        }else{
+            $oldpic = $userinfo['headimgurl'];
+            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid;
+            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7fb456d4e2e698a4&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+            $url = $this->makeCodeLogo($uid,$oldpic,$wurl);
+            $res['ewm']  = ltrim($url,'.');
+            M('BrandingMember')->where(array('id'=>$uid))->save($res);
+        }
+       // print_r($url);exit;
+            return $url;
+        
     }
 }

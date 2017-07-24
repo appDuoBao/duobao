@@ -48,14 +48,15 @@ class UserController extends HomeController {
             empty($mobile) ? $this->error("手机号码不能为空！") : '';
             $is_exist = M('UcenterMember')->where("username = {$mobile}")->find();
 			$Member = D("Member");
+			
             if($is_exist){
 				//$arr['parent_id'] = $_SESSION['parent_id'];//如果会员本身就存在，通过别人的分享二维码进入不会成为别人的分享会员
 				$arr['nickname'] = $_SESSION['wx_info']['nickname'];
 				$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
 				$arr['sex'] = $_SESSION['wx_info']['sex'];
 				$arr['openid'] = $_SESSION['openid'];
-				$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
-		 
+				//$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
+		       
                 if ($Member->login($is_exist['id'])) { //登录用户
                     //跳转首页
                     $url = U("Index/index");

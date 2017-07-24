@@ -12,7 +12,7 @@
  * 所有除开系统级别的前台配置
  */
 return array (
-    'URL_MODEL' => 2 , //URL模式
+    'URL_MODEL' => 3 , //URL模式
     'URL_HTML_SUFFIX' => '' ,
 
     'URL_ROUTER_ON' => TRUE ,               //开启路由

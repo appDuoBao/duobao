@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>申请加盟</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link rel="stylesheet" href="__CSS__/common.css">
+
+    <link rel="stylesheet" href="__CSS__/password.css">
+
+</head>
+
+<body>
+
+<div class="mainall">
+
+    <form role="form" action="__SELF__" method="post" name="formUser" id="formUser">
+
+        <div class="set setipt">
+
+
+            <input type="text" id="username" value=""   name="username" placeholder="用户名称">
+
+            <input type="password" id="password"  value=""  name="password" placeholder="用户密码">
+
+            <input type="password" id="reppassword"  value=""  name="reppassword" placeholder="确认密码">
+
+            <input type="text" id="mobile"  value=""  name="mobile" placeholder="手机号">
+            
+            <input type="text" id="email"  value=""  name="email" placeholder="电子邮箱">
+            
+            
+
+        </div>
+
+    </form>
+
+    <!--<p class="p1">忘记密码</p>-->
+
+    <div class="btn">
+
+        <button class="btn1" id="confirm" onclick="submitFormUser();">确认</button>
+
+        <button class="btn2" onclick="reset();">重置</button>
+
+    </div>
+
+</div>
+
+<include file="Public/footer" />
+
+
+
+<script type="text/javascript" src="__JS__/zepto.min.js"></script>
+
+
+
+
+
+<script>
+
+    function reset(){
+
+        $('#username').val('');
+
+        $('#password').val('');
+
+        $('#mobile').val('');
+
+        $('#reppassword').val('');
+         $('#email').val('');
+
+    }
+
+
+
+    function submitFormUser(){
+
+        //var uid = $('#uid').val();
+
+        var company = $('#username').val();
+
+        var reppassword = $('#reppassword').val();
+
+        var mobile = $('#mobile').val();
+
+        var password = $('#password').val();
+
+        var re = /^1\d{10}$/;
+
+        if(company == '' || password == '' || mobile =='' || reppassword ==''){
+
+            alert('数据不能为空');
+
+            return false;
+
+        }
+
+        if(!re.test(mobile)){
+
+            alert('请输入正确的手机号');
+
+            return false;
+
+        }
+
+        $('#formUser').submit();//提交
+
+    }
+
+</script>
+
+</body>
+
+</html>

@@ -34,10 +34,9 @@ class BrandingController extends ControlController {
         if ($puid) {
             $map['puid'] = array("eq", $puid);
         }else{
-            $map['puid'] = array('GT','1');    
+            $map['puid'] = array('GT','0');    
         }		
        
-        
 		$list = $this->lists('BrandingMember' , $map);
 		       //print_r($list);exit;
         int_to_string($list);
@@ -217,7 +216,7 @@ class BrandingController extends ControlController {
             $mobile = I('mobile');
             $email = I('email');
             if ( $puid) { //注册成功
-                $user = array ('puid' => $puid , 'username' => $username ,'password'=>md5($password), 'moblie' => $moblie,'email'=>$email);
+                $user = array ('puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password, UC_AUTH_KEY), 'moblie' => $moblie,'email'=>$email);
                 if (!M('BrandingMember')->add($user)) {
                     $this->error('用户添加失败！');
                 } else {
@@ -240,7 +239,7 @@ class BrandingController extends ControlController {
      */
     public function edit($id = NULL){
         $Member = D('BrandingMember');
-
+    
         if (IS_POST) {
             $data['id']      = $_POST['id'];
             $yzdata['password']   = $_POST['password'];
@@ -248,7 +247,7 @@ class BrandingController extends ControlController {
             $udata['email']       = $_POST['email'];
             $udata['mobile']      = $_POST['mobile'];
             $udata['id']          = $_POST['id'];
-
+            $udata['username']    = $_POST['username'];
             //提交表单
             if ($yzdata['password'] || $yzdata['repassword']) {
 
@@ -262,17 +261,12 @@ class BrandingController extends ControlController {
                
                 
             } else {
-               
-                    if (FALSE !== $Member->updatem($data)) {
-                        $this->success('编辑成功！' , U('index'));
-                    } else {
-                        $error = $Member->getError();
-                        $this->error(empty($error) ? '未知错误！' : $error);
-                    }
+              $udata['password'] = think_ucenter_md5($udata['password'], UC_AUTH_KEY);
+              $ret =  $Member->where('id='.$id)->save($udata);
                
             }
         } else {
-            $info             = $Member->where('id = '.$id)->find();;
+            $info             = $Member->where('id = '.$id)->find();
             $this->assign('info' , $info);
             $this->meta_title = '编辑用户';
             $this->display();
