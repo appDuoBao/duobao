@@ -33,13 +33,14 @@ class PublicController extends \Think\Controller {
                 if($arruser['password'] == $pass){ //UC登录成功
                     $_SESSION['user_brand'] = $arruser;
                     /* 登录用户 */
-                      $this->success('登录成功！', U('BrandingManage/Index'));
+                      $this->success('登录成功！', U('BrandingManage/index'));
                     
                 }else{
                      $this->error('密码错误');
                 }		
         } else {
             if(empty($_SESSION['user_brand'])){
+                $_SESSION['user_brand'] =array('0');
                 $this->redirect('Index/index');
             }else{
                 /* 读取数据库中的配置 */

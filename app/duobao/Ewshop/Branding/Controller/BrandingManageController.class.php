@@ -37,7 +37,7 @@ class BrandingManageController extends ControlController {
              $this->assign('_list' , $list);
              $this->assign('puid',$puid);
         }else{
-               
+               $this->display();
         }		
        
         
