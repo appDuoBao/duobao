@@ -63,9 +63,10 @@
         <ul>
 
             <volist name="data.code_list" id="vo">
+            <!--
                 <span style="font-size:12px;" >
                 &nbsp;&nbsp;{$vo.czh}/{$vo.province}/{$vo.company}/{$vo.info}
-                </span>   
+                </span>   -->
                 <li>
 
                     <div class="li1">
@@ -73,13 +74,13 @@
                         <p class="p-2">{$vo['create_time'][1]}</p>
                     </div>
 
-                    <div class="li2" style="font-size:7px">
+                    <div class="li2" style="font-size:10px">
                     {$vo.code}
                     </div>
 
-                    <div class="li3"><p>{$vo.code_56}&nbsp;&nbsp;{$vo.code_56_type}</p></div>
+                    <div class="li3"><p <if condition="$vo['code_56_type'] eq '大'">style="background:#ca5757"<else/>style="background:#e48219"</if> >{$vo.code_56}&nbsp;&nbsp;{$vo.code_56_type}</p></div>
 
-                    <div class="li3 li4"><p>{$vo.code_110}&nbsp;&nbsp;{$vo.code_110_type}</p></div>
+                    <div class="li3 li4"><p <if condition="$vo['code_110_type'] eq '大'">style="background:#ca5757"<else/>style="background:#e48219"</if>>{$vo.code_110}&nbsp;&nbsp;{$vo.code_110_type}</p></div>
                 </li>
             
             </volist>

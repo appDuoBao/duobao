@@ -103,16 +103,52 @@ class GoodsController extends HomeController {
         }
 
         //半价pk榜(中奖记录)
-        $pk_list = M('WinExchange')->where("goods_id = {$goodsId}")->order('buy_time DESC')->limit(10)->select();
+        $pk_list = M('WinExchange')->where("goods_id = {$goodsId}")->order('buy_time DESC')->limit(10,20)->select();
         foreach($pk_list as $key => $val){
             if($val['is_virtual'] == 1){
                 $pk_list[$key]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
+				if($i<20){
+					$buy_list[$i]['buy_time'] = $val['buy_time'];
+					$buy_list[$i]['buy_num'] = $val['buy_num'];				
+					$buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
+					$i++;
+				}
             }else{
                 $pk_list[$key]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val['uid']}")->find();
             }
         }	
+        $data['pk_list'] = $pk_list;	
 		
-        $data['pk_list'] = $pk_list;
+        //半价pk榜(购买记录)
+		$buy_list = array();
+		$i = 0;
+		$nowtime = time()-(60*10);
+        $order_list = M('WinOrder')->where("goods_id = {$goodsId} and status =1 and create_time >".$nowtime)->order('create_time DESC')->limit(10)->select();
+        foreach($order_list as $key => $val1){
+			$buy_list[$i]['buy_time'] = $val1['create_time'];
+			$buy_list[$i]['buy_num'] = $val1['num'];
+            $buy_list[$i]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
+       		$i++;
+        }			
+        //半价pk榜(中奖记录)
+        $pk_list2 = M('WinExchange')->where("goods_id = {$goodsId} and is_virtual =1")->order('buy_time DESC')->limit(1,20)->select();
+        foreach($pk_list2 as $key => $val2){
+			if($i<20){
+				$buy_list[$i]['buy_time'] = $val2['buy_time'];
+				$buy_list[$i]['buy_num'] = $val2['buy_num'];				
+				$buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val2['uid']}")->find();//虚拟用户
+				$i++;
+			}
+        }	
+		
+		$buy_time=array();
+		foreach($buy_list as $buy){
+			$buy_time[]=$buy["buy_time"];
+		}
+		array_multisort($buy_time, SORT_DESC, $buy_list);
+	
+		$data['buy_list'] = $buy_list;
+		
         $this->assign('data' , $data);
         $this->meta_title = $data['goodsDetail']['title'];
         $this->display();

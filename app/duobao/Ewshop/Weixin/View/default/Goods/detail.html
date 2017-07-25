@@ -57,7 +57,7 @@
     <div class="tab">
         <div class="tabtitle">
             <p class=" active">最近中奖</p>
-            <p >算法规则</p>
+            <p >购买记录</p>
         </div>
         <div class="tablis">
             <ul>
@@ -76,12 +76,26 @@
                     </li>
                 </volist>
             </ul>
-            <ul class="tablis-rule">
+            <!--<ul class="tablis-rule">-->
+            <ul>
+            	<!--
                 <li>
                     <p class="tr-p">本期号码÷本期商品所消耗的微币数量所得余数加上1</p>
                     <img class="tr-img" src="__IMG__/new_rule_way.png"/>
                 </li>
-
+                -->
+                <volist name="data.buy_list" id="vo1">
+                    <li>
+                        <div class="li1"><img src="{$vo1.userinfo.headimgurl}" alt=""></div>
+                        <div class="li2">
+                            <p>
+                                <span class="li2l">{$vo1.userinfo.nickname}</span>
+                                <span class="li2r"js>{$vo1.buy_time|date='Y/m/d H:i:s',###}</span>
+                            </p>
+                            <p>{$data.goodsDetail.title}  购买<span>{$vo1.buy_num}</span>单 </p>
+                        </div>
+                    </li>
+                </volist>
             </ul>
         </div>
     </div>

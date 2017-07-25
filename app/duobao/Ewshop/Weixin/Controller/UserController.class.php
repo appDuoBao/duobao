@@ -48,15 +48,18 @@ class UserController extends HomeController {
             empty($mobile) ? $this->error("手机号码不能为空！") : '';
             $is_exist = M('UcenterMember')->where("username = {$mobile}")->find();
 			$Member = D("Member");
-			
             if($is_exist){
 				//$arr['parent_id'] = $_SESSION['parent_id'];//如果会员本身就存在，通过别人的分享二维码进入不会成为别人的分享会员
+				/*
 				$arr['nickname'] = $_SESSION['wx_info']['nickname'];
 				$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
-				$arr['sex'] = $_SESSION['wx_info']['sex'];
-				$arr['openid'] = $_SESSION['openid'];
-				//$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
-		       
+				$arr['sex'] = $_SESSION['wx_info']['sex'];	
+				*/
+				if($_SESSION['openid']){
+					$arr['openid'] = $_SESSION['openid'];
+					$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
+				}
+				
                 if ($Member->login($is_exist['id'])) { //登录用户
                     //跳转首页
                     $url = U("Index/index");
@@ -78,10 +81,21 @@ class UserController extends HomeController {
                     //$this->login($username , $password);
 					if ($Member->login($uid)) { //登录用户
 						$arr['parent_id'] = $_SESSION['parent_id'];
-						$arr['nickname'] = $_SESSION['wx_info']['nickname'];
-						$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
-						$arr['sex'] = $_SESSION['wx_info']['sex'];
-						$arr['openid'] = $_SESSION['openid'];
+						$arr['branding_id'] = $_SESSION['branding_id'];
+						if($_SESSION['wx_info']['nickname']){//当微信用户昵称为空时 设置手机号码为用户名
+							$arr['nickname'] = $_SESSION['wx_info']['nickname'];
+						}else{
+							$arr['nickname'] = "wx".$mobile;
+						}
+						if($_SESSION['wx_info']['headimgurl']){
+							$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
+						}
+						if($_SESSION['wx_info']['sex']){
+							$arr['sex'] = $_SESSION['wx_info']['sex'];
+						}
+						if($_SESSION['openid']){
+							$arr['openid'] = $_SESSION['openid'];
+						}
 						$Member->where(array('uid'=>$uid))->save($arr);
 		
 						//跳转首页
@@ -121,7 +135,12 @@ class UserController extends HomeController {
                 if($_SESSION['parent_id']){
                     $arr['parent_id'] = $_SESSION['parent_id'];
                 }
-                $arr['nickname'] = $_SESSION['wx_info']['nickname'];
+                //$arr['nickname'] = $_SESSION['wx_info']['nickname'];
+				if($_SESSION['wx_info']['nickname']){//当微信用户昵称为空时 设置手机号码为用户名
+					$arr['nickname'] = $_SESSION['wx_info']['nickname'];
+				}else{
+					$arr['nickname'] = "wx_".$mobile;
+				}				
                 $arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
                 $arr['sex'] = $_SESSION['wx_info']['sex'];
                 $Member -> where(array('uid'=>$uid)) -> save($arr);

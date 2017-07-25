@@ -13,7 +13,6 @@ use OT\DataDictionary;
 use User\Api\UserApi;
 
 
-
 /**
  * 个人中心
  * Class MyController
@@ -413,7 +412,7 @@ class MyController extends HomeController {
      * @return string
      */
     public function makeCodeLogo($uid,$oldpic,$shareurl){
-        //		dump($oldpic);die();
+        		//var_dump($uid);die();
         vendor("phpqrcode");
         $value = $shareurl;
         $errorCorrectionLevel = 'L';//纠错级别：L、M、Q、H
@@ -444,6 +443,7 @@ class MyController extends HomeController {
         }
         $logoCode = "./Public/Weixin/erweima/logo_".$uid.".png";
         $res = imagepng ($QR, $logoCode);//带Logo二维码的文件名
+       
         @unlink($ewm);
         return $logoCode;
     }
@@ -624,19 +624,42 @@ class MyController extends HomeController {
 		//$map['pid']  = $puid;
 		$map['pid']  = array('in',$fxuids);
 		//佣金总金额
-		$zong =M('AccountLog')->where($map)->Sum('money_p');
+		$cur_ratio = M('Join')->where("uid='".$puid."'")->getField("ratio");
+		if($cur_ratio){
+			$alogs = M('AccountLog')->where($map)->select();
+			$zong = 0 ;
+			foreach ($alogs as $key => $aval) {
+				$order_money = $aval['money_p']/($aval['ratio']/100);
+				$zong +=  $order_money*($cur_ratio/100);
+			}	
+		}else{
+			$zong =M('AccountLog')->where($map)->Sum('money_p');	
+		}
 		$this->assign('zong' , $zong);
+		
 		//当天收益
 		//$tdmap['pid']  = $puid;
 		$tdmap['pid']  = array('in',$fxuids);
-		$tdmap['create_time']  = array('egt',strtotime(date('Y-m-d')));
-		$tdzong =M('AccountLog')->where($tdmap)->Sum('money_p');
+		$tdmap['create_time'] = array(array('egt',strtotime(date('Y-m-d'))),array('lt',strtotime(date('Y-m-d'))+(24*60*60)));
+		if($cur_ratio){
+			$talogs = M('AccountLog')->where($tdmap)->select();
+			$tdzong = 0 ;
+			foreach ($talogs as $key => $taval) {
+				$order_money = $taval['money_p']/($taval['ratio']/100);
+				$tdzong +=  $order_money*($cur_ratio/100);
+			}	
+		}else{
+			$tdzong =M('AccountLog')->where($tdmap)->Sum('money_p');
+		}		
 		$tdzong = sprintf("%.2f",$tdzong);
 		$this->assign('tdzong' , $tdzong);
 		
 		$list = M('AccountLog')->where($map)->order('create_time desc')->select();
         foreach ($list as $key => $val) {
             $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
+			$order_money = $val['money_p']/($val['ratio']/100);
+			$list[$key]['ratio']=$cur_ratio;
+            $list[$key]['money_p'] = $order_money*($cur_ratio/100);				
         }		
 		$this->assign('list',$list);
 		$this->display();
@@ -690,8 +713,81 @@ class MyController extends HomeController {
 		$this->assign('nums',$nums);
 		$this->display();
     }
-    
-    public function branding(){
+    /**
+     * 分销会员收益
+     * @author
+     */
+    public function fxuserbuylog(){
+		$puid = I('get.uid');
+		if(!$puid){
+			$puid = D('Member')->uid();
+		}
+		$userinfo = M('Member')->where(array('uid'=>$puid))->find();
+		$this->assign('username',$userinfo['nickname']);	
+
+		$map['uid'] = $puid;
+		$map['status'] = 1;
+ 		$allcount = M('WinOrder')->where($map)->Sum('num');//按购买数量计算
+		$this->assign('allcount',$allcount);
+		
+				
+		$fxusers = getfxuser($puid);//当前会员下级会员 无限级别
+		$fxuids = $puid;//算上自己的uid
+		foreach ($fxusers as $key => $val) {
+			if($fxuids==''){
+				$fxuids = $val['uid'];
+			}else{
+				$fxuids = $fxuids.",".$val['uid'];	
+			}
+		}			
+		//总销售金额（包含自己的销售额+所有下级的销售额）
+		$zong = getxse($fxuids);
+		$this->assign('zong' , $zong);
+		//当天收益
+		$zong1 = getxse($fxuids,strtotime(date('Y-m-d')));
+		$date1 = date('Y-m-d');
+		$this->assign('date1' , $date1);	
+		$this->assign('zong1' , $zong1);	
+
+		//昨天
+		$zong2 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24));
+		$date2 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24));
+		$this->assign('date2' , $date2);		
+		$this->assign('zong2' , $zong2);	
+		
+		//前天收益
+		$zong3 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24*2));
+		$date3 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24*2));
+		$this->assign('date3' , $date3);			
+		$this->assign('zong3' , $zong3);	
+		
+		//3天前收益
+		$zong4 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24*3));
+		$date4 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24*3));
+		$this->assign('date4' , $date4);			
+		$this->assign('zong4' , $zong4);		
+		
+		//4天前收益
+		$zong5 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24*4));
+		$date5 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24*4));
+		$this->assign('date5' , $date5);	
+		$this->assign('zong5' , $zong5);	
+		
+		//5天前收益
+		$zong6 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24*5));
+		$date6 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24*5));
+		$this->assign('date6' , $date6);	
+		$this->assign('zong6' , $zong6);	
+		
+		//6天前收益
+		$zong7 = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24*6));
+		$date7 = date('Y-m-d', strtotime(date('Y-m-d'))-(60*60*24*6));
+		$this->assign('date7' , $date7);	
+		$this->assign('zong7' , $zong7);								
+		$this->display();
+    }		 
+	 
+  public function branding(){
         
             $login_uid = $_SESSION['onethink_home']['user_auth']['uid'];
             if($login_uid){
@@ -720,16 +816,22 @@ class MyController extends HomeController {
             $username = I('username');
             $mobile = I('mobile');
             $email = I('email');
+            //查询手机号是否已经增加过
+            $isuser = M('BrandingMember')->where(sprintf("mobile = '%s' or username = '%s'",$mobile,$username))->find();
+            if(!empty($isuser)){
+                 $this->error('用户名或手机已经增加！');return;
+             }
             //var_dump($mobile,$email);exit;
             if ($puid) { //注册成功
-                $user = array ('puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password,UC_AUTH_KEY), 'mobile' => $moblie,'email'=>$email,'ctime'=>time());
+                $id = '20'.time().mt_rand(1,1000);
+                $user = array ('id'=>$id,'puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password,UC_AUTH_KEY), 'mobile' => $mobile,'email'=>$email,'ctime'=>time());
                 $newuid  = M('BrandingMember')->add($user);
                 if (!$newuid) {
                     $this->error('用户添加失败！');
                 } else {
-                    $url = $this->makeCodeLogo($newuid);
+                    $url = $this->makeShareCode($newuid);
                     M('BrandingMember')->where('id = '.$newuid)->save(array('ewm'=>$url));
-                    //print_r($newuid);exit;
+                    //var_dump($newuid,$url);exit;
                     $this->success('用户添加成功！' , U('branding'));
                 }
             } else { //注册失败，显示错误信息
@@ -742,19 +844,20 @@ class MyController extends HomeController {
             //$this->display();    
     }
     
-    private function makeShareCode($uid){
+    private function makeShareCode($buid){
          $uid = $_SESSION['onethink_home']['uid'];
         $config = M('Wxsetting')->where(array('id'=>1))->find();
         $userinfo = M('BrandingMember')->where(array('id'=>$uid))->find();
         if($userinfo['ewm']){
             $url = $userinfo['ewm'];
         }else{
-            $oldpic = $userinfo['headimgurl'];
-            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid;
+            $oldpic = $userinfo['headimgurl'] ? $userinfo['headimgurl'] : './Public/Weixin/erweima/logo.png';
+            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/branding_id/'.$buid;
             $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7fb456d4e2e698a4&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
-            $url = $this->makeCodeLogo($uid,$oldpic,$wurl);
+            //var_dump($wurl);exit($wurl);
+            $url = $this->makeCodeLogo($buid,$oldpic,$wurl);
             $res['ewm']  = ltrim($url,'.');
-            M('BrandingMember')->where(array('id'=>$uid))->save($res);
+            M('BrandingMember')->where(array('id'=>$buid))->save($res);
         }
        // print_r($url);exit;
             return $url;

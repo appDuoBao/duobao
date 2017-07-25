@@ -39,4 +39,14 @@ class TestController extends HomeController {
 
 
     }
+	
+	
+	public function test(){
+		$isLS = M('Config')->getFieldByName('LOTTERY_SETTING','value');//判断时候开启开奖控制
+		if($isLS==1){
+			echo '不控制';
+		}else{
+			echo '控制';
+		}
+	}
 }

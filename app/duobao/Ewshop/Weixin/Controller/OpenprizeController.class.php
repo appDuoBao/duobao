@@ -39,7 +39,7 @@ class OpenprizeController extends HomeController {
         $data['time_end'] = $this->get_time_on_clock(time());//倒计时时间
 
         //开奖号码
-        $code_list = M('WinCode')->where("code <> '0'")->order('id desc')->limit('30')->select();
+        $code_list = M('WinCode')->where("code <> '0'")->order('id desc')->limit('120')->select();
         foreach($code_list as $key => $val){
             $code_list[$key]['code'] = chunk_split($val['code'],1,' ');
             $code_list[$key]['create_time'] = explode(' ',$val['create_time']);

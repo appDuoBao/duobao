@@ -209,14 +209,20 @@ class BrandingController extends ControlController {
             }
 
             /* 调用注册接口注册用户 */
-            //$User = new UserApi;
+            $User = new UserApi;
             //$uid  = $User->register($username , $password , $email);
-            $puid = I('puid');
+            $puid = 1;//I('puid');
             $username = I('username');
             $mobile = I('mobile');
             $email = I('email');
+            $isuser = M('BrandingMember')->where(sprintf("mobile = '%s' or username = '%s'",$mobile,$username))->find();
+            if(!empty($isuser)){
+                 $this->error('用户手机已经增加！');return;
+             }
+            
             if ( $puid) { //注册成功
-                $user = array ('puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password, UC_AUTH_KEY), 'moblie' => $moblie,'email'=>$email);
+                 $id = '20'.time().mt_rand(1,1000);
+                $user = array ('id'=>$id,'puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password, UC_AUTH_KEY), 'mobile' => $mobile,'email'=>$email);
                 if (!M('BrandingMember')->add($user)) {
                     $this->error('用户添加失败！');
                 } else {

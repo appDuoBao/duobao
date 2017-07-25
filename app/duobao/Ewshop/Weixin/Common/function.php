@@ -281,12 +281,15 @@ function getnewlottery(){
 					if($v['spell']){
 						$data2 = lotteryQuery($v['spell']);	
 						if($data2 && $data2['error_code']==0 && !empty($data2['result'])){
-							$returnData = $data2['result'][0];
-							$returnData['province'] = $v['province'];//城市
-							$returnData['company'] = $v['company'];//彩票类型
-							$returnData['info'] = $v['info'];//彩票信息
-							
-							return $returnData;//返回最近第一个有数据的彩票开奖结果
+							$kjtime = strtotime($data2['result']['0']['lottery_time'])+600;//开奖时间
+							$time = time();//当前时间
+							if($time < $kjtime){//十分钟以内
+								$returnData = $data2['result'][0];
+								$returnData['province'] = $v['province'];//城市
+								$returnData['company'] = $v['company'];//彩票类型
+								$returnData['info'] = $v['info'];//彩票信息
+								return $returnData;//返回最近第一个有数据的彩票开奖结果
+							}
 						}
 					}	
 				}
@@ -327,7 +330,7 @@ function getlotterys(){
 							$iii++;	
 						}
 					}	
-					if($iii==20){//有10个有结果的票种数据自动跳出
+					if($iii==30){//有10个有结果的票种数据自动跳出
 						break;
 					}		
 				}
@@ -388,17 +391,27 @@ function getdayyongjin($fxuids){//根据uid获取获得的当日佣金
 	return $tdzong;
 }
 
+function getxse($fxuids, $dates){//根据uid\日期获取获得的所有销售额  时间戳
+	$map['uid']  = array('in',$fxuids);
+	$map['status']  = 2;//1：返佣 2：购买
+	if( $dates){
+		$map['create_time']  = array(array('egt',$dates),array('lt',$dates+(24*60*60)));
+	}
+	$zong =M('AccountLog')->where($map)->Sum('money_p');
+	return $zong;//总销售额
+}
+
 function getself($uid){//获取指定会员佣金
-	$map['uid']  = $uid;
-	$map['pid']  = array('gt',0);
+	$map['pid']  = $uid;
+	//$map['pid']  = array('gt',0);
 	//佣金总金额
 	$zong =M('AccountLog')->where($map)->Sum('money_p');
 	return $zong;
 }
 
 function getdayself($uid){//获取指定会员当日佣金
-	$tdmap['uid']  = $uid;
-	$tdmap['pid']  = array('gt',0);
+	$tdmap['pid']  = $uid;
+	//$tdmap['pid']  = array('gt',0);
 	$tdmap['create_time']  = array('egt',strtotime(date('Y-m-d')));
 	$tdzong =M('AccountLog')->where($tdmap)->Sum('money_p');
 	$tdzong = $tdzong;

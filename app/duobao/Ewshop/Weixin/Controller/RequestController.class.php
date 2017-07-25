@@ -44,7 +44,7 @@ Class RequestController extends HomeController{
         if($_GET['t']){
             $this->cfg->num = $_GET['t'];
         }else{
-            $num = substr($this->getPeriod($_POST['lottery_time']),-1)%5;//开奖期数
+            $num = substr($this->getPeriod($_POST['lottery_time']),-1)%10;//开奖期数
 
             $this->cfg->num = $this->mynum = $num;
         }
@@ -152,8 +152,8 @@ Class RequestController extends HomeController{
             $arr['out_trade_no'] = $out_trade_no;
             $arr['sub_openid'] = $openid;
             $arr['body'] = $out_trade_no;
-//            $arr['total_fee'] = $data['money']*100;
-            $arr['total_fee'] = 0.01*100;
+			$arr['total_fee'] = $data['money']*100;//正式购买金额
+            //$arr['total_fee'] = 0.01*100;
             $arr['mch_create_ip'] = get_client_ip();
         }else{
             exit();
@@ -466,21 +466,21 @@ Class RequestController extends HomeController{
                             if($orderData['status'] == 0){
                                 $disbut_open = M('Config')->getFieldByName('DISTRIBUTION','value');//获取分销开启状态
 
-                                $oneuid = M('Member')->getFieldByUid($orderData['uid'],'parent_id');
+                                $oneuid = M('Member')->getFieldByUid($orderData['uid'],'parent_id');//上级id
                                 $join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
                                 if(in_array($oneuid,$join_user_id)){
                                     $ratio = M('Join')->where(array('is_delete'=>0,'status'=>1,'uid'=>$oneuid))->getField('ratio');
                                 }else{
                                     $ratio = M('Config')->getFieldByName('DISTRIBUTION_PTC','value');//获取分销比率
                                 }
-								
+																
 								if($orderData['lottery_time'] != $time_end){
 									$arr['lottery_time'] = $time_end;
 									$arr['period'] = $period;
 									$data['create_time'] = time();
 								}
 								$uid = $orderData['uid'];						
-                                if($disbut_open && $oneuid){
+                                if($disbut_open && $oneuid){//上级获得佣金
 
                                     $arr['pid'] = $oneuid;
                                     $arr['money_p'] = $orderData['money'] * ($ratio * 0.01);
@@ -493,9 +493,20 @@ Class RequestController extends HomeController{
                                     $pmap['uid'] = $orderData['uid'];
                                     $pmap['create_time'] = time();
                                     M('AccountLog')->add($pmap);
-									
                                 }
 
+								$isJoin = M('Join')->where(array('is_delete'=>0,'status'=>1,'uid'=>$orderData['uid']))->find();//判断当前用户是不是代理商
+								if($isJoin){//如果是代理商  自己也获得佣金
+                                    $pmap1['status'] = 1;
+                                    $pmap1['ratio'] = $isJoin['ratio'];
+                                    $pmap1['pid'] = $orderData['uid'];
+                                    $pmap1['money_p'] = $orderData['money'] * ($isJoin['ratio'] * 0.01);
+                                    $pmap1['out_trade_no'] = $out_trade_no;
+                                    $pmap1['uid'] = $orderData['uid'];
+                                    $pmap1['create_time'] = time();
+                                    M('AccountLog')->add($pmap1);									
+								}
+								
 								$map['status'] = 2;
 								$map['ratio'] = 0;
 								$map['pid'] = 0;

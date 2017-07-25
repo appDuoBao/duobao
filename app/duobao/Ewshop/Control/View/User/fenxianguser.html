@@ -2,7 +2,7 @@
 <block name="body">
     <!-- 标题栏 -->
     <div class="main-title">
-        <h2>分享会员</h2>
+        <h2>{$username}的分享会员</h2>
     </div>
     <!-- 数据列表 -->
     <div class="data-table table-striped">
@@ -16,6 +16,7 @@
                 <th class="">最后登录时间</th>
                 <th class="">最后登录IP</th>
                 <th class="">状态</th>
+                <th class="">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -29,6 +30,10 @@
                         <td><span>{$vo.last_login_time|time_format}</span></td>
                         <td><span>{:long2ip($vo['last_login_ip'])}</span></td>
                         <td>{$vo.status_text}</td>
+                        <td>
+                        <a title="分享会员" href="{:U('fenxianguser?puid='.$vo['uid'])}">分享会员</a>
+                        <a title="佣金记录" href="{:U('fenyonglog?puid='.$vo['uid'])}">佣金记录</a>
+                        </td>
                     </tr>
                 </volist>
                 <else />
@@ -40,4 +45,9 @@
     <div class="page">
         {$_page}
     </div>
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script type="text/javascript">
+        //导航高亮
+        highlight_subnav("{:U('User/daili')}");
+    </script>    
 </block>

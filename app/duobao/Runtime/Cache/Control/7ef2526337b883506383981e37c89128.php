@@ -150,6 +150,7 @@
                 <th class="">UID</th>
                 <th class="">电话</th>
                 <th class="">用户名</th>
+                 <th class="">会员类型</th>
                 <th class="">登录次数</th>
                 <th class="">最后登录时间</th>
                 <th class="">最后登录IP</th>
@@ -168,7 +169,7 @@
 							<?php else: ?> 
 						<?php echo ($vo["nickname"]); endif; ?></a>
                         </td>
-						
+						 <td><?php echo ($vo["usertype"]); ?></td>
                         <td><?php echo ($vo["login"]); ?></td>
                         <td><span><?php echo (time_format($vo["last_login_time"])); ?></span></td>
                         <td><span><?php echo long2ip($vo['last_login_ip']);?></span></td>
