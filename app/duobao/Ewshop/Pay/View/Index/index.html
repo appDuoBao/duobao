@@ -1,0 +1,51 @@
+﻿<extend name="Public/pay"/>
+
+
+
+
+<block name="body">
+
+    <!-- 主体 -->
+
+    <div id="indexMain" class="index-main">
+
+       <!-- 插件块 -->
+
+
+    </div>
+
+</block>
+
+
+
+<block name="script">
+
+<script type="text/javascript">
+
+    /* 插件块关闭操作 */
+
+    $(".title-opt .wm-slide").each(function(){
+
+        $(this).click(function(){
+
+            $(this).closest(".columns-mod").find(".bd").toggle();
+
+            $(this).find("i").toggleClass("mod-up");
+
+        });
+
+    })
+
+    $(function(){
+
+        // $('#main').attr({'id': 'indexMain','class': 'index-main'});
+
+        $('.copyright').html('<div class="copyright"> ©2017 微信管理系统</div>');
+
+        $('.sidebar').remove();
+
+    })
+
+</script>
+
+</block>

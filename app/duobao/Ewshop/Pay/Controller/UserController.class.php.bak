@@ -14,7 +14,7 @@ use User\Api\UserApi;
  * 后台用户控制器
  * @author ew_xiaoxiao
  */
-class BrandingController extends ControlController {
+class UserController extends ControlController {
 
     /**
      * 用户管理首页
@@ -28,85 +28,29 @@ class BrandingController extends ControlController {
             $uid = M('Join')->where(array('gid'=>$gid,'is_delete'=>0,'status'=>1))->getField('uid');
             $map['parent_id'] = $uid;
         }
-		
-        $puid = I('puid');
-        $puid = trim($puid);
-        if ($puid) {
-            $map['puid'] = array("eq", $puid);
-        }else{
-            $map['puid'] = array('GT','0');    
-        }		
-       
-		$list = $this->lists('BrandingMember' , $map);
-		       //print_r($list);exit;
+        $mobile      = I('mobile');
+        $mobile      = trim($mobile);
+        $map['status'] = array ('egt' , 0);
+        $map['nickname'] = array ('like' , '%' . (string) $mobile . '%');
+        $list = $this->lists('Member' , $map);
+        foreach ($list as $key => $val) {
+            $list[$key]['mobile'] = M('UcenterMember')->where("id='$val[uid]'")->getField("mobile");
+            $list[$key]['email']  = M('UcenterMember')->where("id='$val[uid]'")->getField("email");
+        }
         int_to_string($list);
 
         $this->assign('_list' , $list);
-        $this->assign('puid',$puid);
         $this->meta_title = '用户信息';
         $this->display();
     }
 
 
     /**
-     * 代理商管理
-     * @author ew_xiaoxiao
-     */
-    public function daili(){
-
-		$join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
-		if($join_user_id){
-			$map['uid'] = array("in", $join_user_id);
-		}
-		
-        $mobile = I('mobile');
-        $mobile = trim($mobile);
-        if ($mobile) {
-            $uid = M('UcenterMember')->field("id")->where("mobile=".$mobile)->select();
-            $newuid = "";
-            if ($uid) {
-                foreach ($uid as $b) {
-                    $newuid[] = $b['id'];
-                }
-                $map['uid'] = array("in", $newuid);
-            }
-        }		
-			
-		$nickname      = I('nickname');
-		$nickname      = trim($nickname);
-        $map['status'] = array ('egt' , 0);
-        $map['nickname'] = array ('like' , '%' . (string) $nickname . '%');
-		
-        $list = $this->lists('Member' , $map);
-		
-		$join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
-        foreach ($list as $key => $val) {
-            $list[$key]['mobile'] = M('UcenterMember')->where("id='$val[uid]'")->getField("mobile");
-            $list[$key]['email']  = M('UcenterMember')->where("id='$val[uid]'")->getField("email");
-			
-			if(in_array($val[uid],$join_user_id)){
-				$list[$key]['usertype'] = '总代理商';
-			}elseif($val['parent_id'] > 0){
-				$list[$key]['usertype'] = '普通代理';
-			}else{
-				$list[$key]['usertype'] = '普通会员';
-			}			
-        }
-        int_to_string($list);
-
-        $this->assign('_list' , $list);
-        $this->meta_title = '代理商信息';
-        $this->display();
-    }
-	
-    /**
      * 分享会员
      * @author ew_xiaoxiao
      */
     public function fenxianguser($puid = NULL){
-		$Member = D('Member');
-		$info             = $Member->info($puid);
-		$this->assign('username' , $info['nickname']);
+
         $map['parent_id'] = $puid;
         $list = $this->lists('Member' , $map);
         foreach ($list as $key => $val) {
@@ -123,74 +67,15 @@ class BrandingController extends ControlController {
      * @author ew_xiaoxiao
      */
     public function fenyonglog($puid = NULL){
-		$Member = D('Member');
-		$info             = $Member->info($puid);
-		$this->assign('userinfo' , $info);	
-		
-		$fxusers = getfxuser($puid);//当前会员下级会员 无限级别
-		$fxuids = $puid;
-        foreach ($fxusers as $key => $val) {
-			if($fxuids==''){
-				$fxuids = $val['uid'];
-			}else{
-				$fxuids = $fxuids.",".$val['uid'];	
-			}
-        }	
-		$map['pid']  = array('in',$fxuids);
-		$map['status']  = 1;//1佣金 2购买
-		
-		$start_date      = I('start_date');
-		$end_date      = I('end_date');
-		if($start_date && $end_date){
-			$map['create_time'] = array(array('egt',strtotime($start_date)),array('lt',strtotime($end_date)+(24*60*60)));
-		}elseif($start_date  && empty($end_date)){
-			$map['create_time']  = array('egt',strtotime($start_date));
-		}elseif($end_date && empty($start_date)){
-			$map['create_time']  = array('lt',strtotime($end_date)+(24*60*60));
-		}		
-		//佣金总金额
-		//$zong =M('AccountLog')->where($map)->Sum('money_p');
-		$cur_ratio = M('Join')->where("uid='".$puid."'")->getField("ratio");
-		$alogs = M('AccountLog')->where($map)->select();
-		$zong = 0 ;
-        foreach ($alogs as $key => $aval) {
-			$order_money = $aval['money_p']/($aval['ratio']/100);
-			$zong +=  $order_money*($cur_ratio/100);
-        }	
-		$this->assign('zong' , $zong);
-		
-		//当天收益
-		$tdmap['pid']  = array('in',$fxuids);
-		$tdmap['status']  = 1;//1佣金 2购买
-		$tdmap['create_time'] = array(array('egt',strtotime(date('Y-m-d'))),array('lt',strtotime(date('Y-m-d'))+(24*60*60)));
-		//$tdzong =M('AccountLog')->where($tdmap)->Sum('money_p');
-		$talogs = M('AccountLog')->where($tdmap)->select();
-		$tdzong = 0 ;
-        foreach ($talogs as $key => $taval) {
-			$order_money = $taval['money_p']/($taval['ratio']/100);
-			$tdzong +=  $order_money*($cur_ratio/100);
-        }		
-		$tdzong = sprintf("%.2f",$tdzong);
-		$this->assign('tdzong' , $tdzong);
-		
-		//总销售金额（包含自己的销售额+所有下级的销售额）
-		$zongcount = getxse($fxuids);
-		$this->assign('zongcount' , $zongcount);			
-		//昨日总消费金额
-		//$tdzongcount = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24));
-		$tdzongcount = getxse($fxuids,strtotime(date('Y-m-d')));
-		$this->assign('tdzongcount' , $tdzongcount);		
-		//昨日总消费金额
-		
-		$list = M('AccountLog')->where($map)->order('create_time desc')->select();
+
+		$map['pid']  = $puid;
+        $list = $this->lists('AccountLog' , $map);
         foreach ($list as $key => $val) {
             $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
-			$order_money = $val['money_p']/($val['ratio']/100);
-			$list[$key]['ratio']=$cur_ratio;
-            $list[$key]['money_p'] = $order_money*($cur_ratio/100);	
-        }				
-		
+        }
         $this->assign('_list' , $list);
+		$zong =M('AccountLog')->where("pid='$puid'")->Sum('money_p');
+		$this->assign('zong' , $zong);
         $this->meta_title = '佣金记录';
         $this->display();
     }
@@ -199,31 +84,19 @@ class BrandingController extends ControlController {
      * 添加会员信息
      * @author ew_xiaoxiao
      */
-    public function add(){
+    public function add($username = '' , $password = '' , $repassword = '' , $email = ''){
         if (IS_POST) {
             /* 检测密码 */
-            $password = I('password');
-            $repassword = I('repassword');
             if ($password != $repassword) {
                 $this->error('密码和重复密码不一致！');
             }
 
             /* 调用注册接口注册用户 */
             $User = new UserApi;
-            //$uid  = $User->register($username , $password , $email);
-            $puid = 1;//I('puid');
-            $username = I('username');
-            $mobile = I('mobile');
-            $email = I('email');
-            $isuser = M('BrandingMember')->where(sprintf("mobile = '%s' or username = '%s'",$mobile,$username))->find();
-            if(!empty($isuser)){
-                 $this->error('用户手机已经增加！');return;
-             }
-            
-            if ( $puid) { //注册成功
-                 $id = '20'.time().mt_rand(1,1000);
-                $user = array ('id'=>$id,'puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password, UC_AUTH_KEY), 'mobile' => $mobile,'email'=>$email);
-                if (!M('BrandingMember')->add($user)) {
+            $uid  = $User->register($username , $password , $email);
+            if (0 < $uid) { //注册成功
+                $user = array ('uid' => $uid , 'nickname' => $username , 'status' => 1);
+                if (!M('Member')->add($user)) {
                     $this->error('用户添加失败！');
                 } else {
                     $this->success('用户添加成功！' , U('index'));
@@ -233,8 +106,6 @@ class BrandingController extends ControlController {
             }
         } else {
             $this->meta_title = '新增用户';
-            $puid = I('puid','');
-            $this->assign('puid',$puid);
             $this->display();
         }
     }
@@ -243,17 +114,17 @@ class BrandingController extends ControlController {
      * 修改会员信息
      * @author ew_xiaoxiao
      */
-    public function edit($id = NULL){
-        $Member = D('BrandingMember');
-    
+    public function edit($id = NULL , $pid = 0){
+        $Member = D('Member');
+
         if (IS_POST) {
-            $data['id']      = $_POST['id'];
+            $data['uid']      = $_POST['id'];
             $yzdata['password']   = $_POST['password'];
             $yzdata['repassword'] = $_POST['repassword'];
             $udata['email']       = $_POST['email'];
             $udata['mobile']      = $_POST['mobile'];
             $udata['id']          = $_POST['id'];
-            $udata['username']    = $_POST['username'];
+
             //提交表单
             if ($yzdata['password'] || $yzdata['repassword']) {
 
@@ -264,48 +135,43 @@ class BrandingController extends ControlController {
                     $this->error('密码和重复密码不一致！');
                 }
 
-               
-                
+                /* 调用注册接口注册用户 */
+                $User = new UserApi;
+                $uid  = $User->updateInfo($udata['id'] , $udata['password'] , $udata);
+
+                if ($uid['status']) {
+                    if (FALSE !== $Member->updatem($data)) {
+                        $this->success('编辑成功！' , U('index'));
+                    } else {
+                        $error = $Member->getError();
+                        $this->error(empty($error) ? '未知错误！' : $error);
+                    }
+                } else {
+                    $this->error($this->showRegError($uid['info']));
+                }
             } else {
-              $udata['password'] = think_ucenter_md5($udata['password'], UC_AUTH_KEY);
-              $ret =  $Member->where('id='.$id)->save($udata);
-               
+                $User = new UserApi;
+                $uid  = $User->updateInfo($udata['id'] , $udata['password'] , $udata);
+                if ($uid['status']) {
+                    if (FALSE !== $Member->updatem($data)) {
+                        $this->success('编辑成功！' , U('index'));
+                    } else {
+                        $error = $Member->getError();
+                        $this->error(empty($error) ? '未知错误！' : $error);
+                    }
+                }
             }
         } else {
-            $id = I('id');
-            $info             = $Member->where('id = '.$id)->find();
+            $info             = $id ? $Member->info($id) : '';
+            $info['email']    = M('UcenterMember')->getFieldById($id , 'email');
+            $info['mobile']   = M('UcenterMember')->getFieldById($id , 'mobile');
+            $info['username'] = M('UcenterMember')->getFieldById($id , 'username');
             $this->assign('info' , $info);
             $this->meta_title = '编辑用户';
             $this->display();
         }
     }
 
-    /**
-     * 修改会员信息
-     * @author ew_xiaoxiao
-     */
-    public function userview($puid = 0){
-        $Member = D('Member');
-		$info             = $puid ? $Member->info($puid) : '';
-		$info['email']    = M('UcenterMember')->getFieldById($puid , 'email');
-		$info['mobile']   = M('UcenterMember')->getFieldById($puid , 'mobile');
-		
-		$data = M('Join')->where(array('uid'=>$puid))->find();
-		if($data){
-			$info['company'] = $data['company'];//公司名称
-			$info['lxname'] = $data['name'];//联系人姓名
-			$info['lxmobile'] = $data['mobile'];//联系人电话
-			$info['address'] = $data['address'];//联系地址
-			$info['ratio'] = $data['ratio'];//返佣比例
-			$info['kaihuhang'] = $data['kaihuhang'];//开户行
-			$info['kahao'] = $data['kahao'];//卡号
-			$info['xingming'] = $data['xingming'];//户名			
-		}
-		$this->assign('info' , $info);
-		$this->meta_title = '编辑用户';
-		$this->display();
-    }
-	
     /**
      * 会员状态修改
      * @author ew_xiaoxiao

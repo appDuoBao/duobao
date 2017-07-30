@@ -48,9 +48,10 @@ class ControlController extends Controller {
             $this->error('403:禁止访问');
         }elseif( $access === null ){
             $dynamic        =   $this->checkDynamic();//检测分类栏目有关的各项动态权限
+          
             if( $dynamic === null ){
                 //检测非动态权限
-                $rule  = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME);
+                $rule  = strtolower(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME); 
                 if ( !$this->checkRule($rule,array('in','1,2')) ){
                     $this->error('未授权访问!');
                 }

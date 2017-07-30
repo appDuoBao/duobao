@@ -6,12 +6,7 @@
     </div>
     <form action="{:U()}" method="post" class="form-horizontal">
         
-        <div class="form-item">
-            <label class="item-label">代理商id</label>
-            <div class="controls">
-                <input type="text" class="text input-large" name="puid" value="{$puid}">
-            </div>
-        </div>
+        
         <div class="form-item">
             <label class="item-label">用户名</label>
             <div class="controls">
@@ -52,6 +47,6 @@
 <block name="script">
     <script type="text/javascript">
         //导航高亮
-        highlight_subnav('{:U('Branding/index')}');
+        highlight_subnav('{:U('BrandingManage/index')}');
     </script>
 </block>

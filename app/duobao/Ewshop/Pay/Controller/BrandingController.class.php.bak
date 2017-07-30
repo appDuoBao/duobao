@@ -34,9 +34,10 @@ class BrandingController extends ControlController {
         if ($puid) {
             $map['puid'] = array("eq", $puid);
         }else{
-            $map['puid'] = array('GT','0');    
+            $map['puid'] = array('GT','1');    
         }		
        
+        
 		$list = $this->lists('BrandingMember' , $map);
 		       //print_r($list);exit;
         int_to_string($list);
@@ -209,20 +210,14 @@ class BrandingController extends ControlController {
             }
 
             /* 调用注册接口注册用户 */
-            $User = new UserApi;
+            //$User = new UserApi;
             //$uid  = $User->register($username , $password , $email);
-            $puid = 1;//I('puid');
+            $puid = I('puid');
             $username = I('username');
             $mobile = I('mobile');
             $email = I('email');
-            $isuser = M('BrandingMember')->where(sprintf("mobile = '%s' or username = '%s'",$mobile,$username))->find();
-            if(!empty($isuser)){
-                 $this->error('用户手机已经增加！');return;
-             }
-            
             if ( $puid) { //注册成功
-                 $id = '20'.time().mt_rand(1,1000);
-                $user = array ('id'=>$id,'puid' => $puid , 'username' => $username ,'password'=>think_ucenter_md5($password, UC_AUTH_KEY), 'mobile' => $mobile,'email'=>$email);
+                $user = array ('puid' => $puid , 'username' => $username ,'password'=>md5($password), 'moblie' => $moblie,'email'=>$email);
                 if (!M('BrandingMember')->add($user)) {
                     $this->error('用户添加失败！');
                 } else {
@@ -245,7 +240,7 @@ class BrandingController extends ControlController {
      */
     public function edit($id = NULL){
         $Member = D('BrandingMember');
-    
+
         if (IS_POST) {
             $data['id']      = $_POST['id'];
             $yzdata['password']   = $_POST['password'];
@@ -253,7 +248,7 @@ class BrandingController extends ControlController {
             $udata['email']       = $_POST['email'];
             $udata['mobile']      = $_POST['mobile'];
             $udata['id']          = $_POST['id'];
-            $udata['username']    = $_POST['username'];
+
             //提交表单
             if ($yzdata['password'] || $yzdata['repassword']) {
 
@@ -267,13 +262,17 @@ class BrandingController extends ControlController {
                
                 
             } else {
-              $udata['password'] = think_ucenter_md5($udata['password'], UC_AUTH_KEY);
-              $ret =  $Member->where('id='.$id)->save($udata);
+               
+                    if (FALSE !== $Member->updatem($data)) {
+                        $this->success('编辑成功！' , U('index'));
+                    } else {
+                        $error = $Member->getError();
+                        $this->error(empty($error) ? '未知错误！' : $error);
+                    }
                
             }
         } else {
-            $id = I('id');
-            $info             = $Member->where('id = '.$id)->find();
+            $info             = $Member->where('id = '.$id)->find();;
             $this->assign('info' , $info);
             $this->meta_title = '编辑用户';
             $this->display();

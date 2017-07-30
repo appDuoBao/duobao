@@ -30,7 +30,7 @@ class BrandingManageController extends ControlController {
         if ($puid) {
             
             $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
-            $list = $Model->query("select id,username,mobile,uid,m.last_login_ip,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id = " .$puid);
+            $list = $Model->query("select id,username,mobile,uid,m.last_login_ip,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and branding_id = " .$puid);
 		      // print_r($list);exit;
              int_to_string($list);
 

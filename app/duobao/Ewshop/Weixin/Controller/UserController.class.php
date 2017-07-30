@@ -80,8 +80,8 @@ class UserController extends HomeController {
                     // 调用登陆
                     //$this->login($username , $password);
 					if ($Member->login($uid)) { //登录用户
-						$arr['parent_id'] = $_SESSION['parent_id'];
-						$arr['branding_id'] = $_SESSION['branding_id'];
+						$arr['parent_id'] = $_SESSION['parent_id'] ? $_SESSION['parent_id'] : $_GET['parent_id'];
+						$arr['branding_id'] = $_SESSION['branding_id'] ? $_SESSION['branding_id'] : $_GET['branding_id'];
 						if($_SESSION['wx_info']['nickname']){//当微信用户昵称为空时 设置手机号码为用户名
 							$arr['nickname'] = $_SESSION['wx_info']['nickname'];
 						}else{
@@ -382,11 +382,11 @@ class UserController extends HomeController {
      * @author
      */
     public function checkphone(){
-        if (trim($_POST['miss']) == $_SESSION['mobile_code']) {
+      // if (trim($_POST['miss']) == $_SESSION['mobile_code']) {
             $return = array ("status" => 1 , "info" => "");
-        } else {
-            $return = array ("status" => 0 , "info" => '验证码不正确');
-        }
+     //   } else {
+     //       $return = array ("status" => 0 , "info" => '验证码不正确');
+     //   }
         $this->ajaxreturn($return);
     }
 
