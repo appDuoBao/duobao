@@ -455,7 +455,8 @@ function get_action_type($type, $all = false){
 
 function PostHttp($url, $params,$header = array(), $multi = false){
     $opts = array(
-            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HEADER         => 1,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,

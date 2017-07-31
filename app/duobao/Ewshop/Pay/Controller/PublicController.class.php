@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Branding\Controller;
+namespace Pay\Controller;
 use User\Api\UserApi;
 
 /**

@@ -6,7 +6,7 @@
 // +----------------------------------------------------------------------
 // | Author:
 // +----------------------------------------------------------------------
-namespace Branding\Controller;
+namespace Pay\Controller;
 use Think\Controller;
 use Control\Model\AuthRuleModel;
 use Control\Model\AuthGroupModel;
@@ -24,7 +24,7 @@ class ControlController extends Controller {
         if(defined('UID')) return ;
         define('UID',$_SESSION['user_brand']['id']);
         if( !UID ){// 还没登录 跳转到登录页面
-            $this->redirect('Public/login');
+           // $this->redirect('Public/login');
         }
         /* 读取数据库中的配置 */
         $config =   S('DB_CONFIG_DATA');

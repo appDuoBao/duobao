@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Branding\Controller;
+namespace Pay\Controller;
 use User\Api\UserApi as UserApi;
 
 /**
@@ -19,15 +19,15 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    private static  $certFilePath;
+    private static  $certFilePath='/home/cert/800000101000109.p12';
     
-    private static  $merchantCertPass; 
+    private static  $merchantCertPass='zIUhXP'; 
     
      
     public function index(){
 		
 	     $this->meta_title = '代付首页';
-      
+        exit('teste');
 		 $this->display();
     }
 
@@ -52,28 +52,40 @@ class IndexController extends ControlController {
             
     }
     public function getCardInfo(){
-        
-        $reUrl = 'rpmCardInfo';//接口类型
-        $cardNo['cardNo'] = "6225880154901171";
+       
+        $reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
+      
+        $cardNo["charset"] = '';
+	    $cardNo["version"] = '1.0';
+		$cardNo["service"] = 'rpmCardInfo';
+    	$cardNo["signType"] = 'RSA256';
+		$cardNo["merchantId"] = '800000101000109';
+        $cardNo["requestTime"] = date('YmdHis');
+		$cardNo["requestId"] = time();
+		  $cardNo['cardNo'] = "6225880154901171";var_dump($cardNo);exit;
         //2、请求流程
         // String buf = reqData + "&merchantSign=" + merchantSign + "&merchantCert=" + merchantCert;
-        
-        $sign = $this->sign($cardNo,$password);//password私钥证书的密码
-        
-        $header =array($reurl . http_build_query($cardNo).'&merchantSign='.$sign . '&merchantCert='.$merchantCert);
-
+        $password = 'zIUhXP';
+        $signdata = http_build_query($cardNo);
+        $sign = $this->sign($signdata,$password);//password私钥证书的密码
+       
+        $header =array($reurl . http_build_query($signdata).'&merchantSign='.$sign['sign'] . '&merchantCert='.$merchantCert);
+       
         $res = PostHttp($reUrl,$cardNo,$header);
-        //3、验证返回签名
-//        Map<String,String> retMap = new HashMap<>();
-//        retMap.put("cardNo",RSASignUtil.getValue(res,"cardNo"));
-//        retMap.put("cardType",RSASignUtil.getValue(res,"cardType"));
-//        retMap.put("bankName",RSASignUtil.getValue(res,"bankName"));
-//        retMap.put("bankAbbr",RSASignUtil.getValue(res,"bankAbbr"));
-//        validRetSign(retMap,res);    
-        $ret = explode('&', $ret);
-        self::verifySign($ret,$password);
+          var_dump($res);exit;
+    
+        $ret = explode('&', $res);
+        if(is_array($ret)){
+            
+            foreach($ret as $k=>$v){
+                $retv = explode('&', $v);
+                $arrret[$retv[0]] = $retv[1];
+            }
+            
+        }
+        self::verifySign($ret,$retsign,$password);
     }
-    public static functon getSign($request,$encoding = 'gbk'){
+    public static function getSign($request,$encoding = 'gbk'){
         $certFilePath =self::$certFilePath;
         $password = self::$merchantCertPass;
         $reqStr=http_build_query($request);
@@ -91,7 +103,7 @@ class IndexController extends ControlController {
         }  
         return $bytes;  
     }  
-    function static ascii2hex($ascii) {
+    public static function ascii2hex($ascii) {
           $hex = '';
           for ($i = 0; $i < strlen($ascii); $i++) {
             $byte = strtoupper(dechex(ord($ascii{$i})));
@@ -115,25 +127,20 @@ class IndexController extends ControlController {
    */
   public static function sign($data,$password)
   {
-    
-    $filePath = 'test.p12';
+    $filePath = self::$certFilePath;
     if(!file_exists($filePath)) {
       return false;
     }
   
-    $pkcs12 = file_get_contents($filePath);
-    if (openssl_pkcs12_read($pkcs12, $certs, $password)) { //私钥带有密码
+   $pkcs12 = file_get_contents($filePath);
+    if(openssl_pkcs12_read($pkcs12,$certs,$password)){ //私钥带有密码
       $privateKey = $certs['pkey']; //根据实际情况键值可能不同
-      $publicKey = $certs['cert'];　//根据实际情况键值可能不同
-      $binary_signature = "";
-      if (openssl_sign($data, $binarySignature, $privateKey, OPENSSL_ALGO_SHA1)) {
-        return $binarySignature;
-      } else {
-        return '';
-      }
-    } else {
-      return '';
+      $publicKey = $certs['cert'];
+      if(openssl_sign($data, $binarySignature, $privateKey, OPENSSL_ALGO_SHA1)){
+        return array('sign'=>$binarySignature,'cert'=>$publicKey);
+     } 
     }
+    return false;
   }
   
   /**
@@ -145,9 +152,9 @@ class IndexController extends ControlController {
    * @return bool
    * @author confu
    */
-  public static verifySign($data, $signature,$password)
+  public static function verifySign($data, $signature,$password)
   {
-    $filePath = 'test.p12';
+    $filePath = self::$certFilePath;
     if(!file_exists($filePath)) {
       return false;
     }
@@ -172,7 +179,7 @@ class IndexController extends ControlController {
    * @return bool
    * @author confu
    */
-  public static verifyRespondSign($data, $signature)
+  public static function verifyRespondSign($data, $signature)
   {
     $filePath = 'allinpay-pds.pem';
     if(!file_exists($filePath)) {

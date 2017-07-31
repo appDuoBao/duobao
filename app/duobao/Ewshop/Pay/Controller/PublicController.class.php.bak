@@ -23,30 +23,24 @@ class PublicController extends \Think\Controller {
     public function login($username = null, $password = null, $verify = null){
         
         if(IS_POST){         
-           /* 检测验证码 TODO: */
-           // if(!check_verify($verify)){
-              //  $this->error('验证码输入错误！');
-           // }
-			/* 登录用户 */
-			$user = new UserApi;
-                $uid = $user->login($username, $password);
-               exit(think_ucenter_md5(123456, UC_AUTH_KEY));
-                if(0 < $uid){ //UC登录成功
+           
+			    $user = M('BrandingMember');
+			    $arruser = $user->where(sprintf("username = '%s'", $username))->find();
+			   // print_r($arruser);exit;
+			    $user = new UserApi;
+                $pass = think_ucenter_md5($password, UC_AUTH_KEY);
+                // var_dump($pass);exit;
+                if($arruser['password'] == $pass){ //UC登录成功
+                    $_SESSION['user_brand'] = $arruser;
                     /* 登录用户 */
-                    $Member = D("Member");
-                    if($Member->login($uid)){ //登录用户
-                        $status = 1;
-                       $this->success('登录成功！', U('BrandingManage/Index'));
-                    } else {
-                        $status = 0;
-                        $this->error($Member->getError());
-                        
-                    }
+                      $this->success('登录成功！', U('BrandingManage/index'));
+                    
                 }else{
                      $this->error('密码错误');
                 }		
         } else {
-            if(is_login()){
+            if(empty($_SESSION['user_brand'])){
+                $_SESSION['user_brand'] =array('0');
                 $this->redirect('Index/index');
             }else{
                 /* 读取数据库中的配置 */

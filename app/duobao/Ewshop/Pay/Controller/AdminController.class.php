@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Branding\Controller;
+namespace Pay\Controller;
 use User\Api\UserApi;
 /**
  * 后台管理员控制器

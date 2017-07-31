@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Control\Model;
+namespace Branding\Model;
 use Think\Model;
 
 /**

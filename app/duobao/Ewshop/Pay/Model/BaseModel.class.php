@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Branding\Model;
+namespace Pay\Model;
 use Think\Model;
 use Control\Model\AuthGroupModel;
 

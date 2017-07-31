@@ -455,7 +455,8 @@ function get_action_type($type, $all = false){
 
 function PostHttp($url, $params,$header = array(), $multi = false){
     $opts = array(
-            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_TIMEOUT        => 10,
+            //CURLOPT_HEADER         => 1;
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
@@ -489,12 +490,12 @@ function GetHttp($url, $params,$header = array(), $multi = false){
             $opts[CURLOPT_URL] = $url . '?' . http_build_query($params);
        
     /* 初始化并执行curl请求 */
-    $ch = curl_init();
-    curl_setopt_array($ch, $opts);
-    $data  = curl_exec($ch);
-    $error = curl_error($ch);
-    curl_close($ch);
-    if($error) return $error;
-    return  $data;
+            $ch = curl_init();
+             curl_setopt_array($ch, $opts);
+            $data  = curl_exec($ch);
+            $error = curl_error($ch);
+            curl_close($ch);
+         if($error) return $error;
+             return  $data;
     
 }
