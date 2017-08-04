@@ -39,7 +39,7 @@ class HomeController extends Controller {
 
 				//$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$config['appid'].'&secret='.$config['appsecret'].'&code='.$code.'&grant_type=authorization_code';
 //				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe1cbef33f16282fd&secret=9e2cffb5f066e5e92f300ed17cc46618&code='.$code.'&grant_type=authorization_code';
-				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx7fb456d4e2e698a4&secret=ac31f7eda547be33a2cdc7b0aec24063&code='.$code.'&grant_type=authorization_code';
+				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxc624a047e450f940&secret=01efa246da38ce6e918e2afa5c9e98dc&code='.$code.'&grant_type=authorization_code';
 
 				$data = $this->get_by_curl($get_openid_url);
 				$data = json_decode($data);
@@ -51,14 +51,14 @@ class HomeController extends Controller {
 			//通过微信进去网站，默认登录操作
 			if($openid){
 				//$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$config['appid'].'&secret='.$config['appsecret'];
-				$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx7fb456d4e2e698a4&secret=ac31f7eda547be33a2cdc7b0aec24063';
+				$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc624a047e450f940&secret=01efa246da38ce6e918e2afa5c9e98dc';
 				$my_access_token = json_decode($this->get_by_curl($url)); //得到自己 的 access_token
 
 				$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$my_access_token->access_token.'&openid='.$openid.'&lang=zh_CN';
 
 				$res = $this->get_by_curl($url);     //获取到的用户信息
 				$res = json_decode($res);
-
+				
 				if($res->nickname){
 					$_SESSION['wx_info']['nickname'] = $res->nickname;
 					$_SESSION['wx_info']['headimgurl'] = $res->headimgurl;
@@ -67,6 +67,13 @@ class HomeController extends Controller {
 				}else{
 					$scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
 					$scope_res = json_decode($this->get_by_curl($scope_url));
+				        if($scope_res->errcode && $scope_res->errcode == '48001'){
+					  $shareurl ='http://' . $_SERVER['HTTP_HOST'] ;
+					 $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc624a047e450f940&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+					header('Location:'.$wurl);
+				          //error_log(print_r($wurl,true),3,'/home/tmp/my.log');	
+					}
+
 					$_SESSION['wx_info']['nickname'] = $scope_res->nickname;
 					$_SESSION['wx_info']['headimgurl'] = $scope_res->headimgurl;
 					$_SESSION['wx_info']['sex'] = $scope_res->sex;
@@ -83,7 +90,9 @@ class HomeController extends Controller {
 					if(empty($memberinfo['nickname']) || $memberinfo['headimgurl']){
 						$user2['nickname']   = $_SESSION['wx_info']['nickname'];
 						$user2['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
-						M('Member')->where("uid = '{$memberinfo['uid']}'")->save($user2);
+						if($user2['nickname']){
+							M('Member')->where("uid = '{$memberinfo['uid']}'")->save($user2);
+						}
 					}
 
 				}else{//会员不存在
