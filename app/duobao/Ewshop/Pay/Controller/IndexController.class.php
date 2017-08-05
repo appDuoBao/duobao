@@ -19,9 +19,9 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    private static  $certFilePath='/home/cert/800000101000109.p12';
+    private static  $certFilePath='/home/cert/800001407940001.p12';
     
-    private static  $merchantCertPass='zIUhXP'; 
+    private static  $merchantCertPass='YEbbam'; 
     
      
     public function index(){
@@ -31,41 +31,87 @@ class IndexController extends ControlController {
 		 $this->display();
     }
 
-    public function payByCode(){
-        
-        $order['orderId'] = "123456789";
-        $order["memberId"] = "123456789";
-        $order["contractId"] = "201704070000013094";
-        $order["checkCode"] = "111111";
-        $order["payType"] = "DQP";
-        $order["currency"] =  "CNY";
-        $order["orderTime"] = date('Ymd H:i:s');
-        $order["clientIP"]  =  "100.202.103.87";
-        $order["validUnit"] = "01";
-        $order["validNum"]= "3";
-        $order["goodsName"] = "手机";
-        $order["goodsDesc"] ="红米世代";
+    public function paySinTrans(){
+	header("Content-type: text/html; charset=utf-8"); 
+        $reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
+        $order['mcSequenceNo'] = "123456789";
+        $order["mcTransDateTime"] = date('YmdHis');
+        $order["orderNo"] = "201704070000013094";
         $order["amount"] = "1000";
-        $order["offlineNotifyUrl"] = "http://100.66.155.60:8090/payNotice.jsp";
-        //2、请求流程
-   
+        $order["cardNo"] = "6225880175058792";
+        $order["accName"] =  mb_convert_encoding("李立军",'utf-8','auto');
+        $order["accType"] = '0';
+        $order["lBnkNo"]  = '';
+        $order["lBnkNam"] = '';
+        $order["crdType"]= "00";
+        $order["validPeriod"] ='';
+        $order["cvv2"] ="";
+        $order["cellPhone"] = "";
+	$order['remark']='';
+	$order['bnkRsv'] = '';
+	$order['capUse'] ='9';
+	//$order['callBackUrl']='http://duobao.akng.net/pay.php?s=index/callbak';
+	$params['service'] = 'capSingleTransfer';
+        $publicp = self::publicParams($params);
+   	$order = array_merge($order,$publicp);
+	ksort($order);
+        //$signdata = mb_convert_encoding(http_build_query($order),'utf-8','auto');
+	$signdata = self::encodeArr($order);
+	$signdata = http_build_query($signdata);
+        $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
+
+        //$header =array($signdata.'&merchantSign='.$sign['sign'] . '&merchantCert='.$sign['cert']);
+	$header =array();
+	$order['merchantSign'] = $sign['sign'];
+	$order['merchantCert'] = $sign['cert'];
+        $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
+	//var_dump($order,$res);exit;
+	$ret = self::formartRet($res);
+	var_dump($order);
+	print_r($ret);exit;
             
+    }
+    public static function formartRet($ret){
+	    if($ret){
+		    $ret = explode('&', $ret);
+		    if(is_array($ret)){
+
+			    foreach($ret as $k=>$v){
+				    $retv = explode('=', $v);
+				    $arrret[$retv[0]] = $retv[1];
+			    }
+
+		    }
+	    }
+	return $arrret;
+    }
+    public static function publicParams($param = array()){
+	$params["charset"] = '02';
+	$params["version"] = '1.0';
+	$params["merchantId"] = '800000101000109';
+	$params["requestTime"] = date('YmdHis');
+	$params["requestId"] = time();
+	$params["service"] = $param['service'];
+	$params["signType"] = 'RSA256';
+	//$params['merchantCert'] = '';
+	//$params['merchanSign']='';
+	return $params;
     }
     public function getCardInfo(){
        
         $reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
-
-		$cardNo["charset"] = '';
-		$cardNo["version"] = '1.0';
-		$cardNo["service"] = 'rpmCardInfo';
-		$cardNo["signType"] = 'RSA256';
-		$cardNo["merchantId"] = '800000101000109';
-		$cardNo["requestTime"] = date('YmdHis');
-		$cardNo["requestId"] = time();
-		$cardNo['cardNo'] = "6225880154901171";
+	//$reUrl = 'http://43.227.141.32/paygateway/rpmGate/rpmCardInfo';
+	$cardNo["charset"] = '';
+	$cardNo["version"] = '1.0';
+	$cardNo["service"] = 'rpmCardInfo';
+	$cardNo["signType"] = 'RSA256';
+	$cardNo["merchantId"] = '800000101000109';
+	$cardNo["requestTime"] = date('YmdHis');
+	$cardNo["requestId"] = time();
+	$cardNo['cardNo'] = "6225880154901171";
         //2、请求流程
         // String buf = reqData + "&merchantSign=" + merchantSign + "&merchantCert=" + merchantCert;
-        $password = 'zIUhXP';
+       
         $signdata = http_build_query($cardNo);
         $sign = $this->sign($signdata,$password);//password私钥证书的密码
        
@@ -125,82 +171,63 @@ class IndexController extends ControlController {
    * @return string
    * @author confu
    */
-  public static function sign($data,$password)
-  {
-    $filePath = self::$certFilePath;
-    if(!file_exists($filePath)) {
-      return false;
+public static function RSAsign($source, $password)
+    {
+        $certs = array ();
+        $fd = fopen (self::$certFilePath, 'r' );
+        $p12buf = fread ( $fd, filesize (self::$certFilePath) );
+        fclose ( $fd );
+        if (openssl_pkcs12_read ( $p12buf, $certs, $password )) {
+            $pkeyid = openssl_pkey_get_private ( $certs ['pkey'] );//var_dump($pkeyid);exit;
+            $signature = "";
+	    $pubder = self::pem2der( $certs ['cert'] );
+            openssl_sign ( $source, $signature, $pkeyid );
+            openssl_free_key ( $pkeyid );
+            return array('sign'=>self::asc2hex ( $signature ),'cert'=>self::asc2hex($pubder));
+        }
     }
-   
-   $pkcs12 = file_get_contents($filePath);
-    if(openssl_pkcs12_read($pkcs12,$certs,$password)){ //私钥带有密码
-      $privateKey = $certs['pkey']; //根据实际情况键值可能不同
-      $publicKey = $certs['cert'];
-      if(openssl_sign($data, $binarySignature, $privateKey, OPENSSL_ALGO_SHA1)){
-	
-        return array('sign'=>base64_encode($binarySignature),'cert'=>base64_encode($publicKey));
-     } 
+
+ public static function asc2hex($str)
+    {
+        return chunk_split(bin2hex($str), 2, '');
     }
-    return false;
-  }
-  
-  /**
-   * 验证签名自己生成的是否正确
-   *
-   * @param string $data 签名的原文
-   * @param string $signature 签名
-   *
-   * @return bool
-   * @author confu
-   */
-  public static function verifySign($data, $signature,$password)
-  {
-    $filePath = self::$certFilePath;
-    if(!file_exists($filePath)) {
-      return false;
+ public static function pem2der($pem_data)
+    {
+        $begin = "CERTIFICATE-----";
+        $end   = "-----END";
+        $pem_data = substr($pem_data, strpos($pem_data, $begin)+strlen($begin));
+        $pem_data = substr($pem_data, 0, strpos($pem_data, $end));
+        $der = base64_decode($pem_data);
+        return $der;
     }
-  
-    $pkcs12 = file_get_contents($filePath);
-    if (openssl_pkcs12_read($pkcs12, $certs, $password)) {
-      $publicKey = $certs['cert'];
-      $ok = openssl_verify($data, $signature, $publicKey);
-      if ($ok == 1) {
-        return true;
-      }
+public static function encodeArr($input){
+	 while (list($k, $v) = each($input)) {
+            if (!empty ($v)) {
+                $ret[] = "$k=" . mb_convert_encoding($v, 'UTF-8', 'GB18030');
+            } else if (gettype($v) != 'boolean' && !is_array($v)) {
+                $ret[] = "$k=" . mb_convert_encoding($v, 'UTF-8', 'GB18030');
+            }
+        }
+	return $ret;
+ }
+private static  function getRequestUrl(&$arrOpt) {
+
+        $strUrl = $arrOpt['url'];
+        if(!isset($arrOpt['get'])) {
+            return $strUrl;
+        }
+
+        // 设置GET参数
+        if (is_array($arrOpt['get']) && !empty($arrOpt['get'])) {
+            $strGet = http_build_query($arrOpt['get']);
+            if (strpos($strUrl, '?', 7) > 0) {
+                $strUrl .= '&' . $strGet;
+            } else {
+                $strUrl .= '?' . $strGet;
+            }
+        }
+        unset($arrOpt['get']);
+
+        return $strUrl;
     }
-    return false;
-  }
-  
-  /**
-   * 验证返回的签名是否正确
-   *
-   * @param string $data　要验证的签名原文
-   * @param string $signature 签名内容
-   *
-   * @return bool
-   * @author confu
-   */
-  public static function verifyRespondSign($data, $signature)
-  {
-    $filePath = 'allinpay-pds.pem';
-    if(!file_exists($filePath)) {
-      return false;
-    }
-  
-    $fp = fopen($filePath, "r");
-    $cert = fread($fp, 8192);
-    fclose($fp);
-    $pubkeyid = openssl_get_publickey($cert);
-  
-    if(!is_resource($pubkeyid)) {
-      return false;
-    }
-  
-    $ok = openssl_verify($data, $signature, $pubkeyid);
-    if ($ok == 1) {
-      openssl_free_key($pubkeyid);
-      return true;
-    }
-    return false;
-  }
 }
