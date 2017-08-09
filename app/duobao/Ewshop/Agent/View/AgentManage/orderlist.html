@@ -34,7 +34,10 @@
                 <th class="">用户名</th>
                 <th class="">购买金额</th>
                 <th class="">分佣时间</th>
-                <th class="">佣金类型</th>
+                <th class="">开奖期数</th>
+                <th class="">购买数量</th>
+                <th class="">号码段数</th>
+                <th class="">是否中奖</th>
                 <th class="">佣金比例</th>
             </tr>
             </thead>
@@ -46,9 +49,11 @@
                         <td>{$vo.nickname}</td>
                         <td>{$vo.money}</td>
                         <td><span>{$vo.create_time|time_format}</span></td>
-                        <td>
-                        <if condition="($vo.status eq 1)">购买分佣</if>
+                        <td>{$vo.period}
                         </td>
+                        <td>{$vo.num}</td>
+                        <td>{$vo.number_section}</td>
+                        <td>{$vo.is_win}</td>
                         <td>{$cur_ratio}</td>
                     </tr>
                 </volist>

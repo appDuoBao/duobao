@@ -165,7 +165,7 @@ class AgentManageController extends ControlController {
         $Member = D('Member');
         $loginfo = $login->where(sprintf('uid = %d',$agent_login))->find();
 		if($loginfo['join_type'] === '0'){//总代理,可以一次把所有用户数据取出,收益比例可能有特别
-		     $alluser = $Member->where(sprintf('root_id = %d',$agent_login))->getField('uid,nickname',true); 
+		     $alluser = $Member->where(sprintf('root_id = %d or uid = %d',$agent_login,$agent_login))->getField('uid,nickname',true); 
              $uids = array_merge(array_keys($alluser),array((int)$loginfo['uid']));//包括用户本身
 		}else{ //非一级代理用户
 		    
@@ -200,25 +200,41 @@ class AgentManageController extends ControlController {
 		//var_dump($alogs);exit;				
 		//计算总订单金额
 		$allorder = M('WinOrder')->where($map)->Sum('money');
-		$all_order = M('WinOrder')->where($map)->getField('id,num,uid,money,create_time');
+		$all_order = M('WinOrder')->where($map)->getField('id,num,uid,money,create_time,period,num,number_section');
 		$alogs = $all_order;
 		if($all_order){
+		    $zmap['order_id'] =array('in',array_keys($all_order));
+		    $is_winstate = M('WinExchange')->where($zmap)->getField('goods_id,order_id,buy_num',true);
     		foreach($alogs as $k=>$v){
     		    $alogs[$k]['nickname'] = $alluser[$v['uid']];
+    		    if($is_winstate){
+    		        foreach($is_winstate as $kk=>$vv){
+    		            if($k == $vv['order_id']){
+    		                  $alogs[$k]['is_win'] = '中奖';  break;
+    		            }else{
+    		                   $alogs[$k]['is_win'] = '未中奖';  
+    		            }    
+    		        }
+    		    }else{  
+    		        $alogs[$k]['is_win'] = '未中奖';
+    		    }
     		}
       
     		//计算中奖金额
-    		$zmap['order_id'] =array('in',array_keys($all_order));
+    		
     		$zmap['is_exchange'] = array('eq',1); 
     		//支出金额
-    		$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
-    		$zjmap['id'] = array('in',array_keys($is_win));
-    		$zjorder = M('Document')->where($zjmap)->getField('id,real_price');
-    		if($loginfo['ratio_type'] ==2){
-    		    foreach ($is_win as $k=>$v) {//总支出
-                     $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
-                } 
     		
+    		if($loginfo['ratio_type'] ==2){
+    		    $is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
+    		    if($is_win){
+        		    $zjmap['id'] = array('in',array_keys($is_win));
+        		    $zjorder = M('Document')->where($zjmap)->getField('id,real_price');
+        		    foreach ($is_win as $k=>$v) {//总支出
+                         $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
+                    } 
+    		    }
+    		    $zhichu = $zhichu ? $zhichu : 0;
     		    $lirun = bcsub($allorder,$zhichu,4);
     		    $sy = bcmul($lirun,bcdiv($cur_ratio,100,4),4);
     	    }else{
