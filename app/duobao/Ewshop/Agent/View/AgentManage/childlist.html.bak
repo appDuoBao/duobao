@@ -45,9 +45,7 @@
                         <td><span>{$vo.create_time|time_format}</span></td>
                          <td><span>{$vo.ratio}</span></td>
                         <td>
-                          <if>
-							<a title="购买记录" href="{:U('AgentManage/childset?aid='.$vo['id'])}">设置分成</a>
-                          </if>
+                         
                           <!--  <a title="兑换记录" href="{:U('/Control/Bidding/exchange?uid='.$vo['uid'].'&nickname='.$vo['nickname'])}">兑换记录</a>
                             -->
                             <a title="查看代理信息" href="{:U('userview?aid='.$vo['id'])}">查看</a>

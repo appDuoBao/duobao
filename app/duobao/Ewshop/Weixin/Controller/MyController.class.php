@@ -47,24 +47,21 @@ class MyController extends HomeController {
     public function index(){
         $data = M('Member')->where(array('uid'=>$_SESSION['onethink_home']['uid']))->find();
         $this->assign('data' , $data);
-		
+		$isjoin = false;
 		$uid = $_SESSION['onethink_home']['uid'];
-		$join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
-		
+		$join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1,'uid'=>$uid))->getField('uid',true);
+		//逻辑重新写，代理直接去join表查询包括二维码
 		if(in_array($uid,$join_user_id)){
 			$usertype = '总代理商';
-		}elseif($data['parent_id'] > 0){
-			$usertype = '普通代理';
-		}else{
-			$usertype = '普通会员';
-		}
-		$this->assign('usertype' , $usertype);
-		
-		if(in_array($uid,$join_user_id) || $data['parent_id'] > 0){//代理或者下级代理会员
 			$isjoin = true;
-		}else{
-			$isjoin = false;
-		}	
+		}
+		
+		
+//		if(in_array($uid,$join_user_id) || $data['parent_id'] > 0){//代理或者下级代理会员
+//			$isjoin = true;
+//		}else{
+//			$isjoin = false;
+//		}	
 		$this->assign('isjoin' , $isjoin);
         $this->meta_title = '个人中心';
         $this->display();
@@ -379,24 +376,29 @@ class MyController extends HomeController {
         $uid = $_SESSION['onethink_home']['uid'];
         $config = M('Wxsetting')->where(array('id'=>1))->find();
         $userinfo = M('Member')->where(array('uid'=>$uid))->find();
-        if($userinfo['ewm']){
-            $url = $userinfo['ewm'];
-        }else{
-            $oldpic = $userinfo['headimgurl'];
-            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$userinfo['uid'];
-//            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$config['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
-            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7fb456d4e2e698a4&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
-            $url = $this->makeCodeLogo($uid,$oldpic,$wurl);
-            $res['ewm']  = ltrim($url,'.');
-            M('Member')->where(array('uid'=>$uid))->save($res);
+        $isjion = M('Join')->where(array('uid'=>$uid))->find();
+        
+        if($isjion['erm']){
+            $url = $isjion['erm']; 
         }
-
-        $join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
-        if(in_array($uid,$join_user_id)){
-            $data['ratio'] = M('Join')->where(array('is_delete'=>0,'status'=>1,'uid'=>$uid))->getField('ratio');
-        }else{
-            $data['ratio'] = M('Config')->getFieldByName('DISTRIBUTION_PTC','value');//获取分销比率
-        }
+//        if($userinfo['ewm']){
+//            $url = $userinfo['ewm'];
+//        }else{
+//            $oldpic = $userinfo['headimgurl'];
+//            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$userinfo['uid'];
+////            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$config['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+//            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7fb456d4e2e698a4&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+//            $url = $this->makeCodeLogo($uid,$oldpic,$wurl);
+//            $res['ewm']  = ltrim($url,'.');
+//            M('Member')->where(array('uid'=>$uid))->save($res);
+//        }
+//
+//        $join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
+//        if(in_array($uid,$join_user_id)){
+//            $data['ratio'] = M('Join')->where(array('is_delete'=>0,'status'=>1,'uid'=>$uid))->getField('ratio');
+//        }else{
+//            $data['ratio'] = M('Config')->getFieldByName('DISTRIBUTION_PTC','value');//获取分销比率
+//        }
         $data['title'] = '我的二维码';
         $this->assign('data',$data);
         $this->assign('userinfo',$userinfo);
@@ -585,7 +587,21 @@ class MyController extends HomeController {
         if(IS_POST){
             $_POST['create_time'] = time();
             $_POST['uid'] = D('Member')->uid();
+            $uid = $_POST['uid'];
             $id = M('Join')->where(array('uid'=>$_POST['uid'],'is_delete'=>0))->getField('id');
+            
+            //加上生成二维码的数据 begain
+            $userinfo = M('Member')->where(array('uid'=>$uid))->find();
+            $parent_id = $userinfo['parent_id'] ? $userinfo['parent_id'] : 0;
+            $_POST['join_type'] = ($parent_id) ? 1 : 0;
+            $_post['root_id'] = ($userinfo['root_id']!=0) ? $userinfo['root_id'] : 0;
+            $rootid = $userinfo['root_id'] ? $userinfo['root_id'] : $uid;
+            $url =  $this->getErm($uid,$rootid);
+            
+            $_POST['parent_id']  = $parent_id;
+            $_POST['erm'] = $url;
+            //end
+             
             if($id){
                 $res = M('Join')->where(array('uid'=>$_POST['uid'],'is_delete'=>0))->save($_POST);
             }else{
@@ -603,6 +619,21 @@ class MyController extends HomeController {
             $this->assign('list',$list);
             $this->display();
 
+        }
+    }
+    
+    private function getErm($uid,$rootid){
+        $weixin = (C('weixin'));
+        if($uid){
+            $userinfo = M('Member')->where(array('uid'=>$uid))->find();
+            $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/root_id/'.$rootid;
+           
+            $oldpic = $userinfo['headimgurl'] ? $userinfo['headimgurl'] : './Public/Weixin/erweima/logo.png';
+            
+            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+            //var_dump($wurl);exit($wurl);
+            $url = $this->makeCodeLogo('DL'.$uid,$oldpic,$wurl);
+            return $url;
         }
     }
 
@@ -848,12 +879,13 @@ class MyController extends HomeController {
          $uid = $_SESSION['onethink_home']['uid'];
         $config = M('Wxsetting')->where(array('id'=>1))->find();
         $userinfo = M('BrandingMember')->where(array('id'=>$uid))->find();
+         $weixin = (C('weixin'));
         if($userinfo['ewm']){
             $url = $userinfo['ewm'];
         }else{
             $oldpic = $userinfo['headimgurl'] ? $userinfo['headimgurl'] : './Public/Weixin/erweima/logo.png';
             $shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/branding_id/'.$buid;
-            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7fb456d4e2e698a4&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+            $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
             //var_dump($wurl);exit($wurl);
             $url = $this->makeCodeLogo($buid,$oldpic,$wurl);
             $res['ewm']  = ltrim($url,'.');

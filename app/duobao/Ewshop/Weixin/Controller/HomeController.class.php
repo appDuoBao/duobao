@@ -28,7 +28,7 @@ class HomeController extends Controller {
 //		$wx_url		= $_SERVER['REQUEST_URI'];
 //		$wx_url_arr = explode('/',$wx_url);
 //		$_GET['code'] = $wx_url_arr[5];
-
+        $weixin = (C('weixin'));
 
 		//微信自动登录注册
 		if($_GET['code']) {//微信code码
@@ -37,9 +37,7 @@ class HomeController extends Controller {
 			if($config){
 				$code = $_GET['code'];
 
-				//$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$config['appid'].'&secret='.$config['appsecret'].'&code='.$code.'&grant_type=authorization_code';
-//				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxe1cbef33f16282fd&secret=9e2cffb5f066e5e92f300ed17cc46618&code='.$code.'&grant_type=authorization_code';
-				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxc624a047e450f940&secret=01efa246da38ce6e918e2afa5c9e98dc&code='.$code.'&grant_type=authorization_code';
+				$get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$weixin['appid'].'&secret='.$weixin['secret'].'&code='.$code.'&grant_type=authorization_code';
 
 				$data = $this->get_by_curl($get_openid_url);
 				$data = json_decode($data);
@@ -51,7 +49,7 @@ class HomeController extends Controller {
 			//通过微信进去网站，默认登录操作
 			if($openid){
 				//$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$config['appid'].'&secret='.$config['appsecret'];
-				$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc624a047e450f940&secret=01efa246da38ce6e918e2afa5c9e98dc';
+				$url =  'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.$weixin['appid'].'&secret='.$weixin['secret'];
 				$my_access_token = json_decode($this->get_by_curl($url)); //得到自己 的 access_token
 
 				$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$my_access_token->access_token.'&openid='.$openid.'&lang=zh_CN';
@@ -67,9 +65,9 @@ class HomeController extends Controller {
 				}else{
 					$scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
 					$scope_res = json_decode($this->get_by_curl($scope_url));
-				        if($scope_res->errcode && $scope_res->errcode == '48001'){
+				    if($scope_res->errcode && $scope_res->errcode == '48001'){
 					  $shareurl ='http://' . $_SERVER['HTTP_HOST'] ;
-					 $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc624a047e450f940&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+					 $wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
 					header('Location:'.$wurl);
 				          //error_log(print_r($wurl,true),3,'/home/tmp/my.log');	
 					}

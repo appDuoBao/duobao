@@ -51,7 +51,7 @@
 						<td>{$vo.last_login_time|time_format}</td>
                         <td>{:long2ip($vo['last_login_ip'])}</td>
                         <td>
-                           <a title="编辑" href="{:U('edit?id='.$vo['id'])}">编辑</a> 
+                           <a title="编辑" href="{:U('edit?id='.$vo['id'])}">查看</a> 
                            <!--  <eq name="vo.status" value="1">
                                 <a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="ajax-get">禁用</a>
                                 <else/>

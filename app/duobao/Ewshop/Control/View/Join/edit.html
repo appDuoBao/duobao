@@ -125,19 +125,47 @@
                     </div>                    
                     
                     <div class="form-item">
-
                         <label class="item-label">
-
                             分销比率
-
                         </label>
-
                         <div class="controls">
-
                             <input type="text" name="ratio" class="text input-large" value="{$data.ratio|default=''}">
-
                         </div>
-
+                    </div>
+                    
+                      <div class="form-item">
+                        <label class="item-label">
+                            分销类型(1:正常分成，２：利润分成)
+                        </label>
+                        <div class="controls">
+                            <input type="text" name="ratio_type" class="text input-large" value="{$data.ratio_type|default=''}">
+                        </div>
+                    </div>
+                     <div class="form-item">
+                        <label class="item-label">
+                            顶级代理
+                        </label>
+                        <div class="controls">
+                            <input type="text" name="root_id" class="text input-large" value="{$data.root_id|default=''}">
+                        </div>
+                    </div>
+                    
+                     <div class="form-item">
+                        <label class="item-label">
+                            父级代理
+                        </label>
+                        <div class="controls">
+                            <input type="text" name="parent_id" class="text input-large" value="{$data.parent_id|default=''}">
+                        </div>
+                    </div>
+                    
+                     <div class="form-item">
+                        <label class="item-label">
+                            分享二维码
+                        </label>
+                        <div class="controls">
+                            <input type="text" name="erm" class="text input-large" value="{$data.erm|default=''}">
+                        </div>
                     </div>
 <!--
                     <div class="form-item show">

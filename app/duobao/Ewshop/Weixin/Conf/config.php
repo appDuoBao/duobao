@@ -191,7 +191,10 @@ return array (
 
     //workman连接服务端url
     'workman_url' => 'http://auction.akng.net:2121/',
-
+    'weixin' =>array(
+        'appid' =>'wxc624a047e450f940',
+        'secret'=>'01efa246da38ce6e918e2afa5c9e98dc',
+    ),
 
 );
 

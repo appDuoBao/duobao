@@ -2,10 +2,13 @@
 <block name="body">
     <!-- 标题栏 -->
     <div class="main-title">
-        <h2>{$userinfo.nickname}的佣金记录-当前获得收益总计：{$zong}元
-        &nbsp;&nbsp;&nbsp;&nbsp;今日收益:{$tdzong}元
+        <h2>{$uname}--当前获得收益总计：{$sy}元
+        &nbsp;&nbsp;&nbsp;&nbsp;中奖:{$zj}元
         &nbsp;&nbsp;&nbsp;&nbsp;总销售业绩:{$zongcount}元
-        &nbsp;&nbsp;&nbsp;&nbsp;今日业绩:{$tdzongcount}元</h2>
+        &nbsp;&nbsp;&nbsp;&nbsp;业绩:{$licount}元
+         &nbsp;&nbsp;&nbsp;&nbsp;按比例收益:{$sy}元
+        
+        </h2>
     </div>
     
     <div class="cf">
@@ -18,7 +21,7 @@
                 <div class="sleft">
                     <input type="date" name="end_date" value="{:I('end_date')}" class="search-input" />结束日期&nbsp;&nbsp;
                 </div>                     
-                <a class="sch-btn" href="javascript:;" id="search" url="{:U('fenyonglog?puid='.$userinfo['uid'])}"><i class="btn-search"></i></a>
+                <a class="sch-btn" href="javascript:;" id="search" url="{:U('orderlist')}"><i class="btn-search"></i></a>
 
         </div>
     </div>    
@@ -29,7 +32,7 @@
             <tr>
                 <th class="">订单号</th>
                 <th class="">用户名</th>
-                <th class="">佣金金额</th>
+                <th class="">购买金额</th>
                 <th class="">分佣时间</th>
                 <th class="">佣金类型</th>
                 <th class="">佣金比例</th>
@@ -39,14 +42,14 @@
             <notempty name="_list">
                 <volist name="_list" id="vo">
                     <tr>
-                        <td>{$vo.out_trade_no}</td>
+                        <td>{$vo.id}</td>
                         <td>{$vo.nickname}</td>
-                        <td>{$vo.money_p}</td>
+                        <td>{$vo.money}</td>
                         <td><span>{$vo.create_time|time_format}</span></td>
                         <td>
                         <if condition="($vo.status eq 1)">购买分佣</if>
                         </td>
-                        <td>{$vo.ratio}</td>
+                        <td>{$cur_ratio}</td>
                     </tr>
                 </volist>
                 <else />
