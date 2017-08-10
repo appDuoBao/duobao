@@ -328,6 +328,9 @@ class UserController extends ControlController {
 			$info['lxmobile'] = $data['mobile'];//联系人电话
 			$info['address'] = $data['address'];//联系地址
 			$info['ratio'] = $data['ratio'];//返佣比例
+			$info['lx'] = ($data['ratio_type']==1) ? '正常分成' : '利润分成';
+			$info['parent'] = $data['parent_id'];
+			$info['erm'] = $data['erm'];
 			$info['kaihuhang'] = $data['kaihuhang'];//开户行
 			$info['kahao'] = $data['kahao'];//卡号
 			$info['xingming'] = $data['xingming'];//户名			
