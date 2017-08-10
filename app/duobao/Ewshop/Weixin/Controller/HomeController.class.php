@@ -96,6 +96,7 @@ class HomeController extends Controller {
 				}else{//会员不存在
 					//将微信标示——openid存入session
 					$_SESSION['parent_id'] = $_GET['parent_id'];
+					$_SESSION['root_id'] = $_GET['root_id'];
 					$_SESSION['openid']=$openid;
 					$_SESSION['access_token']=$access_token;
 

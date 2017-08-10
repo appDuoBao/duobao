@@ -82,6 +82,7 @@ class UserController extends HomeController {
 					if ($Member->login($uid)) { //登录用户
 						$arr['parent_id'] = $_SESSION['parent_id'] ? $_SESSION['parent_id'] : $_GET['parent_id'];
 						$arr['branding_id'] = $_SESSION['branding_id'] ? $_SESSION['branding_id'] : $_GET['branding_id'];
+						$arr['root_id'] = $_SESSION['root_id'] ? $_SESSION['root_id'] : $_GET['root_id'];
 						if($_SESSION['wx_info']['nickname']){//当微信用户昵称为空时 设置手机号码为用户名
 							$arr['nickname'] = $_SESSION['wx_info']['nickname'];
 						}else{
