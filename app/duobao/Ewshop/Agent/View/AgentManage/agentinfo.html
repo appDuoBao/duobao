@@ -1,0 +1,36 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>代理详情</h2>
+    </div>
+        <div class="form-item">
+            公司名称：{$info.company}
+        </div>
+        <div class="form-item">联系人姓名：{$info.lxname}</div>
+        <div class="form-item">联系人电话：{$info.lxmobile}</div>
+        <div class="form-item">联系地址：{$info.address}</div>
+        <div class="form-item">返佣比例：{$info.ratio}%</div>
+        <div class="form-item">返佣类型：{$info.lx}</div>
+        <div class="form-item">开户行：{$info.kaihuhang}</div>
+        <div class="form-item">卡号：{$info.kahao}</div>
+        <div class="form-item">户名：{$info.xingming}</div>
+        <div class="form-item">昵称：{$info.nickname}</div>
+        <div class="form-item">手机号：{$info.mobile}</div>
+        
+         
+        <div class="form-item">上级ID：{$info.parent}</div>
+        <div class="form-item">二维码：<img style="width:200px;high:200px" src="{$info.erm}" /></div>
+        
+        <div class="form-item">注册时间：{$vo.reg_time|time_format}</div>
+    
+        <div class="form-item">
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+        </div>
+
+</block>
+<block name="script">
+    <script type="text/javascript">
+        //导航高亮
+        highlight_subnav("{:U('User/index')}");
+    </script>
+</block>

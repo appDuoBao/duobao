@@ -13,7 +13,7 @@
              <div class="sleft">
                 <input type="text" name="mobile" class="search-input" value="{:I('mobile')}" placeholder="请输入手机号">
             </div>           
-            <a class="sch-btn" href="javascript:;" id="search" url="{:U('daili')}"><i class="btn-search"></i></a>
+            <a class="sch-btn" href="javascript:;" id="search" url="{:U('agentlist')}"><i class="btn-search"></i></a>
         </div>
     </div>
     <!-- 数据列表 -->
@@ -29,6 +29,7 @@
                 <th class="">地址</th>
                 <th class="">加入时间</th>
                <th class="">分成比例</th>
+               <th class="">分成类型</th>
                 <th class="">操作</th>
             </tr>
             </thead>
@@ -44,12 +45,19 @@
                         <td>{$vo.address}</td>
                         <td><span>{$vo.create_time|time_format}</span></td>
                          <td><span>{$vo.ratio}</span></td>
+                        
+                            <if condition = "$vo.ratio_type eq 1">
+                              　 <td><span>正常分成 </span></td>
+                              <else>
+                                <td><span>利润分成</span></td>
+                            </if>
+                           
                         <td>
                         
 							<a title="购买记录" href="{:U('AgentManage/childset?aid='.$vo['id'])}">设置分成</a>
                           <!--  <a title="兑换记录" href="{:U('/Control/Bidding/exchange?uid='.$vo['uid'].'&nickname='.$vo['nickname'])}">兑换记录</a>
                             -->
-                           <a title="查看代理信息" href="{:U('userview?pid='.$vo['uid'])}">查看业绩</a> 
+                           <a title="查看代理信息" href="{:U('orderlist?pid='.$vo['uid'])}">查看业绩</a> 
 							<a title="分享会员" href="{:U('childlist?aid='.$vo['uid'])}">下级代理</a>
                           
                           

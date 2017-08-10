@@ -61,8 +61,9 @@
     <ul class="nav-list user-menu hidden">
       <li class="manager">你好，<em title="{:session('user_auth.username')}">{:session('user_auth.username')}</em></li>
       <li><a href="{:U('Cache/delcache')}">清除缓存</a></li>
-      <li><a href="{:U('Admin/updatePassword')}">修改密码</a></li>
-      <li><a href="{:U('Admin/updateNickname')}">修改昵称</a></li>
+      <li><a href="{:U('Public/updatePassword')}">修改密码</a></li>
+     
+      <li><a href="{:U('AgentManage/agentinfo')}">我的信息</a></li>
       <li><a href="{:U('Public/logout')}">退出</a></li>
     </ul>
   </div>
@@ -88,7 +89,7 @@
         <!-- 子导航 -->
          <h3><i class="icon icon-unfold"></i>用户管理</h3>
           <ul class="side-sub-menu">
-            <li> <a class="item" href="{:U('AgentManage/userlist')}">所有用户</a> </li>
+            <li> <a class="item" href="{:U('AgentManage/index')}">所有用户</a> </li>
          </ul>
         
         <!-- /子导航 --> 
@@ -98,7 +99,7 @@
          </ul>
          <h3><i class="icon icon-unfold"></i>代理管理</h3>
           <ul class="side-sub-menu">
-            <li> <a class="item" href="{:U('AgentManage/agentlist')}">代管商</a> </li>
+            <li> <a class="item" href="{:U('AgentManage/agentlist')}">代理商</a> </li>
          </ul>
         
       

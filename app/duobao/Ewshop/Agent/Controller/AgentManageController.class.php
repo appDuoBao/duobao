@@ -98,9 +98,19 @@ class AgentManageController extends ControlController {
      */
     public function agentlist(){
 
+        $name = I('nickname');
+        $mobile = I('mobile');
         $gid = $_SESSION['user_agent']['id'];
+        $where = ' 1=1';
+        if($name){
+            $where .= ( " and name like '%".$name."%'");    
+        }
+        if($mobile){
+            $where .= " and mobile = '". $mobile."'";     
+        }
+        //var_dump('parent_id = '.$gid .' and is_delete =0 and status = 1 and '. $where);exit;
         if($gid){
-    		$list = M('Join')->where(array('is_delete'=>0,'status'=>1,'parent_id'=>$gid))->select();
+    		$list = M('Join')->where('parent_id = '.$gid .' and is_delete =0 and status = 1 and '. $where)->select();
     		
             int_to_string($list);
             $this->assign('_list' , $list);
@@ -436,5 +446,33 @@ class AgentManageController extends ControlController {
                 error_log(print_r($isp,true).'update-->'.$uid.'-->root_id:'.$v['uid']."\n\t",3,'/home/tmp/uprootid.log');
             }
         }
+	}
+	
+	public function agentinfo(){
+	      $puid = $_SESSION['user_agent']['id'];
+	      
+	     $Member = D('Member');
+		$info             = $puid ? $Member->info($puid) : '';
+		$info['email']    = M('UcenterMember')->getFieldById($puid , 'email');
+		$info['mobile']   = M('UcenterMember')->getFieldById($puid , 'mobile');
+		
+		$data = M('Join')->where(array('uid'=>$puid))->find();
+		if($data){
+			$info['company'] = $data['company'];//公司名称
+			$info['lxname'] = $data['name'];//联系人姓名
+			$info['lxmobile'] = $data['mobile'];//联系人电话
+			$info['address'] = $data['address'];//联系地址
+			$info['ratio'] = $data['ratio'];//返佣比例
+			$info['lx'] = ($data['ratio_type']==1) ? '正常分成' : '利润分成';
+			$info['parent'] = $data['parent_id'];
+			$info['erm'] = $data['erm'];
+			$info['kaihuhang'] = $data['kaihuhang'];//开户行
+			$info['kahao'] = $data['kahao'];//卡号
+			$info['xingming'] = $data['xingming'];//户名			
+		}
+		$this->assign('info' , $info);
+		$this->meta_title = '编辑用户';
+		$this->display();  
+	    
 	}
 }

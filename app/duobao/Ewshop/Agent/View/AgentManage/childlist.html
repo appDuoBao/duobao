@@ -29,6 +29,7 @@
                 <th class="">地址</th>
                 <th class="">加入时间</th>
                <th class="">分成比例</th>
+                <th class="">分成类型</th>
                 <th class="">操作</th>
             </tr>
             </thead>
@@ -44,6 +45,11 @@
                         <td>{$vo.address}</td>
                         <td><span>{$vo.create_time|time_format}</span></td>
                          <td><span>{$vo.ratio}</span></td>
+                         <if condition = "$vo.ratio_type eq 1">
+                              　 <td><span>正常分成 </span></td>
+                              <else/>
+                                <td><span>利润分成</span></td>
+                            </if>
                         <td>
                          
                           <!--  <a title="兑换记录" href="{:U('/Control/Bidding/exchange?uid='.$vo['uid'].'&nickname='.$vo['nickname'])}">兑换记录</a>
