@@ -5,7 +5,7 @@
         <h2>{$uname}--当前获得收益总计：{$sy}元
         &nbsp;&nbsp;&nbsp;&nbsp;中奖:{$zj}元
         &nbsp;&nbsp;&nbsp;&nbsp;总销售业绩:{$zongcount}元
-        &nbsp;&nbsp;&nbsp;&nbsp;业绩:{$licount}元
+        
          &nbsp;&nbsp;&nbsp;&nbsp;按比例收益:{$sy}元
         
         </h2>
@@ -15,11 +15,11 @@
         <!-- 高级搜索 -->
         <div class="search-form fr cf">
                 <div class="sleft">
-                    <input type="date" name="start_date" value="{:I('start_date')}" class="search-input" />开始日期&nbsp;&nbsp;
+                    <input type="date" name="start_date" value="{:I('start_date')|$start_date}" class="search-input" />开始日期&nbsp;&nbsp;
                 </div>
                 
                 <div class="sleft">
-                    <input type="date" name="end_date" value="{:I('end_date')}" class="search-input" />结束日期&nbsp;&nbsp;
+                    <input type="date" name="end_date" value="{:I('end_date')|$end_date}" class="search-input" />结束日期&nbsp;&nbsp;
                 </div>                     
                 <a class="sch-btn" href="javascript:;" id="search" url="{:U('orderlist')}"><i class="btn-search"></i></a>
 

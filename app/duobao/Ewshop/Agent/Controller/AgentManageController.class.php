@@ -89,7 +89,7 @@ class AgentManageController extends ControlController {
 		            return $uids;
 		     }
 		}
-            return false;
+            return array();
     }
 
     /**
@@ -164,7 +164,7 @@ class AgentManageController extends ControlController {
     }	
     /**
      * 分佣明细
-     * @author ew_xiaoxiao
+     * @author bankie
      */
     public function orderlist($puid = NULL){
         
@@ -174,8 +174,9 @@ class AgentManageController extends ControlController {
         $login = M('Join');
         $Member = D('Member');
         $loginfo = $login->where(sprintf('uid = %d',$agent_login))->find();
-		if($loginfo['join_type'] === '0'){//总代理,可以一次把所有用户数据取出,收益比例可能有特别
+	    if($loginfo['join_type'] === '0'){//总代理,可以一次把所有用户数据取出,收益比例可能有特别
 		     $alluser = $Member->where(sprintf('root_id = %d or uid = %d',$agent_login,$agent_login))->getField('uid,nickname',true); 
+		     $uids = (is_array($alluser)) ? $alluser : array();
              $uids = array_merge(array_keys($alluser),array((int)$loginfo['uid']));//包括用户本身
 		}else{ //非一级代理用户
 		    
@@ -190,10 +191,10 @@ class AgentManageController extends ControlController {
             $this->display();
 		}
 		$map['uid']  = array('in',$uids);
-		//$map['status']  = 1;//1佣金 2购买
+		$map['status']  = 1;//1佣金 2购买
 		
-		$start_date      = I('start_date');
-		$end_date      = I('end_date');
+		$start_date      = I('start_date') ? I('start_date') : date('Y-m-d');
+		$end_date      = I('end_date') ? I('end_date') : date('Y-m-d') ;
 		if($start_date && $end_date){
 			$map['create_time'] = array(array('egt',strtotime($start_date)),array('lt',strtotime($end_date)+(24*60*60)));
 		}elseif($start_date  && empty($end_date)){
@@ -234,17 +235,17 @@ class AgentManageController extends ControlController {
     		
     		$zmap['is_exchange'] = array('eq',1); 
     		//支出金额
-    		
-    		if($loginfo['ratio_type'] ==2){
-    		    $is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
-    		    if($is_win){
+    		$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
+    		if($is_win){
         		    $zjmap['id'] = array('in',array_keys($is_win));
         		    $zjorder = M('Document')->where($zjmap)->getField('id,real_price');
         		    foreach ($is_win as $k=>$v) {//总支出
                          $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
                     } 
-    		    }
+    		}
     		    $zhichu = $zhichu ? $zhichu : 0;
+    		if($loginfo['ratio_type'] ==2){
+    		    
     		    $lirun = bcsub($allorder,$zhichu,4);
     		    $sy = bcmul($lirun,bcdiv($cur_ratio,100,4),4);
     	    }else{
@@ -252,6 +253,8 @@ class AgentManageController extends ControlController {
     	    }
     		//按比例收益,这地方计算不对，应该是减去商品本身的价格
 	    }
+		$this->assign('start_date',$start_date);
+	        $this->assign('end_date',$end_date);
 		$this->assign('uname',$loginfo['name']);
 		$this->assign('cur_ratio',$cur_ratio);
 		$this->assign('sy',$sy);
