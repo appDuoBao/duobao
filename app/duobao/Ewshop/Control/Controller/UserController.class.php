@@ -54,14 +54,7 @@ class UserController extends ControlController {
         foreach ($list as $key => $val) {
             $list[$key]['mobile'] = M('UcenterMember')->where("id='$val[uid]'")->getField("mobile");
             $list[$key]['email']  = M('UcenterMember')->where("id='$val[uid]'")->getField("email");
-			
-			if(in_array($val[uid],$join_user_id)){
-				$list[$key]['usertype'] = '总代理商';
-			}elseif($val['parent_id'] > 0){
-				$list[$key]['usertype'] = '普通代理';
-			}else{
-				$list[$key]['usertype'] = '普通会员';
-			}
+	    $list[$key]['usertype'] = '普通会员';		
 		$this->assign('usertype' , $usertype);			
         }
         int_to_string($list);
@@ -107,13 +100,11 @@ class UserController extends ControlController {
         foreach ($list as $key => $val) {
             $list[$key]['mobile'] = M('UcenterMember')->where("id='$val[uid]'")->getField("mobile");
             $list[$key]['email']  = M('UcenterMember')->where("id='$val[uid]'")->getField("email");
-			
-			if(in_array($val[uid],$join_user_id)){
-				$list[$key]['usertype'] = '总代理商';
-			}elseif($val['parent_id'] > 0){
+		
+			if((int)$val['parent_id'] > 0){
 				$list[$key]['usertype'] = '普通代理';
 			}else{
-				$list[$key]['usertype'] = '普通会员';
+				$list[$key]['usertype'] = '总代理商';
 			}			
         }
         int_to_string($list);
@@ -218,6 +209,117 @@ class UserController extends ControlController {
         $this->meta_title = '佣金记录';
         $this->display();
     }
+    
+     /**---begain new agnet fenyong logs----------------------**/
+     /**
+     * 分佣明细
+     * @author bankie
+     */
+    public function orderlist($puid = NULL){
+        
+       
+        $pid = I('puid');//var_dump($pid);exit;
+        $agent_login = $pid;// 查看下级业绩 
+        if(!$agent_login){
+            $this->meta_title = '佣金记录';
+            $this->display();   
+        }
+        $login = M('Join');
+        $Member = D('Member');
+        $loginfo = $login->where(sprintf('uid = %d',$agent_login))->find();
+	    if($loginfo['join_type'] === '0'){//总代理,可以一次把所有用户数据取出,收益比例可能有特别
+		     $alluser = $Member->where(sprintf('root_id = %d or uid = %d',$agent_login,$agent_login))->getField('uid,nickname',true); 
+		     $uids = (is_array($alluser)) ? $alluser : array();
+             $uids = array_merge(array_keys($alluser),array((int)$loginfo['uid']));//包括用户本身
+		}else{ //非一级代理用户
+		    
+		     $uids = self::getAllUidsByParent($agent_login);
+		     $uids = array_merge($uids,array((int)$agent_login));//代理本身需要计算进来
+		     $alluser = $Member->where(sprintf('uid in (%s)',implode(',', $uids)))->getField('uid,nickname',true);
+		}
+		//var_dump($uids);exit;
+	    //$this->assign('userinfo' , $info);	
+		if(empty($uids)){
+		    $this->meta_title = '佣金记录';
+            $this->display();
+		}
+		$map['uid']  = array('in',$uids);
+		$map['status']  = 1;//1佣金 2购买
+		
+		$start_date      = I('start_date') ? I('start_date') : date('Y-m-d');
+		$end_date      = I('end_date') ? I('end_date') : date('Y-m-d') ;
+		if($start_date && $end_date){
+			$map['create_time'] = array(array('egt',strtotime($start_date)),array('lt',strtotime($end_date)+(24*60*60)));
+		}elseif($start_date  && empty($end_date)){
+			$map['create_time']  = array('egt',strtotime($start_date));
+		}elseif($end_date && empty($start_date)){
+			$map['create_time']  = array('lt',strtotime($end_date)+(24*60*60));
+		}		
+		//佣金总金额
+		//$zong =M('AccountLog')->where($map)->Sum('money_p');var_dump($zong);exit;
+		$cur_ratio =$loginfo["ratio"];
+		
+		//整理数据
+		
+		//var_dump($alogs);exit;				
+		//计算总订单金额
+		$allorder = M('WinOrder')->where($map)->Sum('money');
+		$all_order = M('WinOrder')->where($map)->getField('id,num,uid,money,order_number,create_time,period,num,number_section');
+		$alogs = $all_order;
+		if($all_order){
+		    $zmap['order_id'] =array('in',array_keys($all_order));
+		    $is_winstate = M('WinExchange')->where($zmap)->getField('goods_id,order_id,buy_num',true);
+    		foreach($alogs as $k=>$v){
+    		    $alogs[$k]['nickname'] = $alluser[$v['uid']];
+    		    if($is_winstate){
+    		        foreach($is_winstate as $kk=>$vv){
+    		            if($k == $vv['order_id']){
+    		                  $alogs[$k]['is_win'] = '中奖';  break;
+    		            }else{
+    		                   $alogs[$k]['is_win'] = '未中奖';  
+    		            }    
+    		        }
+    		    }else{  
+    		        $alogs[$k]['is_win'] = '未中奖';
+    		    }
+    		}
+      
+    		//计算中奖金额
+    		
+    		$zmap['is_exchange'] = array('eq',1); 
+    		//支出金额
+    		$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
+    		if($is_win){
+        		    $zjmap['id'] = array('in',array_keys($is_win));
+        		    $zjorder = M('Document')->where($zjmap)->getField('id,real_price');
+        		    foreach ($is_win as $k=>$v) {//总支出
+                         $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
+                    } 
+    		}
+    		    $zhichu = $zhichu ? $zhichu : 0;
+    		if($loginfo['ratio_type'] ==2){
+    		    
+    		    $lirun = bcsub($allorder,$zhichu,4);
+    		    $sy = bcmul($lirun,bcdiv($cur_ratio,100,4),4);
+    	    }else{
+    	        $sy =   bcmul($allorder,bcdiv($cur_ratio,100,4),4);  
+    	    }
+    		//按比例收益,这地方计算不对，应该是减去商品本身的价格
+	    }
+		$this->assign('start_date',$start_date);
+	    $this->assign('end_date',$end_date);
+		$this->assign('uname',$loginfo['name']);
+		$this->assign('cur_ratio',$cur_ratio);
+		$this->assign('sy',$sy);
+		$this->assign('zj',$zhichu);
+		$this->assign('puid',$pid);
+		$this->assign('zongcount',$allorder);
+        $this->assign('_list' , $alogs);
+        $this->meta_title = '佣金记录';
+        $this->display();
+    }
+    /**---------end ---------------------**/
+    
 	
     /**
      * 添加会员信息
@@ -329,6 +431,10 @@ class UserController extends ControlController {
 			$info['address'] = $data['address'];//联系地址
 			$info['ratio'] = $data['ratio'];//返佣比例
 			$info['lx'] = ($data['ratio_type']==1) ? '正常分成' : '利润分成';
+			if($data['parent_id']){
+			    $parent = M('Join')->where()->getField('name'); 
+			    $info['pname'] = $parent;
+			}
 			$info['parent'] = $data['parent_id'];
 			$info['erm'] = $data['erm'];
 			$info['kaihuhang'] = $data['kaihuhang'];//开户行

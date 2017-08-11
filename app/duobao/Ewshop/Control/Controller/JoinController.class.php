@@ -62,14 +62,10 @@ class JoinController extends ControlController {
         }else{
             $id = I('get.id');
             $data = M('Join')->where(array('id'=>$id))->find();
-            //$gids = M('Join')->field('gid')->select();
-            //$gids = array_column($gids, 'gid');
-            //foreach ($gids as $key=>$value) {
-            //    if ($value === $data['gid']){unset($gids[$key]);}
-            //}
-            //$map['uid'] = array('not in',$gids);
-            //$map['groupid'] = 7;
-            //$glist = M('Admin')->where($map)->select();
+            if($data['parent_id']){
+                $parent = M('Join')->where('uid = '.$data['parent_id'])->find();
+                $this->assign('pinfo',$parent);
+            }
             $this->assign('data' , $data);
             //$this->assign('glist' , $glist);
             $this->meta_title = '审核加盟信息';
