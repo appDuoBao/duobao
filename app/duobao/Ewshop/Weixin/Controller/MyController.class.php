@@ -597,8 +597,16 @@ class MyController extends HomeController {
             $_post['root_id'] = ($userinfo['root_id']!=0) ? $userinfo['root_id'] : 0;
             $rootid = $userinfo['root_id'] ? $userinfo['root_id'] : $uid;
             $url =  $this->getErm($uid,$rootid);
-            
-            $_POST['parent_id']  = $parent_id;
+            if($parent_id){
+                $isjoinbyparent = M('Join')->where('uid = '.$parent_id)->getField('id');
+                if($isjoinbyparent){
+                    $_POST['parent_id']  = $parent_id;
+                }else{
+                      $_POST['parent_id']  = 0;
+                }
+            }else{
+                 $_POST['parent_id']  = $parent_id;   
+            }
             $_POST['erm'] = $url;
             //end
              
