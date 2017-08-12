@@ -136,7 +136,7 @@
         <!-- 高级搜索 -->
         <div class="search-form fr cf">
             <div class="sleft">
-                <input type="text" name="mobile" class="search-input" value="<?php echo I('mobile');?>" placeholder="请输入手机号">
+                <input type="text" name="mobile" class="search-input" value="<?php echo I('mobile');?>" placeholder="请输入手机号或者用户名">
                 <a class="sch-btn" href="javascript:;" id="search" url="<?php echo U('index');?>"><i class="btn-search"></i></a>
             </div>
         </div>

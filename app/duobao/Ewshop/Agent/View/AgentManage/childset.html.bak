@@ -2,7 +2,7 @@
 
 <block name="body">
     <div class="main-title">
-        <h2>新增推广商</h2>
+        <h2>下级代理设置分成比例</h2>
     </div>
     <form action="{:U()}" method="post" class="form-horizontal">
         
@@ -26,9 +26,15 @@
             </div>
         </div>
         <div class="form-item">
+            <label class="item-label">分成类型/label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="ratiotype" value="{$info.ratio_type}">
+            </div>
+        </div>
+        <div class="form-item">
             <label class="item-label">分成比例</label>
             <div class="controls">
-                <input type="text" class="text input-large" name="commis" value="{$info.commission}">
+                <input type="text" class="text input-large" name="commis" value="{$info.ratio}">
             </div>
         </div>
         <div class="form-item">

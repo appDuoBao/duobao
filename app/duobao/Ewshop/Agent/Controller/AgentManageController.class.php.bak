@@ -24,6 +24,9 @@ class AgentManageController extends ControlController {
         //当前管理员id
         $gid = $_SESSION['user_agent']['id'];
         $mobile = I('mobile'); //搜索使用
+        if($mobile){
+            $this->searchByMobileOrName($mobile,$gid);//走搜索    
+        }
 		$login = M('Join')->where('uid = '.$gid)->find();
         $puid = $gid;
         $puid = trim($puid); 
@@ -57,6 +60,24 @@ class AgentManageController extends ControlController {
       
         $this->meta_title = '用户信息';
         $this->display();
+    }
+    
+    public function searchByMobileOrName($search,$puid){
+        $Model = new \Think\Model();
+        if(preg_match('/^\d{11}$/', $search)){
+            $uid = M('UcenterMember')->where('mobile = '.$search)->getField('id'); 
+            if($uid){
+                 $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and uid = " .$uid);    
+            }   
+        }else{
+             $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and nickname like '%" .$search."%'");    
+        }
+         
+        
+        $this->assign('_list' , $list);
+        $this->assign('puid',$puid);
+        $this->meta_title = '用户信息';
+        $this->display('index');exit;
     }
 
     private static function getUidsByjoin($pid){
@@ -122,17 +143,19 @@ class AgentManageController extends ControlController {
     public function childset(){
         $aid = I('aid');
         $com = I('commis') ? I('commis') :($_POST['commis']);
-        $agent_login =$_SESSION['user_agent']['id'];
+        $radio_type = I('ratiotype') ? I('ratiotype'):($_POST['ratiotype']) ;
+        $agent_login =$_SESSION['user_agent'];
         if($aid && $agent_login){
           $joinobj = M('Join');
            $info = $joinobj->where(sprintf('id = %d',$aid))->find();
-           $login = $joinobj->where(sprintf('id = %d',$agent_login['id']))->find();  
+           $login = $joinobj->where(sprintf('uid = %d',$agent_login['id']))->find();var_dump($login);exit;  
           if($com){
             $bc = bccomp($login['ratio'],$com,2);
             if($bc < 0){
                 $this->error('设置分成比例不能大于自己的分成比例');
             }
             $data['ratio'] = $com;
+            $data['ratio_type'] = $radio_type;
             $ret = $joinobj->where(sprintf('id = %d',$aid))->save($data);
             if($ret)  $this->success('修改成功！', U('AgentManage/agentlist'));
           }
@@ -164,7 +187,7 @@ class AgentManageController extends ControlController {
     }	
     /**
      * 分佣明细
-     * @author ew_xiaoxiao
+     * @author bankie
      */
     public function orderlist($puid = NULL){
         
@@ -212,6 +235,7 @@ class AgentManageController extends ControlController {
 		//计算总订单金额
 		$allorder = M('WinOrder')->where($map)->Sum('money');
 		$all_order = M('WinOrder')->where($map)->getField('id,num,uid,money,create_time,period,num,number_section');
+		//var_dump($map);exit;
 		$alogs = $all_order;
 		if($all_order){
 		    $zmap['order_id'] =array('in',array_keys($all_order));

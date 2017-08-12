@@ -19,15 +19,15 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    private static  $certFilePath='/home/cert/800001407940001.p12';
+    private static  $certFilePath='/home/cert/800000101000109.p12';
     
-    private static  $merchantCertPass='YEbbam'; 
+    private static  $merchantCertPass='NskNUN'; 
     
-     
+    private static  $deskey = 'cputest';    
     public function index(){
 		
 	     $this->meta_title = '代付首页';
-        exit('teste');
+       
 		 $this->display();
     }
 
@@ -38,36 +38,35 @@ class IndexController extends ControlController {
         $order["mcTransDateTime"] = date('YmdHis');
         $order["orderNo"] = "201704070000013094";
         $order["amount"] = "1000";
-        $order["cardNo"] = "6225880175058792";
-        $order["accName"] =  mb_convert_encoding("李立军",'utf-8','auto');
+        $order["cardNo"] = self::do_des('6225880175058792',self::$deskey); //'9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063';
+        $order["accName"] =  '李立军';
         $order["accType"] = '0';
-        $order["lBnkNo"]  = '';
-        $order["lBnkNam"] = '';
+        $order1["lBnkNo"]  = '';
+        $order1["lBnkNam"] = '';
         $order["crdType"]= "00";
-        $order["validPeriod"] ='';
-        $order["cvv2"] ="";
-        $order["cellPhone"] = "";
-	$order['remark']='';
-	$order['bnkRsv'] = '';
+        $order1["validPeriod"] ='';
+        $order1["cvv2"] ="";
+        $order1["cellPhone"] = "";
+	$order1['remark']='';
+	$order1['bnkRsv'] = '';
 	$order['capUse'] ='9';
 	//$order['callBackUrl']='http://duobao.akng.net/pay.php?s=index/callbak';
 	$params['service'] = 'capSingleTransfer';
         $publicp = self::publicParams($params);
    	$order = array_merge($order,$publicp);
 	ksort($order);
-        //$signdata = mb_convert_encoding(http_build_query($order),'utf-8','auto');
-	$signdata = self::encodeArr($order);
-	$signdata = http_build_query($signdata);
+	$signdata = self::arrToStr($order);
         $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
 
         //$header =array($signdata.'&merchantSign='.$sign['sign'] . '&merchantCert='.$sign['cert']);
 	$header =array();
+	$order= array_merge($order,$order1);
 	$order['merchantSign'] = $sign['sign'];
 	$order['merchantCert'] = $sign['cert'];
         $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
 	//var_dump($order,$res);exit;
 	$ret = self::formartRet($res);
-	var_dump($order);
+	var_dump($signdata);
 	print_r($ret);exit;
             
     }
@@ -181,7 +180,7 @@ public static function RSAsign($source, $password)
             $pkeyid = openssl_pkey_get_private ( $certs ['pkey'] );//var_dump($pkeyid);exit;
             $signature = "";
 	    $pubder = self::pem2der( $certs ['cert'] );
-            openssl_sign ( $source, $signature, $pkeyid );
+            openssl_sign ($source, $signature, $pkeyid,OPENSSL_ALGO_SHA256);
             openssl_free_key ( $pkeyid );
             return array('sign'=>self::asc2hex ( $signature ),'cert'=>self::asc2hex($pubder));
         }
@@ -210,24 +209,27 @@ public static function encodeArr($input){
         }
 	return $ret;
  }
-private static  function getRequestUrl(&$arrOpt) {
-
-        $strUrl = $arrOpt['url'];
-        if(!isset($arrOpt['get'])) {
-            return $strUrl;
-        }
-
-        // 设置GET参数
-        if (is_array($arrOpt['get']) && !empty($arrOpt['get'])) {
-            $strGet = http_build_query($arrOpt['get']);
-            if (strpos($strUrl, '?', 7) > 0) {
-                $strUrl .= '&' . $strGet;
-            } else {
-                $strUrl .= '?' . $strGet;
-            }
-        }
-        unset($arrOpt['get']);
-
-        return $strUrl;
+ private static function arrToStr($arrdata){
+   if($arrdata){
+	$ret = [];
+   	while(list($k,$v)=each($arrdata)){
+	  if(!empty($v)||$v===0 || $v ==='0'){
+		$ret[] = "$k=$v";	
+	  }	
+	}
+	return	$str = implode('&',$ret);
+     }
+	return false;
+ }
+ private static  function do_des($input, $key)
+    {
+        //$key = substr(md5($key), 0, 24);
+        $td = mcrypt_module_open('tripledes', '', 'ecb', '');
+        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+        mcrypt_generic_init($td, $key, $iv);
+        $encrypted_data = mcrypt_generic($td, $input);
+        mcrypt_generic_deinit($td);
+        mcrypt_module_close($td);
+        return self::asc2hex($encrypted_data);
     }
 }

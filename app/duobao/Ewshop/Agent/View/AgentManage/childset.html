@@ -2,7 +2,7 @@
 
 <block name="body">
     <div class="main-title">
-        <h2>新增推广商</h2>
+        <h2>下级代理设置分成比例</h2>
     </div>
     <form action="{:U()}" method="post" class="form-horizontal">
         
@@ -23,6 +23,12 @@
             <label class="item-label">手机号</label>
             <div class="controls">
                 <input type="text" class="text input-large" disabled name="mobile" value="{$info.mobile}">
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">分成类型(1:正常分成，２：利润分成)</label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="ratiotype" value="{$info.ratio_type}">
             </div>
         </div>
         <div class="form-item">

@@ -70,8 +70,16 @@ class UserController extends ControlController {
      * @author ew_xiaoxiao
      */
     public function daili(){
-
-		$join_user_id = M('Join')->where(array('is_delete'=>0,'status'=>1))->getField('uid',true);
+        
+        $jointype = I('status');
+		if($jointype){
+		    $mapj['parent_id'] = array('neq',0);    
+		}else{
+		    $mapj['parent_id'] = array('eq',0);    
+		}
+        $mapj['status'] = array('eq',1);
+        $mapj['is_delete'] = array('eq',0);
+		$join_user_id = M('Join')->where($mapj)->getField('uid',true);
 		if($join_user_id){
 			$map['uid'] = array("in", $join_user_id);
 		}
@@ -318,6 +326,37 @@ class UserController extends ControlController {
         $this->meta_title = '佣金记录';
         $this->display();
     }
+   private static function getAllUidsByParent($pid){
+        if($pid){
+            $joinuids = self::getUidsByjoin($pid);
+		     if($joinuids){
+		        foreach($joinuids as $k=>$v){
+		            $uids[] = $v['uid'];    
+		        }
+		            
+		            return $uids;
+		     }
+		}
+            return array();
+    }
+  private static function getUidsByjoin($pid){
+        global $memberlist; 
+    	$map['parent_id']=$pid; 
+    	$members = M('Join')->field('uid')->where($map)->select();
+    	//根据id获取下级用户
+    	if($members){
+    		if($memberlist){
+    			$memberlist = array_merge($memberlist, $members);
+    		}else{
+    			$memberlist = $members;	
+    		}
+    		foreach ($members as $k => $v ) {
+    			self::getUidsByjoin($v['uid']);
+    		}	
+    	}
+	    return $memberlist;
+            
+    }
     /**---------end ---------------------**/
     
 	
@@ -432,20 +471,45 @@ class UserController extends ControlController {
 			$info['ratio'] = $data['ratio'];//返佣比例
 			$info['lx'] = ($data['ratio_type']==1) ? '正常分成' : '利润分成';
 			if($data['parent_id']){
-			    $parent = M('Join')->where()->getField('name'); 
+			    $parent = M('Join')->where('uid = '.$data['parent_id'])->getField('name'); 
 			    $info['pname'] = $parent;
 			}
 			$info['parent'] = $data['parent_id'];
 			$info['erm'] = $data['erm'];
 			$info['kaihuhang'] = $data['kaihuhang'];//开户行
 			$info['kahao'] = $data['kahao'];//卡号
-			$info['xingming'] = $data['xingming'];//户名			
+			$info['xingming'] = $data['xingming'];//户名
+			$info['jid'] = $data['id'];			
 		}
 		$this->assign('info' , $info);
 		$this->meta_title = '编辑用户';
 		$this->display();
     }
+    
+    public function getparents(){
+         header("Content-type: text/html; charset=utf-8");
+         $pid = I('pid');
+         $where = $pid ? ('parent_id = '.$pid) : '1 = 1';  
+         $list = M('Join')->where($where)->getField('id,parent_id,name,mobile,uid',true); 
+         
+         exit(json_encode(array('ret'=>0,'data'=>$list)));    
+    }
 	
+	public function updatepid(){
+	      header("Content-type: text/html; charset=utf-8");
+         $id = I('id');
+         $puid = I('puid');
+         if($id && $puid){ 
+            $data['parent_id'] = $puid;
+            $data['join_type'] = 1;
+            $ret = M('Join')->where('id = '.$id)->save($data); 
+            if($ret){
+                exit(json_encode(array('ret'=>0,'data'=>'ok'))); 
+             }
+         }
+         
+            exit(json_encode(array('ret'=>1,'data'=>'error')));   
+	}
     /**
      * 会员状态修改
      * @author ew_xiaoxiao

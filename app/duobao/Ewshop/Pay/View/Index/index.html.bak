@@ -1,68 +1,98 @@
-﻿<extend name="Public/pay"/>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <meta name="apple-mobile-web-app-title" content="MGJH5" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="grey" />
+        <title> 极速转售平台 </title>
+        
+        <script type="text/javascript">
+        (function(win,lib){var doc=win.document;var docEl=doc.documentElement;var metaEl=doc.querySelector('meta[name="viewport"]');var flexibleEl=doc.querySelector('meta[name="flexible"]');var dpr=0;var scale=0;var tid;var flexible=lib.flexible||(lib.flexible={});if(metaEl){var match=metaEl.getAttribute("content").match(/initial\-scale=([\d\.]+)/);if(match){scale=parseFloat(match[1]);dpr=parseInt(1/scale)}}else{if(flexibleEl){var content=flexibleEl.getAttribute("content");if(content){var initialDpr=content.match(/initial\-dpr=([\d\.]+)/);var maximumDpr=content.match(/maximum\-dpr=([\d\.]+)/);if(initialDpr){dpr=parseFloat(initialDpr[1]);scale=parseFloat((1/dpr).toFixed(2))}if(maximumDpr){dpr=parseFloat(maximumDpr[1]);scale=parseFloat((1/dpr).toFixed(2))}}}}if(!dpr&&!scale){var isAndroid=win.navigator.appVersion.match(/android/gi);var isIPhone=win.navigator.appVersion.match(/iphone/gi);var devicePixelRatio=win.devicePixelRatio;if(isIPhone){if(devicePixelRatio>=3&&(!dpr||dpr>=3)){dpr=3}else{if(devicePixelRatio>=2&&(!dpr||dpr>=2)){dpr=2}else{dpr=1}}}else{dpr=1}scale=1/dpr}docEl.setAttribute("data-dpr",dpr);if(!metaEl){metaEl=doc.createElement("mdeta");metaEl.setAttribute("name","viewport");metaEl.setAttribute("content","initial-scale="+scale+", maximum-scale="+scale+", minimum-scale="+scale+", user-scalable=no");if(docEl.firstElementChild){docEl.firstElementChild.appendChild(metaEl)}else{var wrap=doc.createElement("div");wrap.appendChild(metaEl);doc.write(wrap.innerHTML)}}function refreshRem(){var width=docEl.getBoundingClientRect().width;if(width/dpr>640){width=640*dpr}var rem=width/6.4;docEl.style.fontSize=rem+"px";flexible.rem=win.rem=rem}win.addEventListener("pageshow",function(e){if(e.persisted){clearTimeout(tid);tid=setTimeout(refreshRem,300)}},false);if(doc.readyState==="complete"){doc.body.style.fontSize=12*dpr+"px"}else{doc.addEventListener("DOMContentLoaded",function(e){doc.body.style.fontSize=12*dpr+"px"},false)}refreshRem();flexible.dpr=win.dpr=dpr;flexible.refreshRem=refreshRem;flexible.rem2px=function(d){var val=parseFloat(d)*this.rem;if(typeof d==="string"&&d.match(/rem$/)){val+="px"}return val};flexible.px2rem=function(d){var val=parseFloat(d)/this.rem;if(typeof d==="string"&&d.match(/px$/)){val+="rem"}return val}})(window,window["lib"]||(window["lib"]={}));
+          
+          (function() {
+            var win = window,
+                doc = win.document,
+                isAndroid = win.navigator.appVersion.match(/android/gi),
+                isIPhone = win.navigator.appVersion.match(/iphone/gi),
+                platform = isIPhone ? 'iphone' : (isAndroid ? 'android' : 'other');
+            if (doc.readyState === 'complete') {
+              doc.body.setAttribute('data-platform', platform);
+            } else {
+              doc.addEventListener('DOMContentLoaded', function(e) {
+                doc.body.setAttribute('data-platform', platform);
+              }, false);
+            }
+          })();
+        </script>
+        <link rel="stylesheet" href="Public/Pay/css/style.css?t=abc">
+        <script type="text/javascript" src="Public/Pay/js/libs/zepto.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1 class="title"><i class="ico ico-duihuan"></i>兑换码转售</h1>
+                <div class="desc">
+                    <span class="red">【极速转售平台】</span>
+                    文字描述
+                </div>
+            </header>
+            <section class="main">
+                <div class="wrap">
+                    <h1 class="title"><i class="ico ico-duihuanma"></i>兑换码</h1>
+                    <div class="box bg-gray box-duihua">
+                        <ul>
+                            <li>qhugik</li>
+                            <li>af;asdf</li>
+                            <li>AAJLLJ</li>
+                            <li>AFSF</li>
+                            <li>AFLFS</li>
+                        </ul>
+                    </div>
+                    <h1 class="title">卡数合计 <span class="more">8张</span></h1>
+                    <div class="box box-in">
+                        <div class="box-flex">
+                            <div class="flex1">实际收入</div>
+                            <div class="flex2"></div>
+                            <div class="flex3 red num">549.00</div>
+                        </div>
+                        <div class="box-flex">
+                            <div class="flex1"></div>
+                            <div class="flex2 gray">总价值</div>
+                            <div class="flex3 num">549.00</div>
+                        </div>
+                        <div class="box-flex">
+                            <div class="flex1"></div>
+                            <div class="flex2 gray">手续费</div>
+                            <div class="flex3 num">550.00</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrap">
+                    <div class="input bank-info">
+                        <ul>
+                            <li>
+                                <label for="bank_no">银行卡号</label>
+                                <input id="bank_no" type="text" value="2122121212122121">
+                            </li>
+                            <li>
+                                <label for="bank_name">开户银行</label>
+                                <input id="bank_name" type="text" value="2122121212122121">
+                            </li><li>
+                                <label for="bank_user">开户姓名</label>
+                                <input id="bank_user" type="text" value="2122121212122121">
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tool">
+                        <a href="javascript:;">确认转售</a>
+                    </div>
 
-
-
-<block name="sidebar"></block>
-
-
-
-<block name="style">
-
-    <style>
-
-        body{padding: 0}
-		.header_cen{ width:1190px;}
-		.show-num-mod{ margin-left:23px; margin-right:23px;}
-		.container-span .span2{ float:none; width:1190px; margin:0 auto;}
-    </style>
-
-</block>
-
-
-
-<block name="body">
-
-    <!-- 主体 -->
-
-    <div id="indexMain" class="index-main">
-
-       <!-- 插件块 -->
-
-
-    </div>
-
-</block>
-
-
-
-<block name="script">
-
-<script type="text/javascript">
-
-    /* 插件块关闭操作 */
-
-    $(".title-opt .wm-slide").each(function(){
-
-        $(this).click(function(){
-
-            $(this).closest(".columns-mod").find(".bd").toggle();
-
-            $(this).find("i").toggleClass("mod-up");
-
-        });
-
-    })
-
-    $(function(){
-
-        // $('#main').attr({'id': 'indexMain','class': 'index-main'});
-
-        $('.copyright').html('<div class="copyright"> ©2017 微信管理系统</div>');
-
-        $('.sidebar').remove();
-
-    })
-
-</script>
-
-</block>
+                </div>
+            </section>
+           

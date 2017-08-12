@@ -1,0 +1,597 @@
+/* reset */
+html {
+  -webkit-text-size-adjust: none;
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+dl,
+dt,
+dd,
+ul,
+li,
+figure,
+article,
+header,
+footer,
+section,
+cite {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  font-weight: normal;
+}
+em,
+input {
+  color: #333;
+}
+input,
+blockquote {
+  padding: 0;
+  margin: 0;
+}
+img {
+  border: none;
+  vertical-align: bottom;
+}
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+address,
+cite,
+dfn {
+  font-style: normal;
+}
+html,
+body {
+  /*-webkit-touch-callout: none;
+    -webkit-user-select: none;*/
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: "HanHei SC", "PingHei", "PingFang SC", "STHeitiSC-Light", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+blockquote {
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
+}
+a {
+  color: #fff;
+  text-decoration: none;
+}
+.clearfix {
+  zoom: 1;
+}
+.clearfix:after {
+  content: '';
+  display: block;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+}
+
+.tc {
+    text-align: center;
+}
+
+body {
+    color: #333;
+    background-color: #f3f3f3;
+}
+
+.container {
+   
+}
+
+/* 转售 */
+header {
+    background-color: #fff;
+    margin-bottom: .2rem;
+}
+
+
+
+h1.title {
+    height: .8rem;
+    font-size: .3rem;
+    color: #313239;
+    font-weight: 700;
+    border-bottom: 1px solid #c9c9c9;
+    padding-left: .3rem;
+    line-height: .8rem;
+    background-color: #fff;
+    position: relative;
+}
+
+h1.title .more {
+    position: absolute;
+    right: .3rem;
+    top: 0;
+    font-size: .26rem;
+}
+
+.desc {
+    padding: .2rem .3rem;
+    font-size: .26rem;
+    color: #313239;
+    line-height: .56rem;
+    border-bottom: 1px solid #c9c9c9;
+}
+.desc .red {
+    color: #f11630;
+}
+.wrap {
+    margin-bottom: .2rem;
+}
+.wrap .title {
+    border-top: 1px solid #c9c9c9;
+}
+
+
+.box {
+    background-color: #fff;
+}
+
+.box-duihua {
+    padding: .25rem .6rem;
+    background-color: #f8f8f8;
+    height: 2.9rem;
+}
+.box-duihua li {
+    font-size: .26rem;
+    color: #313239;
+    line-height: .36rem; 
+}
+
+.box-in {
+    padding: .25rem 0 0;
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.red {
+    color: #ff3419;
+}
+
+.gray {
+    color: #acacae;
+}
+
+.num {
+    font-size: .3rem; 
+    font-weight: 700;
+
+}
+
+.box-flex {
+    display: flex;
+    font-size: .26rem;
+    line-height: .36rem;
+    margin-bottom: .4rem;
+}
+
+.flex1 {
+    flex: 1;
+    text-align: center;
+}
+.flex2 {
+    flex: 1;
+    text-align: center;
+}
+.flex3 {
+    flex: 1;
+    text-align: center;
+}
+
+.bank-info {
+    background-color: #fff;
+    border-top: 1px solid #c9c9c9;
+    margin-bottom: .3rem;
+}
+.bank-info li {
+    height: .5rem;
+    padding: .15rem .3rem;
+    display: flex;
+    border-bottom: 1px solid #c9c9c9;
+}
+.bank-info li label{
+    display: inline-block;
+    font-size: .28rem;
+    color: #9b9b9b;
+    flex: 2;
+}
+.bank-info li input{
+    height: .5rem;
+    border: none;
+    color: #313239;
+    text-align: right;
+    flex: 3;
+}
+
+
+
+/* 绑定 */
+.top {
+    padding: .3rem .3rem .23rem;
+
+}
+
+.top h1 {
+    font-size: .32rem;
+    color: #313239;
+    text-align: center;
+    line-height: .58rem;
+    padding:  0;
+}
+
+.top p {
+    font-size: .28rem;
+    color: #69696d;
+    line-height: .42rem;
+}
+
+.form-wrap {
+    border-top: 1px solid #c9c9c9;
+    border-bottom: 1px solid #c9c9c9;
+    background-color: #fff;
+    padding: 0 .3rem;
+    margin-bottom: .2rem;
+}
+
+.form-wrap li {
+    height: .5rem;
+    padding: .15rem 0;
+    border-bottom: 1px solid #c9c9c9;
+    display: flex;
+}
+
+.form-wrap li:last-child {
+    border-bottom: none;
+}
+
+.form-wrap li label{
+    display: inline-block;
+    font-size: .3rem;
+    color: #9b9b9b;
+    flex: 1;
+    color: #313239;
+}
+.form-wrap li input{
+    height: .5rem;
+    border: none;
+    color: #313239;
+    flex: 2;
+}
+
+.flex-3 {
+    margin-top: .2rem;
+    margin-bottom: .5rem;
+   
+}
+
+.form-wrap li.flex-3-li {
+    position: relative;
+   
+}
+
+.form-wrap li.flex-3-li label {
+    
+}
+
+.form-wrap li.flex-3-li input {
+    
+}
+
+.form-wrap li.flex-3-li .btn-yanzheng {
+    position: absolute;
+    right: -.3rem;
+    top: -1px;
+    height: .82rem;
+    line-height: .8rem;
+    background-color: #cdced0;
+    font-size: .28rem;
+    color: #fff;
+    padding: 0 .2rem;
+}
+
+.form-info {
+    padding: 0 .3rem;
+    text-align: right;
+    font-size: .2rem;
+    color: #1e56f6;
+}
+
+.form-info a {
+   color: #1e56f6; 
+}
+
+.form-info .ico {
+    width: .2rem;
+    height: .2rem;
+    margin-right: .2rem;
+    vertical-align: -.03rem;
+
+}
+
+/* common */ 
+.tool {
+	margin-bottom: 80px;
+}
+
+.tool a {
+   width: 5.8rem;
+   height: .8rem;
+   line-height: .8rem;
+   font-size: .34rem;
+   color: #fff;
+   background-color: #1e9cf6;
+   border-radius: .08rem;
+   display: block;
+   margin: 0 auto;
+   text-align: center;
+
+}
+
+footer {
+    border-top: 1px solid #c9c9c9;
+    padding: .08rem;
+    background-color: #fff;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.footer-link {
+    display: flex;
+    
+}
+.footer-link li {
+	font-size: 15px;
+    flex: 1;
+    text-align: center;
+}
+.footer-link li span{
+    display: block;
+}
+
+.ico {
+    display: inline-block;
+    width: .4rem;
+    height: .4rem;
+    margin-right: .2rem;
+    vertical-align: -.08rem;
+}
+.ico1 {
+    display: inline-block;
+    width: .54rem;
+    height: .54rem;
+}
+.ico-duihuan {
+    background: url(../img/ico_zhuanshou@3x.png) no-repeat;
+    background-size: cover;
+}
+.ico-duihuanma {
+    background: url(../img/duihuama@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.ico-index {
+    background: url(../img/index@3x.png) no-repeat;
+    background-size: cover;
+}
+.ico-bank {
+    background: url(../img/bank@3x.png) no-repeat;
+    background-size: cover;
+}
+.ico-record {
+    background: url(../img/record@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.ico-support {
+    background: url(../img/i@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.ico-bank-icbc {
+    background: url(../img/duihuama@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.ico-add {
+    background: url(../img/add@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.ico-arrow-right {
+    background: url(../img/arrow_right@3x.png) no-repeat;
+    background-size: cover;
+}
+
+.bank header {
+    margin-bottom: 0;
+}
+
+.bankList {
+    background-color: #fff;
+    margin-bottom: .8rem;
+}
+
+.bankList ul{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bankList li{
+    box-sizing: border-box;
+    position: relative;
+    flex: 0 0 50%;
+    height: .75rem;
+    padding-left: 1rem;
+    font-size: .28rem;
+    line-height: .75rem;
+    border-right: 1px solid #c9c9c9;
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.bankList li a {
+   color: #313239; 
+}
+
+.bankList li .ico {
+    position: absolute;
+    left: .3rem;
+    top: .15rem;
+}
+
+.bankList li .bg{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5); 
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.bankList .active .bg{
+    display: block;
+}
+
+.bank-cart {
+
+}
+
+.cart-box {
+    padding: .3rem .3rem;
+}
+
+.cart {
+    height: 3rem;
+    border-radius: .1rem;
+    background: red;
+    position: relative;
+    padding: .5rem .3rem 0 1rem;
+}
+
+.cart h3{
+    font-size: .4rem;
+    line-height: .6rem;
+    color: #fff;
+}
+
+.cart .info{
+    font-size: .24rem;
+    line-height: .3rem;
+    color: #fff;
+    margin-bottom: .2rem;
+}
+
+.cart .no{
+    font-size: .14rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.cart .no span {
+    flex: 1;
+}
+
+.cart .no .num{
+    font-size: .5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.cart .ico-bank-icbc{
+    position: absolute;
+    left: .3rem;
+    top: .6rem;
+}
+
+.cart-tool {
+
+}
+
+.cart-tool li {
+    position: relative;
+    height: .8rem;
+    color: #1e9cf6;
+    font-size: .3rem;
+    line-height: .8rem;
+    padding: 0 .3rem 0 .8rem;
+    background-color: #fff;
+}
+
+.cart-tool li .ico-add {
+    position: absolute;
+    left: .3rem;
+    top: .25rem;
+    width: .3rem;
+    height: .3rem;
+
+}
+
+.cart-tool li .ico-arrow-right {
+    position: absolute;
+    right: .3rem;
+    top: .27rem;
+    width: .26rem;
+    height: .26rem;
+}
+
+.record header {
+    margin-bottom: 0;
+}
+
+.record .tips {
+    padding: 0 .3rem; 
+}
+
+.record .tips p{
+    font-size: .22rem;
+    color: #acacae;
+    line-height: .6rem;
+}
+
+.record-wrap {
+    color: #9b9b9b;
+}
+
+.record-wrap .title{
+    color: #9b9b9b;
+}
+
+.record-wrap .box {
+    padding: .2rem .3rem;
+}
+
+.record-wrap li {
+    line-height: .6rem;
+    height: .5rem;
+}
+
+.record-wrap li .tit {
+    font-size: .28rem;
+    margin-right: .1rem;
+}
+
+.record-wrap li .con {
+    font-size: .28rem;
+    color:#313239;
+}
+
+.record-wrap li .num {
+    font-size: .28rem;
+    color: #ff3419;
+}

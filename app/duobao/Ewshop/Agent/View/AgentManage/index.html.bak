@@ -15,7 +15,7 @@
         <!-- 高级搜索 -->
         <div class="search-form fr cf">
             <div class="sleft">
-                <input type="text" name="mobile" class="search-input" value="{:I('mobile')}" placeholder="请输入用户名或者手机号">
+                <input type="text" name="mobile" class="search-input" value="{:I('mobile')}" placeholder="请输入用户名或者手机号" />
                 <a class="sch-btn" href="javascript:;" id="search" url="{:U('index')}"><i class="btn-search"></i></a>
             </div>
         </div>
@@ -51,7 +51,7 @@
 						<td>{$vo.last_login_time|time_format}</td>
                         <td>{:long2ip($vo['last_login_ip'])}</td>
                         <td>
-                          <-- <a title="编辑" href="{:U('edit?id='.$vo['id'])}">查看</a> -->
+                          
                            <!--  <eq name="vo.status" value="1">
                                 <a href="{:U('User/changeStatus?method=forbidUser&id='.$vo['uid'])}" class="ajax-get">禁用</a>
                                 <else/>
@@ -79,7 +79,7 @@
         //搜索功能
         $("#search").click(function () {
             var url   = $(this).attr('url');
-            var query = $('.search-form').find('input').serialize();
+            var query = 'mobile=' + $('.search-input').val();alert(query);
             query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
             query     = query.replace(/^&/g , '');
             if (url.indexOf('?') > 0) {
@@ -87,6 +87,7 @@
             } else {
                 url += '?' + query;
             }
+            
             window.location.href = url;
         });
         //回车搜索
@@ -98,7 +99,7 @@
         });
         //导航高亮
         highlight_subnav('{:U('
-        BrandingManage/index
+        AgentMamage/index
         ')}'
         )
         ;
