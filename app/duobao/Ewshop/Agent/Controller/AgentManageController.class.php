@@ -101,14 +101,20 @@ class AgentManageController extends ControlController {
     
     private static function getAllUidsByParent($pid){
         if($pid){
-            $joinuids = self::getUidsByjoin($pid);
+            $joinuids = self::getUidsByjoin($pid);  
+            $fxusers[$pid] = getfxuser($pid);
 		     if($joinuids){
 		        foreach($joinuids as $k=>$v){
-		            $uids[] = $v['uid'];    
+		            $fxusers[$v['uid']] = getfxuser($v['uid']);
 		        }
-		            
-		            return $uids;
 		     }
+		     
+		     $uids =array_pop($fxusers);
+		     $ret =array();
+		     foreach($uids as $k=>$v){
+		            $ret[] = $v['uid'];
+		     }
+		           return $ret;
 		}
             return array();
     }
@@ -203,11 +209,12 @@ class AgentManageController extends ControlController {
              $uids = array_merge(array_keys($alluser),array((int)$loginfo['uid']));//包括用户本身
 		}else{ //非一级代理用户
 		    
-		     $uids = self::getAllUidsByParent($agent_login);
+		     $uids = self::getAllUidsByParent($agent_login);//所有代理ＩＤ
+		     //计算所有用户
 		     $uids = array_merge($uids,array((int)$agent_login));//代理本身需要计算进来
 		     $alluser = $Member->where(sprintf('uid in (%s)',implode(',', $uids)))->getField('uid,nickname',true);
 		}
-		//var_dump($uids);exit;
+		//var_dump(($uids));exit;
 	    //$this->assign('userinfo' , $info);	
 		if(empty($uids)){
 		    $this->meta_title = '佣金记录';
@@ -239,11 +246,13 @@ class AgentManageController extends ControlController {
 		$alogs = $all_order;
 		if($all_order){
 		    $zmap['order_id'] =array('in',array_keys($all_order));
-		    $is_winstate = M('WinExchange')->where($zmap)->getField('goods_id,order_id,buy_num',true);
-    		foreach($alogs as $k=>$v){
+		    $is_winstate = M('WinExchange')->where($zmap)->getField('order_id,goods_id,buy_num',true);
+		   	foreach($alogs as $k=>$v){
     		    $alogs[$k]['nickname'] = $alluser[$v['uid']];
+    		   
     		    if($is_winstate){
     		        foreach($is_winstate as $kk=>$vv){
+    		             $is_win[$vv['goods_id']] = $vv['goods_id'];
     		            if($k == $vv['order_id']){
     		                  $alogs[$k]['is_win'] = '中奖';  break;
     		            }else{
@@ -257,14 +266,14 @@ class AgentManageController extends ControlController {
       
     		//计算中奖金额
     		
-    		$zmap['is_exchange'] = array('eq',1); 
+    		//$zmap['is_exchange'] = array('eq',1); 
     		//支出金额
-    		$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
-    		if($is_win){
+    		//$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
+    		if($is_winstate){
         		    $zjmap['id'] = array('in',array_keys($is_win));
         		    $zjorder = M('Document')->where($zjmap)->getField('id,real_price');
-        		    foreach ($is_win as $k=>$v) {//总支出
-                         $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
+        		    foreach ($is_winstate as $k=>$v) {//总支出
+                         $zhichu =bcadd($zhichu,bcmul($zjorder[$v['goods_id']],(int)$v['buy_num'],4),4);
                     } 
     		}
     		    $zhichu = $zhichu ? $zhichu : 0;

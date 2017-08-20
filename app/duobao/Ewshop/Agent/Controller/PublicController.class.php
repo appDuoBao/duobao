@@ -26,7 +26,7 @@ class PublicController extends \Think\Controller {
            
 			    $user = M('UcenterMember');
 			    $arruser = $user->where(sprintf("username = '%s'", $username))->find();
-			   // print_r($arruser);exit;
+			   //print_r($arruser);exit;
 			   //判断是否是代理商
 			   if($arruser){
 			        $isagent = M('Join')->where(sprintf("uid = %d",$arruser['id']))->find();
@@ -92,7 +92,7 @@ class PublicController extends \Think\Controller {
             }
                  $User = new UserApi;
     			$data['password'] = think_ucenter_md5($password,UC_AUTH_KEY);//公司名称
-    			$ret = $Member->where(sprintf("username = '%s'",$mobile))->save($data);		
+    			$ret = $Member->where(sprintf("username = '%s'",$mobile))->save($data);	
     			if($ret){
     			     $this->success('修改成功！' , U('Public/login'));    
     			}

@@ -71,7 +71,7 @@
     <script type="text/javascript">
         //搜索功能
         $("#search").click(function () {
-            var url   = $(this).attr('url');
+            var url   = window.location.href; //$(this).attr('url');
             var query = $('.search-form').find('input').serialize();
             query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
             query     = query.replace(/^&/g , '');

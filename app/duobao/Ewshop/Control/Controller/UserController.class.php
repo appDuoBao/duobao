@@ -108,8 +108,8 @@ class UserController extends ControlController {
         foreach ($list as $key => $val) {
             $list[$key]['mobile'] = M('UcenterMember')->where("id='$val[uid]'")->getField("mobile");
             $list[$key]['email']  = M('UcenterMember')->where("id='$val[uid]'")->getField("email");
-		
-			if((int)$val['parent_id'] > 0){
+		        
+			if($jointype){
 				$list[$key]['usertype'] = '普通代理';
 			}else{
 				$list[$key]['usertype'] = '总代理商';
@@ -162,8 +162,8 @@ class UserController extends ControlController {
 		$map['pid']  = array('in',$fxuids);
 		$map['status']  = 1;//1佣金 2购买
 		
-		$start_date      = I('start_date');
-		$end_date      = I('end_date');
+			$start_date      = I('start_date') ? I('start_date') : date('Y-m-d');
+		$end_date      = I('end_date') ? I('end_date') : date('Y-m-d') ;
 		if($start_date && $end_date){
 			$map['create_time'] = array(array('egt',strtotime($start_date)),array('lt',strtotime($end_date)+(24*60*60)));
 		}elseif($start_date  && empty($end_date)){
@@ -174,46 +174,29 @@ class UserController extends ControlController {
 		//佣金总金额
 		//$zong =M('AccountLog')->where($map)->Sum('money_p');
 		$cur_ratio = M('Join')->where("uid='".$puid."'")->getField("ratio");
-		$alogs = M('AccountLog')->where($map)->select();
+		//$map['pid'] = array('neq',0);
+		//$alogs = M('AccountLog')->where($map)->select();
+		$umap['uid'] = array('in',$fxuids);
+		$name = $Member->where($umap)->getField('uid,nickname',true);
+		
+		$alogs = M('WinOrder')->where($map)->select();
 		$zong = 0 ;
         foreach ($alogs as $key => $aval) {
-			$order_money = $aval['money_p']/($aval['ratio']/100);
-			$zong +=  $order_money*($cur_ratio/100);
+			$tdcount = bcadd($aval['money'],$tdcount);
+			
+			$alogs[$key]['nickname'] = $name[$aval['uid']];
         }	
+        $zong = bcmul($tdcount ,bcdiv($cur_ratio,100,4),4);
+        $this->assign('ratio' , $cur_ratio);
 		$this->assign('zong' , $zong);
-		
-		//当天收益
-		$tdmap['pid']  = array('in',$fxuids);
-		$tdmap['status']  = 1;//1佣金 2购买
-		$tdmap['create_time'] = array(array('egt',strtotime(date('Y-m-d'))),array('lt',strtotime(date('Y-m-d'))+(24*60*60)));
-		//$tdzong =M('AccountLog')->where($tdmap)->Sum('money_p');
-		$talogs = M('AccountLog')->where($tdmap)->select();
-		$tdzong = 0 ;
-        foreach ($talogs as $key => $taval) {
-			$order_money = $taval['money_p']/($taval['ratio']/100);
-			$tdzong +=  $order_money*($cur_ratio/100);
-        }		
-		$tdzong = sprintf("%.2f",$tdzong);
-		$this->assign('tdzong' , $tdzong);
+		$this->assign('tdzongcount',$tdcount);
 		
 		//总销售金额（包含自己的销售额+所有下级的销售额）
 		$zongcount = getxse($fxuids);
 		$this->assign('zongcount' , $zongcount);			
-		//昨日总消费金额
-		//$tdzongcount = getxse($fxuids,strtotime(date('Y-m-d'))-(60*60*24));
-		$tdzongcount = getxse($fxuids,strtotime(date('Y-m-d')));
-		$this->assign('tdzongcount' , $tdzongcount);		
-		//昨日总消费金额
+				
 		
-		$list = M('AccountLog')->where($map)->order('create_time desc')->select();
-        foreach ($list as $key => $val) {
-            $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
-			$order_money = $val['money_p']/($val['ratio']/100);
-			$list[$key]['ratio']=$cur_ratio;
-            $list[$key]['money_p'] = $order_money*($cur_ratio/100);	
-        }				
-		
-        $this->assign('_list' , $list);
+        $this->assign('_list' , $alogs);
         $this->meta_title = '佣金记录';
         $this->display();
     }
@@ -276,11 +259,12 @@ class UserController extends ControlController {
 		$alogs = $all_order;
 		if($all_order){
 		    $zmap['order_id'] =array('in',array_keys($all_order));
-		    $is_winstate = M('WinExchange')->where($zmap)->getField('goods_id,order_id,buy_num',true);
+		    $is_winstate = M('WinExchange')->where($zmap)->getField('order_id,goods_id,buy_num',true);
     		foreach($alogs as $k=>$v){
     		    $alogs[$k]['nickname'] = $alluser[$v['uid']];
     		    if($is_winstate){
     		        foreach($is_winstate as $kk=>$vv){
+    		            $is_win[$vv['goods_id']] = $vv['goods_id'];
     		            if($k == $vv['order_id']){
     		                  $alogs[$k]['is_win'] = '中奖';  break;
     		            }else{
@@ -294,14 +278,11 @@ class UserController extends ControlController {
       
     		//计算中奖金额
     		
-    		$zmap['is_exchange'] = array('eq',1); 
-    		//支出金额
-    		$is_win = M('WinExchange')->where($zmap)->getField('goods_id,buy_num',true); //中奖与否
-    		if($is_win){
+    		if($is_winstate){
         		    $zjmap['id'] = array('in',array_keys($is_win));
         		    $zjorder = M('Document')->where($zjmap)->getField('id,real_price');
-        		    foreach ($is_win as $k=>$v) {//总支出
-                         $zhichu =bcadd($zhichu,bcmul($zjorder[$k],$v,4),4);
+        		    foreach ($is_winstate as $k=>$v) {//总支出
+                         $zhichu =bcadd($zhichu,bcmul($zjorder[$v['goods_id']],(int)$v['buy_num'],4),4);
                     } 
     		}
     		    $zhichu = $zhichu ? $zhichu : 0;
@@ -820,6 +801,24 @@ class UserController extends ControlController {
         exit;
 
 
+    }
+    
+    public function updateRootId(){
+        $puid = I('uid');
+        if($puid){
+            $fxusers = getfxuser($puid);
+            foreach ($fxusers as $k=>$v) {
+                 $uids[] = $v['uid']; 
+            }
+            $map['uid'] = array('in',$uids);
+           // $map['root_id'] = array('eq',0);
+            $data['root_id'] = $puid;
+            $ret = M('Member')->where($map)->save($data); 
+            error_log(implode(',',$uids).'-->update-->root_id'.'-->'.$puid,'3','/home/tmp/uprootid.log');
+            if($ret) echo 'susccess';
+         }
+         echo 'data is null';
+            
     }
 
 

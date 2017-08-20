@@ -388,15 +388,26 @@ footer {
     background: url(../img/index@3x.png) no-repeat;
     background-size: cover;
 }
+.ico-indexn {
+    background: url(../img/indexn@3x.png) no-repeat;
+    background-size: cover;
+}
 .ico-bank {
     background: url(../img/bank@3x.png) no-repeat;
+    background-size: cover;
+}
+.ico-bankn {
+    background: url(../img/bankn@3x.png) no-repeat;
     background-size: cover;
 }
 .ico-record {
     background: url(../img/record@3x.png) no-repeat;
     background-size: cover;
 }
-
+.ico-recordn {
+    background: url(../img/recordn@3x.png) no-repeat;
+    background-size: cover;
+}
 .ico-support {
     background: url(../img/i@3x.png) no-repeat;
     background-size: cover;

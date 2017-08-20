@@ -3,7 +3,7 @@
     <!-- 标题栏 -->
     <div class="main-title">
         <h2>{$userinfo.nickname}的佣金记录-当前获得收益总计：{$zong}元
-        &nbsp;&nbsp;&nbsp;&nbsp;今日收益:{$tdzong}元
+        &nbsp;&nbsp;&nbsp;&nbsp;今日收益:{$zong}元
         &nbsp;&nbsp;&nbsp;&nbsp;总销售业绩:{$zongcount}元
         &nbsp;&nbsp;&nbsp;&nbsp;今日业绩:{$tdzongcount}元</h2>
     </div>
@@ -39,14 +39,14 @@
             <notempty name="_list">
                 <volist name="_list" id="vo">
                     <tr>
-                        <td>{$vo.out_trade_no}</td>
+                        <td>{$vo.order_number}</td>
                         <td>{$vo.nickname}</td>
                         <td>{$vo.money_p}</td>
                         <td><span>{$vo.create_time|time_format}</span></td>
                         <td>
                         <if condition="($vo.status eq 1)">购买分佣</if>
                         </td>
-                        <td>{$vo.ratio}</td>
+                        <td>{$ratio}</td>
                     </tr>
                 </volist>
                 <else />
