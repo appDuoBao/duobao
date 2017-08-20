@@ -29,7 +29,7 @@
             }
           })();
         </script>
-        <link rel="stylesheet" href="Public/Pay/css/style.css">
+        <link rel="stylesheet" href="Public/Pay/css/style.css?t=aaabc">
         <script type="text/javascript" src="Public/Pay/js/libs/zepto.min.js"></script>
     </head>
     <body>
@@ -42,37 +42,20 @@
             </section>
             <section class="main ">
                <div class="wrap record-wrap">
-                   <h1 class="title">转售时间 2017-07-28 14:39:02</h1>
+                   <h1 class="title">转售记录 <php> date('Y-m-d H:i:s');</php></h1>
                    <div class="box record-con">
                        <ul>
-                           <li>
+                         
+                           <notempty name="list">
+                           <volist name="list" id="vo"> 
+                            <li>
                                <label class="tit">转售单号</label>
-                               <span class="con">1313131313131</span>
+                               <span class="con">{$vo.pay_id}</span>
                            </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con">1313131313131</span>
-                           </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con">1313131313131</span>
-                           </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con">1313131313131</span>
-                           </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con">1313131313131</span>
-                           </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con num">1313131313131</span>
-                           </li>
-                           <li>
-                               <label class="tit">转售单号</label>
-                               <span class="con num">1313131313131</span>
-                           </li>
+                          
+                           </volist>
+                          </notempty> 
+                          
 
                        </ul>
                    </div>

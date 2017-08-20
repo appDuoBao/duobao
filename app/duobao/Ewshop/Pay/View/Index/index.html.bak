@@ -29,7 +29,7 @@
             }
           })();
         </script>
-        <link rel="stylesheet" href="Public/Pay/css/style.css?t=abc">
+        <link rel="stylesheet" href="Public/Pay/css/style.css?t=12345">
         <script type="text/javascript" src="Public/Pay/js/libs/zepto.min.js"></script>
     </head>
     <body>
@@ -42,33 +42,29 @@
                 </div>
             </header>
             <section class="main">
+               <form action="{:U(doorder)}" method="post" class="form-horizontal">   
                 <div class="wrap">
                     <h1 class="title"><i class="ico ico-duihuanma"></i>兑换码</h1>
                     <div class="box bg-gray box-duihua">
-                        <ul>
-                            <li>qhugik</li>
-                            <li>af;asdf</li>
-                            <li>AAJLLJ</li>
-                            <li>AFSF</li>
-                            <li>AFLFS</li>
-                        </ul>
+                       <textarea id="textdata"  name="codedata" style="width:100%;max-height:100%;overflow: auto; word-break: break-all;" rows="10"><notempty name="code"><volist name="code" id="vo">{$vo.exchange_number},</volist></notempty></textarea>
+                        
                     </div>
-                    <h1 class="title">卡数合计 <span class="more">8张</span></h1>
+                    <h1 class="title">卡数合计 <span class="more">{$cardno}张</span></h1>
                     <div class="box box-in">
                         <div class="box-flex">
                             <div class="flex1">实际收入</div>
                             <div class="flex2"></div>
-                            <div class="flex3 red num">549.00</div>
+                            <div id="shiji" class="flex3 red num">{$shiji}</div>
                         </div>
                         <div class="box-flex">
                             <div class="flex1"></div>
                             <div class="flex2 gray">总价值</div>
-                            <div class="flex3 num">549.00</div>
+                            <div id="total" class="flex3 num">{$total}</div>
                         </div>
                         <div class="box-flex">
                             <div class="flex1"></div>
                             <div class="flex2 gray">手续费</div>
-                            <div class="flex3 num">550.00</div>
+                            <div id="sxf" class="flex3 num">{$sxf}</div>
                         </div>
                     </div>
                 </div>
@@ -77,22 +73,54 @@
                         <ul>
                             <li>
                                 <label for="bank_no">银行卡号</label>
-                                <input id="bank_no" type="text" value="2122121212122121">
+                                <input id="bank_no" type="text" value="{$cardinfo.card_no}">
                             </li>
                             <li>
                                 <label for="bank_name">开户银行</label>
-                                <input id="bank_name" type="text" value="2122121212122121">
+                                <input id="bank_name" type="text" value="{$cardinfo.bankname}">
                             </li><li>
                                 <label for="bank_user">开户姓名</label>
-                                <input id="bank_user" type="text" value="2122121212122121">
+                                <input id="bank_user" type="text" value="{$cardinfo.username}">
                             </li>
                         </ul>
                     </div>
                     
                     <div class="tool">
-                        <a href="javascript:;">确认转售</a>
+                        <a id="submit" href="javascript:;">确认转售</a>
                     </div>
 
                 </div>
+            </form>
             </section>
-           
+            <script type="text/javascript">
+               $("#submit").click(function(){
+                     var rdata =  $("#textdata").val();
+                     if(rdata){
+                        $(form).submit();   
+                     }
+                });
+               $("#textdata").blur(function(){
+                    var obj = $(this);
+                    var rdata = obj.val();
+                    if(rdata){
+                        $.ajax({
+                              type: 'GET',
+                              url: "{:U(getShouRu)}",
+                              data: { datacode:rdata},
+                              dataType: 'json',
+                               success: function(retdata){
+                                  if(retdata.ret==0){
+                                      $("#shiji").html(retdata.data.shiji);
+                                      $("#total").html(retdata.data.total);
+                                      $("#sxf").html(retdata.data.sxf);
+                                  }else{
+                                      $("#shiji").html(000);
+                                      $("#total").html(000);
+                                      $("#sxf").html(000);
+                                    }
+                              }
+                        })    
+                    }
+                });
+            </script>
+           <include file="Public:Pay" />

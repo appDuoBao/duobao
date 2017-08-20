@@ -23,23 +23,270 @@ class IndexController extends ControlController {
     
     private static  $merchantCertPass='NskNUN'; 
     
-    private static  $deskey = 'cputest';    
+    private static  $deskey = 'cputest';  
+    
+    private $uid;
+    
+    private $shouxufei = 2; //手续费
+    
+    public function _initialize(){
+        
+        $this->uid = ($_SESSION['onethink_home']['user_auth']['uid']);
+        if(empty($this->uid)){
+             header("Location: ./?s=/Weixin/User/register");    
+        }
+    }
+      
     public function index(){
-		
-	     $this->meta_title = '代付首页';
-       
+		 
+		 //计算金额
+		 $uid = $this->uid;
+		 $order = $this->getExCode();
+		 $shiji = $order['shiji'] ? $order['shiji'] : 0;
+		 $zhcode = $order['code'];
+		 $total = $order['total'] ? $order['total'] : 0;
+		 $sxf = $order['sxf'] ? $order['sxf'] : 0;
+	     //拉取银行卡信息
+	     $allcard = M('Account')->where(sprintf('uid = %d',$uid))->getField('id,card_no,bankname,username',true);
+	     $cardmap['defaultcard'] = array('eq',1);
+	     $cardmap['uid'] = array('eq',$uid);
+	     $cardinfo = M('Account')->where($cardmap)->find();
+	     //var_dump($cardinfo);exit;
+	     $this->assign('cardno',count($allcard));
+	     $this->assign('cardinfo',($cardinfo));
+	     
+	     $this->assign('shiji',$shiji);
+	     $this->assign('code',$zhcode);
+	     $this->assign('total',$total);
+	     $this->assign('sxf',$sxf);
+         $this->assign('sytlei',1);
 		 $this->display();
     }
-
-    public function paySinTrans(){
-	header("Content-type: text/html; charset=utf-8"); 
+    
+    private function getExCode($arr = ''){
+         $uid = $this->uid;
+		 $map['uid'] =array('eq',$uid);
+		 $map['is_exchange'] =array('eq',0);
+		 if(!empty($arr)){
+		   $map['exchange_number'] = array('in',$arr);   
+		 }
+		 $goodid = M('WinExchange')->where($map)->getField('goods_id',true);
+	     $zhcode = M('WinExchange')->where($map)->getField('id,uid,order_id,goods_id,exchange_number,buy_num',true);
+	     if($goodid){
+	        $goodprice = M('Document')->where(array('id'=>array('in',$goodid)))->getField('id,real_price');   
+	     }
+	     $total = 0;
+	     $sxf = 0;
+	     if($zhcode){
+	       
+	        foreach($zhcode as $k=>$v){
+	            $arrcode[] = $v['exchange_number'];
+	            $total = bcadd($total,bcmul($goodprice[$v['goods_id']],$v['buy_num'],4),4);
+	            $ex_tot[$v['exchange_number']] = bcmul($goodprice[$v['goods_id']],$v['buy_num'],4);
+	        }   
+	        $sxf = bcmul($total,bcdiv($this->shouxufei,100,4),4);
+	        $shiji = bcsub ($total,$sxf,4);
+	     }
+	     
+	     return array('shiji'=>$shiji,'total'=>$total,'code'=>$zhcode,'sxf'=>$sxf,'arrcode'=>$arrcode,'exrecord'=>$ex_tot);
+        
+    }
+    public function getShouRu(){
+        $datacode = I('datacode');
+        if($datacode){
+            $code = explode(',', $datacode);
+            $ret = $this->getExCode($code); 
+            if($ret){
+                $retdata = array('shiji'=>$ret['shiji'],'total'=>$ret['total'],'sxf'=>$ret['sxf']); 
+                exit(json_encode(array('ret'=>0,'data'=>$retdata,'msg'=>'ok')));   
+            }   
+        }
+        exit(json_encode(array('ret'=>1,'msg'=>'error','data'=>'')));    
+    }
+    public function doorder(){
+        $uid = $this->uid;
+        $datacode=I('codedata');
+        if(empty($datacode) || empty($uid)){
+            
+            $this->error("没有可兑换的兑换码");return;
+        }
+        $code = explode(',', $datacode);
+        $order = $this->getExCode($code);
+        if($order){
+          //查询有无银行卡
+             $allcard = M('Account')->where(sprintf('uid = %d',$uid))->getField('id,card_no,bankname,username',true);
+    	     if(empty($allcard)){
+    	          $this->redirect('Index/bindcard');  return; 
+    	     }
+    	     $cardmap['defaultcard'] = array('eq',1);
+    	     $cardmap['uid'] = array('eq',$uid);
+    	     $cardinfo = M('Account')->where($cardmap)->find();
+           if($order['shiji']){
+               $payobj = M('PayRecord');
+            //插入订单表数据 
+                $shiji =$order['shiji'];
+                $arrcode = $order['arrcode'];
+                //根据pay_code查询是否有过支付
+                $paycode=implode(':', $arrcode);
+                $is_payorder = $payobj->where(sprintf("pay_code ='%s' and status != %d",$paycode,1))->find();
+                if($is_payorder){
+                    $orderSn =  $is_payorder['pay_id'];
+                    $data['card_no'] = $is_payorder['card_no'];   
+                }else{
+                    $orderSn = 'PAY' . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', mt_rand(10, 1000));
+                    $data['pay_id'] = $orderSn;
+                    $data['account_id'] = $cardinfo['id'];
+                    $data['card_no'] = $cardinfo['card_no'];
+                    $data['username'] = $cardinfo['username'];
+                    $data['cardname'] = $cardinfo['bankname'];
+                    $data['uid'] = $uid;
+                    $data['pay_code'] = $paycode;
+                    
+                    $data['total_nu'] = $shiji;
+                    $data['ctime'] = time();
+                    $data['status'] = 0;
+                    $ret = M('PayRecord')->add($data);
+                    
+                    if($ret){
+                         $logdata['order_no'] =  $orderSn;
+                         foreach($order['code'] as $k=>$v){
+                             $logdata['win_order_id'] =  $v['order_id'];
+                             $logdata['uid'] =  $uid;
+                             $logdata['exchange_number'] =  $v['exchange_number'];
+                             $logdata['total'] = $order['exrecord'][$v['exchange_number']];
+                             $logdata['ctime'] = time();
+                             $paylog = M('PayLog')->add($logdata);
+                        }
+                          //exit('tat');
+                    }else{
+                        $this->error('系统错误');return;   
+                    }
+                }
+                if($shiji && $uid && $data['card_no'] && $orderSn){ 
+                        //调用第三方接口 
+                       $retstatu = 1;// $this->paySinTrans($orderSn,$shiji,$cardinfo); 
+                       if($retstatu){
+                            //更新所有本系统未支付状态记录,//第三方支付成功一定要更新 win-exchange 
+                            $win_ex = M('WinExchange');
+                            $order_ids = array_keys($order['code']); 
+                            $exmap['id'] = array('in',$order_ids);
+                            $exret = $win_ex->where($exmap)->save(array('is_exchange'=>1));
+                            $ret = M('PayRecord')->where(sprintf("pay_id = '%s' ",$orderSn))->save(array('status'=>1));
+                            if($ret && $exret){ 
+                                $this->redirect('index/recordlist');return;
+                            }else{//支付成功强制　更新表
+                                $exmap['id'] = array('in',$order_ids);
+                                $exret = $win_ex->where($exmap)->save(array('is_exchange'=>1));
+                                 error_log(json_encode(array('orderNo'=>$orderNo,'status'=>'exret:'.$exret.'|payret:'.$ret,'msg'=>'更新数据库失败'.implode(':',$order_ids)))."\n\t",3,'/home/tmp/pay.log');   
+                            } 
+                       }else{
+                           //第三方支付没成功
+                            error_log(json_encode(array('orderNo'=>$orderNo,'status'=>$ret,'msg'=>'支付接口：'.$retstatu))."\n\t",3,'/home/tmp/pay.log');   
+                       }  
+                    
+                }else{
+                    //报错信息    
+                }
+           }     
+            
+        }
+            
+        
+    }
+    public function bindcard(){
+         
+         if(IS_POST){
+            $accout = M('Account');
+            //查询是否帮定过
+            $data['card_no'] = I('card_no');
+            if(!$data['card_no'] || !preg_match('/\d{16,19}/', $data['card_no'])){
+                $this->error("卡号不正确");return;
+            }
+            $is_card = $accout->where('card_no = '.$data['card_no'])->find();
+            if($is_card){
+                $this->error("此卡已经绑定过了，换张卡哟");return;    
+            }
+            $data['username'] = I('username');
+            $data['idcard'] = I('idcard');
+            $data['mobile'] = I('mobile');
+            $data['ctime'] = time();
+            $data['bankname'] = I('bankname');
+            $data['defaultcard'] = 1;
+            //参数验证
+            if(strlen($data['idcard']) < 18){
+                $this->error("身份证号不正确");return;
+            }
+            $ret = $accout->save($data);
+            if($ret){
+                $this->redirect('index/index');  return;  
+            }
+         }
+         $username = I('username');
+         $idcard = I('idcard');
+         $cardno = I('cardno');
+         $bankname = I('bankname');
+         $this->assign('username',$username);
+         $this->assign('idcard',$idcard);
+         $this->assign('cardno',$cardno);
+         $this->assign('bankname',$bankname);
+             
+         $this->display();
+    }
+    public function checkCode(){
+        if (trim($_POST['miss']) == $_SESSION['mobile_code']) {
+            $return = array ("status" => 1 , "info" => "");
+        } else {
+            $return = array ("status" => 0 , "info" => '验证码不正确');
+        }
+        $this->ajaxreturn($return);
+    }
+    public function sendcode(){
+        header('Content-type: text/html; charset=UTF-8');
+        $phone = $_POST['phone'];
+        $mobile_code = random(4 , 1);//生成手机验证码
+        $send_code   = (!empty($_SESSION['send_code'])) ? $_SESSION['send_code'] : '8888';//获取提交随机加密码
+        $content     = "您的短信验证码为：" . $mobile_code . "，有效期一小时。【千亩阳光】";
+        $result   =  sendsmscode($phone , $content , $send_code , $mobile_code);
+        
+    }
+    
+    public function cardlist(){
+         $uid = $this->uid;
+         $accout = M('Account');
+         $cards = $accout->where('status=1')->getField('id,card_no,bankname',true);
+         $this->assign('list',$cards);
+         $this->assign('sytlec',1);
+		 $this->display();
+    }
+    
+    public function selectcard(){
+      
+        $fromurl = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $this->assign('fromurl',$fromurl);
+        $this->display();    
+    }
+    public function recordlist(){
+        var_dump(strlen('9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063'));
+         $uid = $this->uid;
+         $ctime = I('stime') ? I('stime') : date('Y-m-d');
+         $start_time = strtotime($ctime);
+         $end_time = strtotime($ctime + 24*60*60);
+         $map['status'] = array('eq',1);
+         $map['uid'] = array('eq',$uid);
+         $list = M('PayRecord')->where($map)->getField('id,pay_id',true);
+         $this->assign('sytler',1);
+         $this->assign('list',$list);
+		 $this->display();
+    }
+    public function paySinTrans($orderSn,$shiji,$cardinfo){
+	    header("Content-type: text/html; charset=utf-8"); 
         $reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
         $order['mcSequenceNo'] = "123456789";
         $order["mcTransDateTime"] = date('YmdHis');
-        $order["orderNo"] = "201704070000013094";
-        $order["amount"] = "1000";
-        $order["cardNo"] = self::do_des('6225880175058792',self::$deskey); //'9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063';
-        $order["accName"] =  '李立军';
+        $order["orderNo"] = $orderSn;
+        $order["amount"] = $shiji;
+        $order["cardNo"] = self::do_des($cardinfo['card_no'],self::$deskey); //'9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063';
+        $order["accName"] =  $cardinfo['username'];
         $order["accType"] = '0';
         $order1["lBnkNo"]  = '';
         $order1["lBnkNam"] = '';
@@ -47,28 +294,28 @@ class IndexController extends ControlController {
         $order1["validPeriod"] ='';
         $order1["cvv2"] ="";
         $order1["cellPhone"] = "";
-	$order1['remark']='';
-	$order1['bnkRsv'] = '';
-	$order['capUse'] ='9';
-	//$order['callBackUrl']='http://duobao.akng.net/pay.php?s=index/callbak';
-	$params['service'] = 'capSingleTransfer';
-        $publicp = self::publicParams($params);
-   	$order = array_merge($order,$publicp);
-	ksort($order);
-	$signdata = self::arrToStr($order);
-        $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
-
-        //$header =array($signdata.'&merchantSign='.$sign['sign'] . '&merchantCert='.$sign['cert']);
-	$header =array();
-	$order= array_merge($order,$order1);
-	$order['merchantSign'] = $sign['sign'];
-	$order['merchantCert'] = $sign['cert'];
-        $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
-	//var_dump($order,$res);exit;
-	$ret = self::formartRet($res);
-	var_dump($signdata);
-	print_r($ret);exit;
-            
+    	$order1['remark']='';
+    	$order1['bnkRsv'] = '';
+    	$order['capUse'] ='9';
+    	//$order['callBackUrl']='http://duobao.akng.net/pay.php?s=index/callbak';
+    	$params['service'] = 'capSingleTransfer';
+            $publicp = self::publicParams($params);
+       	$order = array_merge($order,$publicp);
+    	ksort($order);
+    	$signdata = self::arrToStr($order);
+            $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
+    
+            //$header =array($signdata.'&merchantSign='.$sign['sign'] . '&merchantCert='.$sign['cert']);
+    	$header =array();
+    	$order= array_merge($order,$order1);
+    	$order['merchantSign'] = $sign['sign'];
+    	$order['merchantCert'] = $sign['cert'];
+            $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
+    	//var_dump($order,$res);exit;
+    	$ret = self::formartRet($res);
+    	var_dump($signdata);
+    	print_r($ret);exit;
+                
     }
     public static function formartRet($ret){
 	    if($ret){

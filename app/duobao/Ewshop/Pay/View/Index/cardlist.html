@@ -29,13 +29,30 @@
             }
           })();
         </script>
-         <link rel="stylesheet" href="Public/Pay/css/style.css">
+         <link rel="stylesheet" href="Public/Pay/css/style.css?a=bcaa">
         <script type="text/javascript" src="Public/Pay/js/libs/zepto.min.js"></script>
     </head>
     <body>
         <div class="container bank-cart">
             
             <section class="main ">
+               <notempty name="cardlist">  
+               <volist name="cardlist" id="vo"> 
+               <div class="cart-box">
+                 <div class="cart">
+                  <h3>{$vo.bankname}</h3>
+                  <p class="info">储蓄卡</p>
+                  <p class="no">
+                    <span>****</span>
+                    <span>****</span>
+                    <span>****</span>
+                    <span class="num">{$vo.card_no|substr=-4}</span>
+                  </p>
+                  <div class="ico ico-bank-icbc"></div>
+                 </div>
+               </div> 
+                </volist>
+               </notempty> 
                <div class="cart-box">
                  <div class="cart">
                   <h3>工商银行</h3>
@@ -51,14 +68,19 @@
                </div> 
               
               <div class="cart-tool">
-                <ul>
-                  <li>
+                <ul><a href="{:U(bindcard)}">
+                  <li id="addcard">
                     <i class="ico ico-add"></i>
                     <span>添加储蓄卡</span>
                     <i class="ico ico-arrow-right"></i>
-                  </li>
+                </li>  </a>
                 </ul>
               </div>
 
             </section>
+             <script type="text/javascript">
+              // $("#addcard").click(function(){
+                    
+               // });
+            </script>
            <include file="Public:Pay" />
