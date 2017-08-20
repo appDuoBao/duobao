@@ -164,7 +164,7 @@ class IndexController extends ControlController {
                 }
                 if($shiji && $uid && $data['card_no'] && $orderSn){ 
                         //调用第三方接口 
-                       $retstatu = 1;// $this->paySinTrans($orderSn,$shiji,$cardinfo); 
+                       $retstatu =  $this->paySinTrans($orderSn,$shiji,$cardinfo); 
                        if($retstatu){
                             //更新所有本系统未支付状态记录,//第三方支付成功一定要更新 win-exchange 
                             $win_ex = M('WinExchange');
@@ -194,8 +194,13 @@ class IndexController extends ControlController {
         
     }
     public function bindcard(){
+         $uid = $this->uid;
          
-         if(IS_POST){
+         if(IS_POST && $uid){
+            $code = I('check_code');
+             if($code != $_SESSION['send_code']){
+                    $this->error("验证码不正确");return;
+             }
             $accout = M('Account');
             //查询是否帮定过
             $data['card_no'] = I('card_no');
@@ -206,6 +211,7 @@ class IndexController extends ControlController {
             if($is_card){
                 $this->error("此卡已经绑定过了，换张卡哟");return;    
             }
+            $data['uid'] = $uid;
             $data['username'] = I('username');
             $data['idcard'] = I('idcard');
             $data['mobile'] = I('mobile');
@@ -216,7 +222,7 @@ class IndexController extends ControlController {
             if(strlen($data['idcard']) < 18){
                 $this->error("身份证号不正确");return;
             }
-            $ret = $accout->save($data);
+            $ret = $accout->add($data);
             if($ret){
                 $this->redirect('index/index');  return;  
             }
@@ -247,6 +253,7 @@ class IndexController extends ControlController {
         $send_code   = (!empty($_SESSION['send_code'])) ? $_SESSION['send_code'] : '8888';//获取提交随机加密码
         $content     = "您的短信验证码为：" . $mobile_code . "，有效期一小时。【千亩阳光】";
         $result   =  sendsmscode($phone , $content , $send_code , $mobile_code);
+        exit(json_encode(array('ret'=>0,'info'=>'发送成功','msg'=>$result)));
         
     }
     
