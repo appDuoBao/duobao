@@ -21,7 +21,7 @@ class Sms {
 		}
 
 		$retult = $this->sendsms($mobile,$content);//发送短信
-
+		
 		if($retult > 0){//发送失败
 			$return=array("status"=>0,"info"=>$retult);
 		}else{//发送成功

@@ -7,7 +7,7 @@
 // | Author:
 // +----------------------------------------------------------------------
 
-namespace Branding\Controller;
+namespace Pay\Controller;
 use User\Api\UserApi;
 
 /**
@@ -21,39 +21,17 @@ class PublicController extends \Think\Controller {
      * @author ew_xiaoxiao
      */
     public function login($username = null, $password = null, $verify = null){
-        
-        if(IS_POST){         
-           
-			    $user = M('BrandingMember');
-			    $arruser = $user->where(sprintf("username = '%s'", $username))->find();
-			   // print_r($arruser);exit;
-			    $user = new UserApi;
-                $pass = think_ucenter_md5($password, UC_AUTH_KEY);
-                // var_dump($pass);exit;
-                if($arruser['password'] == $pass){ //UC登录成功
-                    $_SESSION['user_brand'] = $arruser;
-                    /* 登录用户 */
-                      $this->success('登录成功！', U('BrandingManage/index'));
-                    
-                }else{
-                     $this->error('密码错误');
-                }		
-        } else {
-            if(empty($_SESSION['user_brand'])){
-                $_SESSION['user_brand'] =array('0');
-                $this->redirect('Index/index');
-            }else{
-                /* 读取数据库中的配置 */
-                $config	=	S('DB_CONFIG_DATA');
-                if(!$config){
-                    $config	=	D('Config')->lists();
-                    S('DB_CONFIG_DATA',$config);
-                }
-                C($config); //添加配置
-               
-                $this->display();
+        if(IS_POST){
+            empty($mobile) ? $this->error("手机号码不能为空！") : '';
+            $is_exist = M('UcenterMember')->where("username = {$mobile}")->find();
+    	    $Member = D("Member");
+            $ret = $Member->login($is_exist['id']);
+            if($ret){
+                $this->redirect('Index/index');  return;    
             }
+            $this->display();
         }
+       
     }
 
     /* 退出登录 */

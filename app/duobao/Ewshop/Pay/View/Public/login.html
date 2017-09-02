@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>欢迎您登录推广管理系统</title>
+<title>欢迎您登录代理管理系统</title>
 <link rel="stylesheet" type="text/css" href="__CSS__/login.css" media="all">
 <link rel="stylesheet" type="text/css" href="__CSS__/{$Think.config.COLOR_STYLE}.css" media="all">
 </head>
@@ -16,7 +16,7 @@
   <div class="login-body">
     <div class="login-main pr">
       <form action="{:U('login')}" method="post" class="login-form">
-        <h3 class="welcome">推广商管理系统</h3>
+        <h3 class="welcome">代理管理系统</h3>
         <div id="itemBox" class="item-box">
           <div class="item"> <i class="icon-login-user"></i>
             <input type="text" name="username" placeholder="请填写用户名" autocomplete="off" />
@@ -27,7 +27,7 @@
           </div>
           <span class="placeholder_copy placeholder_pwd">请填写密码</span> </div>
         <div class="login_btn_panel">
-          <button class="login-btn" type="submit"> <span class="in"><i class="icon-loading"></i>登 录 中 ...</span> <span class="on">登 录</span> </button>
+          <button class="login-btn" type="submit"> <span class="in"><i class="icon-loading"></i>登 录 中 ...</span> <span class="on">登 录</span> </button><a href="{:U('public/resetps')}">忘记密码</a></a>
           <div class="check-tips"></div>
         </div>
       </form>

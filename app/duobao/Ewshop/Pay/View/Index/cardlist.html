@@ -36,8 +36,8 @@
         <div class="container bank-cart">
             
             <section class="main ">
-               <notempty name="cardlist">  
-               <volist name="cardlist" id="vo"> 
+               <notempty name="list">  
+               <volist name="list" id="vo"> 
                <div class="cart-box">
                  <div class="cart">
                   <h3>{$vo.bankname}</h3>
@@ -53,19 +53,7 @@
                </div> 
                 </volist>
                </notempty> 
-               <div class="cart-box">
-                 <div class="cart">
-                  <h3>工商银行</h3>
-                  <p class="info">储蓄卡</p>
-                  <p class="no">
-                    <span>****</span>
-                    <span>****</span>
-                    <span>****</span>
-                    <span class="num">2589</span>
-                  </p>
-                  <div class="ico ico-bank-icbc"></div>
-                 </div>
-               </div> 
+              
               
               <div class="cart-tool">
                 <ul><a href="{:U(bindcard)}">
@@ -83,4 +71,4 @@
                     
                // });
             </script>
-           <include file="Public:Pay" />
+           <include file="Public:pay" />

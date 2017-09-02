@@ -22,7 +22,7 @@
                     </li>
                     <li>
                       <a href="{:U('recordlist')}"> 
-                          <if condition="$sytle eq 1">
+                          <if condition="$sytler eq 1">
                             <i class="ico1 ico-record"></i>
                           <else/>
                              <i class="ico1 ico-recordn"></i>

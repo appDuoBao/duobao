@@ -19,21 +19,22 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    private static  $certFilePath='/home/cert/800000101000109.p12';
+    private static  $certFilePath='/home/cert/800000101000025.p12';
     
-    private static  $merchantCertPass='NskNUN'; 
+    private static  $merchantCertPass='sJLxvZ'; 
     
     private static  $deskey = 'cputest';  
     
     private $uid;
     
-    private $shouxufei = 2; //手续费
+    private $shouxufei = 1; //手续费1元
     
     public function _initialize(){
         
-        $this->uid = ($_SESSION['onethink_home']['user_auth']['uid']);
+        $this->uid = ($_SESSION['onethink_home']['uid']) ? ($_SESSION['onethink_home']['uid']) : ($_SESSION['onethink_admin']['user_auth']['uid']) ;
+       
         if(empty($this->uid)){
-             header("Location: ./?s=/Weixin/User/register");    
+             $this->redirect('User/register');  return; 
         }
     }
       
@@ -67,7 +68,8 @@ class IndexController extends ControlController {
          $uid = $this->uid;
 		 $map['uid'] =array('eq',$uid);
 		 $map['is_exchange'] =array('eq',0);
-		 if(!empty($arr)){
+		 $map['exchange_number'] =array('neq','');
+		 if(!empty($arr) && is_array($arr) && count($arr)>0){
 		   $map['exchange_number'] = array('in',$arr);   
 		 }
 		 $goodid = M('WinExchange')->where($map)->getField('goods_id',true);
@@ -84,7 +86,7 @@ class IndexController extends ControlController {
 	            $total = bcadd($total,bcmul($goodprice[$v['goods_id']],$v['buy_num'],4),4);
 	            $ex_tot[$v['exchange_number']] = bcmul($goodprice[$v['goods_id']],$v['buy_num'],4);
 	        }   
-	        $sxf = bcmul($total,bcdiv($this->shouxufei,100,4),4);
+	        $sxf = $this->shouxufei ;//bcmul($total,bcdiv($this->shouxufei,100,4),4);
 	        $shiji = bcsub ($total,$sxf,4);
 	     }
 	     
@@ -105,12 +107,12 @@ class IndexController extends ControlController {
     }
     public function doorder(){
         $uid = $this->uid;
-        $datacode=I('codedata');
-        if(empty($datacode) || empty($uid)){
+        $datacode= ''; //I('codedata');
+        if(empty($uid)){
             
-            $this->error("没有可兑换的兑换码");return;
+            $this->error("请登陆");return;
         }
-        $code = explode(',', $datacode);
+        $code = '';explode(',', $datacode);
         $order = $this->getExCode($code);
         if($order){
           //查询有无银行卡
@@ -128,11 +130,7 @@ class IndexController extends ControlController {
                 $arrcode = $order['arrcode'];
                 //根据pay_code查询是否有过支付
                 $paycode=implode(':', $arrcode);
-                $is_payorder = $payobj->where(sprintf("pay_code ='%s' and status != %d",$paycode,1))->find();
-                if($is_payorder){
-                    $orderSn =  $is_payorder['pay_id'];
-                    $data['card_no'] = $is_payorder['card_no'];   
-                }else{
+               
                     $orderSn = 'PAY' . strtoupper(dechex(date('m'))) . date('d') . substr(time(), -5) . substr(microtime(), 2, 5) . sprintf('%02d', mt_rand(10, 1000));
                     $data['pay_id'] = $orderSn;
                     $data['account_id'] = $cardinfo['id'];
@@ -161,7 +159,7 @@ class IndexController extends ControlController {
                     }else{
                         $this->error('系统错误');return;   
                     }
-                }
+                
                 if($shiji && $uid && $data['card_no'] && $orderSn){ 
                         //调用第三方接口 
                        $retstatu =  $this->paySinTrans($orderSn,$shiji,$cardinfo); 
@@ -181,7 +179,8 @@ class IndexController extends ControlController {
                             } 
                        }else{
                            //第三方支付没成功
-                            error_log(json_encode(array('orderNo'=>$orderNo,'status'=>$ret,'msg'=>'支付接口：'.$retstatu))."\n\t",3,'/home/tmp/pay.log');   
+                            error_log(json_encode(array('orderNo'=>$orderSn,'status'=>$ret,'msg'=>'支付接口：'.$retstatu))."\n\t",3,'/home/tmp/pay.log');   
+			                $this->redirect('index/index');return; 
                        }  
                     
                 }else{
@@ -198,7 +197,7 @@ class IndexController extends ControlController {
          
          if(IS_POST && $uid){
             $code = I('check_code');
-             if($code != $_SESSION['send_code']){
+             if($code != $_SESSION['mobile_code']){
                     $this->error("验证码不正确");return;
              }
             $accout = M('Account');
@@ -235,7 +234,7 @@ class IndexController extends ControlController {
          $this->assign('idcard',$idcard);
          $this->assign('cardno',$cardno);
          $this->assign('bankname',$bankname);
-             
+         $_SESSION['send_code'] = random(6 , 1);    
          $this->display();
     }
     public function checkCode(){
@@ -247,20 +246,20 @@ class IndexController extends ControlController {
         $this->ajaxreturn($return);
     }
     public function sendcode(){
-        header('Content-type: text/html; charset=UTF-8');
+        
         $phone = $_POST['phone'];
         $mobile_code = random(4 , 1);//生成手机验证码
         $send_code   = (!empty($_SESSION['send_code'])) ? $_SESSION['send_code'] : '8888';//获取提交随机加密码
         $content     = "您的短信验证码为：" . $mobile_code . "，有效期一小时。【千亩阳光】";
-        $result   =  sendsmscode($phone , $content , $send_code , $mobile_code);
-        exit(json_encode(array('ret'=>0,'info'=>'发送成功','msg'=>$result)));
+        $result      = sendsmscode($phone , $content , $send_code , $mobile_code);
+        exit(json_encode($result));
         
     }
     
     public function cardlist(){
          $uid = $this->uid;
          $accout = M('Account');
-         $cards = $accout->where('status=1')->getField('id,card_no,bankname',true);
+         $cards = $accout->where('status=1 and uid ='.$uid)->getField('id,card_no,bankname',true);
          $this->assign('list',$cards);
          $this->assign('sytlec',1);
 		 $this->display();
@@ -273,25 +272,26 @@ class IndexController extends ControlController {
         $this->display();    
     }
     public function recordlist(){
-        var_dump(strlen('9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063'));
+       
          $uid = $this->uid;
          $ctime = I('stime') ? I('stime') : date('Y-m-d');
          $start_time = strtotime($ctime);
          $end_time = strtotime($ctime + 24*60*60);
          $map['status'] = array('eq',1);
          $map['uid'] = array('eq',$uid);
-         $list = M('PayRecord')->where($map)->getField('id,pay_id',true);
+         $list = M('PayRecord')->where($map)->select();
          $this->assign('sytler',1);
          $this->assign('list',$list);
 		 $this->display();
     }
     public function paySinTrans($orderSn,$shiji,$cardinfo){
 	    header("Content-type: text/html; charset=utf-8"); 
-        $reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
+        //$reUrl = 'http://43.227.141.32/paygateway/mpsGate/mpsTransaction';//接口类型
+	 $reUrl = 'https://jd.kingpass.cn/paygateway/mpsGate/mpsTransaction';
         $order['mcSequenceNo'] = "123456789";
         $order["mcTransDateTime"] = date('YmdHis');
         $order["orderNo"] = $orderSn;
-        $order["amount"] = $shiji;
+        $order["amount"] = 1000;//bcmul($shiji,100,4);
         $order["cardNo"] = self::do_des($cardinfo['card_no'],self::$deskey); //'9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063';
         $order["accName"] =  $cardinfo['username'];
         $order["accType"] = '0';
@@ -306,22 +306,23 @@ class IndexController extends ControlController {
     	$order['capUse'] ='9';
     	//$order['callBackUrl']='http://duobao.akng.net/pay.php?s=index/callbak';
     	$params['service'] = 'capSingleTransfer';
-            $publicp = self::publicParams($params);
+        $publicp = self::publicParams($params);
        	$order = array_merge($order,$publicp);
     	ksort($order);
     	$signdata = self::arrToStr($order);
-            $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
-    
-            //$header =array($signdata.'&merchantSign='.$sign['sign'] . '&merchantCert='.$sign['cert']);
-    	$header =array();
+        $sign = $this->RSAsign($signdata,self::$merchantCertPass);//password私钥证书的密码
+       	$header =array();
     	$order= array_merge($order,$order1);
     	$order['merchantSign'] = $sign['sign'];
     	$order['merchantCert'] = $sign['cert'];
-            $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
-    	//var_dump($order,$res);exit;
-    	$ret = self::formartRet($res);
-    	var_dump($signdata);
-    	print_r($ret);exit;
+        $res =mb_convert_encoding(PostHttp($reUrl,$order,$header),'UTF-8','auto');
+       	$ret = self::formartRet($res); 
+        if($ret['rspCode']=='IPS00000'){
+            return 1;    
+        }else{
+	   var_dump($order,$ret);exit;
+            error_log(json_encode($ret)."\n\t",3,'/home/tmp/pay.log');     
+        }
                 
     }
     public static function formartRet($ret){
@@ -341,7 +342,7 @@ class IndexController extends ControlController {
     public static function publicParams($param = array()){
 	$params["charset"] = '02';
 	$params["version"] = '1.0';
-	$params["merchantId"] = '800000101000109';
+	$params["merchantId"] = '800000101000025';
 	$params["requestTime"] = date('YmdHis');
 	$params["requestId"] = time();
 	$params["service"] = $param['service'];
@@ -477,13 +478,20 @@ public static function encodeArr($input){
  }
  private static  function do_des($input, $key)
     {
-        //$key = substr(md5($key), 0, 24);
-        $td = mcrypt_module_open('tripledes', '', 'ecb', '');
-        $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
-        mcrypt_generic_init($td, $key, $iv);
-        $encrypted_data = mcrypt_generic($td, $input);
-        mcrypt_generic_deinit($td);
-        mcrypt_module_close($td);
-        return self::asc2hex($encrypted_data);
+      
+        $size = mcrypt_get_block_size(MCRYPT_DES, MCRYPT_MODE_ECB);
+        $str = self::pkcs5Pad($input, $size);
+        $td = @mcrypt_module_open(MCRYPT_DES, '', MCRYPT_MODE_ECB, '');
+        $iv = 'cputest0';
+        @mcrypt_generic_init($td, $key, $iv);
+        $data = @mcrypt_generic($td, $str);
+        $ret = strtoupper(bin2hex($data));
+        return $ret;
+        //return self::asc2hex($encrypted_data);
+    }
+    public static function pkcs5Pad($text, $blocksize)
+    {
+        $pad = $blocksize - (strlen($text) % $blocksize);
+        return $text . str_repeat(chr($pad), $pad);
     }
 }

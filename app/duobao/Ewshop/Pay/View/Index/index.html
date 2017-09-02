@@ -38,7 +38,7 @@
                 <h1 class="title"><i class="ico ico-duihuan"></i>兑换码转售</h1>
                 <div class="desc">
                     <span class="red">【极速转售平台】</span>
-                    文字描述
+                    是一个第三方卡类商品交易平台。注册平台后，通过该平台您可以将闲置的各类卡转让给其他有需求的用户，转售完成后交易金额将自动结算至您绑定的银行卡账户，方便快捷。
                 </div>
             </header>
             <section class="main">
@@ -46,7 +46,7 @@
                 <div class="wrap">
                     <h1 class="title"><i class="ico ico-duihuanma"></i>兑换码</h1>
                     <div class="box bg-gray box-duihua">
-                       <textarea id="textdata"  name="codedata" style="width:100%;max-height:100%;overflow: auto; word-break: break-all;" rows="10"><notempty name="code"><volist name="code" id="vo">{$vo.exchange_number},</volist></notempty></textarea>
+                       <textarea disabled id="textdata"  name="codedata" style="width:100%;max-height:100%;overflow: auto; word-break: break-all;" rows="10"><notempty name="code"><volist name="code" id="vo">{$vo.exchange_number},</volist></notempty></textarea>
                         
                     </div>
                     <h1 class="title">卡数合计 <span class="more">{$cardno}张</span></h1>
@@ -54,17 +54,17 @@
                         <div class="box-flex">
                             <div class="flex1">实际收入</div>
                             <div class="flex2"></div>
-                            <div id="shiji" class="flex3 red num">{$shiji}</div>
+                            <div id="shiji" class="flex3 red num">{$shiji}元</div>
                         </div>
                         <div class="box-flex">
                             <div class="flex1"></div>
                             <div class="flex2 gray">总价值</div>
-                            <div id="total" class="flex3 num">{$total}</div>
+                            <div id="total" class="flex3 num">{$total}元</div>
                         </div>
                         <div class="box-flex">
                             <div class="flex1"></div>
                             <div class="flex2 gray">手续费</div>
-                            <div id="sxf" class="flex3 num">{$sxf}</div>
+                            <div id="sxf" class="flex3 num">{$sxf}元</div>
                         </div>
                     </div>
                 </div>
@@ -123,4 +123,4 @@
                     }
                 });
             </script>
-           <include file="Public:Pay" />
+           <include file="Public:pay" />
