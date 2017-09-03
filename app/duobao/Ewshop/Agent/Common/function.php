@@ -456,6 +456,9 @@ function get_action_type($type, $all = false){
 function getfxuser($uid){//根据id获取下级分销会员，无限级别获取
         global $memberlist; 
         $map['parent_id']=$uid; 
+        //写文件缓存
+         $memlist = getFiles($uid);
+        if($memlist) return $memlist;
         $members = M('Member')->field('uid')->where($map)->select();
         //根据id获取下级用户
         if($members){
@@ -468,6 +471,19 @@ function getfxuser($uid){//根据id获取下级分销会员，无限级别获取
                         getfxuser($v['uid']);
                 }    
         }   
+        writeFiles($uid,$memberlist);
         return $memberlist;
+}
+function getFiles($uid){
+    $file =__DIR__ . '/../filedata/ids_'.$uid;
+    if(file_exists($file)){
+        $mems = file_get_contents($file);
+        return json_decode($mems,true);    
+    }    
+    
+}
+function writeFiles($uid,$mems){ 
+    $file =__DIR__ .'/../filedata/ids_'.$uid;
+    $ret = file_put_contents($file,json_encode($mems));
 }
 

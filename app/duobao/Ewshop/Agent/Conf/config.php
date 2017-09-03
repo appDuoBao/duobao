@@ -11,6 +11,7 @@
  * 前台配置文件
  * 所有除开系统级别的前台配置
  */
+ 
 return array (
     /* 数据缓存设置 */
     'DATA_CACHE_PREFIX' => 'onethink_' , // 缓存前缀

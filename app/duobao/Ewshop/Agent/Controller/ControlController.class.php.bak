@@ -19,10 +19,10 @@ class ControlController extends Controller {
     /**
      * 后台控制器初始化
      */
-    protected function _initialize(){
+    protected function _initialize(){var_dump($gid);exit;
         // 获取当前用户ID
         if(defined('UID')) return ;
-        define('UID',$_SESSION['user_brand']['id']);
+        define('UID',$_SESSION['user_agent']['id']);
         if( !UID ){// 还没登录 跳转到登录页面
             $this->redirect('Public/login');
         }

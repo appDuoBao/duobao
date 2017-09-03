@@ -102,7 +102,7 @@ class AgentManageController extends ControlController {
     private static function getAllUidsByParent($pid){
         if($pid){
             $joinuids = self::getUidsByjoin($pid);  
-            $fxusers[$pid] = getfxuser($pid);
+            $fxusers[$pid] = getfxuser($pid);var_dump($fxusers);exit;
 		     if($joinuids){
 		        foreach($joinuids as $k=>$v){
 		            $fxusers[$v['uid']] = getfxuser($v['uid']);
@@ -275,7 +275,7 @@ class AgentManageController extends ControlController {
         		    foreach ($is_winstate as $k=>$v) {//总支出
                          $zhichu =bcadd($zhichu,bcmul($zjorder[$v['goods_id']],(int)$v['buy_num'],4),4);
                     } 
-    		}exit;
+    		}
     		    $zhichu = $zhichu ? $zhichu : 0;
     		if($loginfo['ratio_type'] ==2){
     		    
