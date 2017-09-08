@@ -73,15 +73,34 @@
     <!--</div>-->
     <div class="tab-index">
     	<div class="active">
-    		最近中奖
+    		最近参与
     	</div>
     	<!--<div onclick="location.href='/Weixin/Index/introduce'">玩法规则</div>-->
      	<div>
-    		最近参与
+    		最近战绩
     	</div>       
     </div>
     <div class="tab-con">
-	    <ul class="lis">
+        <ul class="lis"  >
+	        <volist name="data.buy_list" id="vo1">
+	            <li>
+	                <div class="lf">
+	                    <img src="{$vo1.userinfo.headimgurl}" alt="">
+	                </div>
+	                <div class="lm">
+	                	<div class="lm-head">
+	                		<p class="lmh" style="text-overflow: ellipsis;width: 2.8rem;">{$vo1.userinfo.nickname}</p>
+	                		 <p class="lmt">{$vo1.buy_time|date='Y/m/d H:i:s',###}</p>
+	                	</div>
+	                    <p class="lm-gwk">{$vo1.goods_title}  购买{$vo1.period}期{$vo1.buy_num}单{$vo1.type}</p>
+	                </div>
+	                <!--<div class="lt">
+	                    <p class="lt1"><span>{$vo.num}</span>单</p><p class="lt2">参与</p>
+	                </div>-->
+	            </li>
+	        </volist>
+	    </ul>
+	    <ul class="lis" style="display:none">
 	        <volist name="data.pk_list" id="vo">
 	            <li>
 	                <div class="lf">
@@ -93,7 +112,7 @@
 	                		 <p class="lmt">{$vo.buy_time|date='Y/m/d H:i:s',###}</p>
 	                	</div>
 	                    
-	                    <p class="lm-gwk">{$vo.goods_title}  中奖{$vo.buy_num}单</p>
+	                    <p class="lm-gwk">{$vo.goods_title}  中奖{$vo.period}期{$vo.buy_num}单{$vo.codeid};</p>
 	                   
 	                </div>
 	                <!--<div class="lt">
@@ -102,25 +121,7 @@
 	            </li>
 	        </volist>
 	    </ul>
-	    <ul class="lis"  style="display:none">
-	        <volist name="data.buy_list" id="vo1">
-	            <li>
-	                <div class="lf">
-	                    <img src="{$vo1.userinfo.headimgurl}" alt="">
-	                </div>
-	                <div class="lm">
-	                	<div class="lm-head">
-	                		<p class="lmh" style="text-overflow: ellipsis;width: 2.8rem;">{$vo1.userinfo.nickname}</p>
-	                		 <p class="lmt">{$vo1.buy_time|date='Y/m/d H:i:s',###}</p>
-	                	</div>
-	                    <p class="lm-gwk">{$vo1.goods_title}  购买{$vo1.buy_num}单</p>
-	                </div>
-	                <!--<div class="lt">
-	                    <p class="lt1"><span>{$vo.num}</span>单</p><p class="lt2">参与</p>
-	                </div>-->
-	            </li>
-	        </volist>
-	    </ul>		
+	    		
         <!--<ul class="list">-->
         	<!--<li class="list-head">-->
         		<!--<p><a>开奖时间</a></p>-->

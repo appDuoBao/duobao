@@ -101,20 +101,25 @@ class AgentManageController extends ControlController {
     
     private static function getAllUidsByParent($pid){
         if($pid){
-            $joinuids = self::getUidsByjoin($pid);  
-            $fxusers[$pid] = getfxuser($pid);
-		     if($joinuids){
-		        foreach($joinuids as $k=>$v){
-		            $fxusers[$v['uid']] = getfxuser($v['uid']);
-		        }
+            $joinuids = self::getUidsByjoin($pid); 
+	    $agents=array();
+            if($joinuids){
+                foreach($joinuids as $k=>$v){
+                    $agents[] = $v['uid'];    
+                }    
+            }
+             $agents = array_merge($agents,array($pid)); 
+		     if($agents){
+		        
+		        $map['parent_id'] = array('in',$agents);
+		        $mapu['uid'] = array('in',$agents);
+		        $mems = M('Member')->where($map)->getField('uid',true);
+		        $memu = M('Member')->where($mapu)->getField('uid',true);
+		      
 		     }
-		     
-		     $uids =array_pop($fxusers);
-		     $ret =array();
-		     foreach($uids as $k=>$v){
-		            $ret[] = $v['uid'];
-		     }
-		           return $ret;
+		      $mems = is_array($mems) ? $mems : array();
+		      $memu = is_array($memu) ? $memu :array();	 
+		      return array_merge($mems,$memu);
 		}
             return array();
     }
@@ -208,7 +213,7 @@ class AgentManageController extends ControlController {
 		     $uids = (is_array($alluser)) ? $alluser : array();
              $uids = array_merge(array_keys($alluser),array((int)$loginfo['uid']));//包括用户本身
 		}else{ //非一级代理用户
-		    
+		    //var_dump($agent_login);exit;
 		     $uids = self::getAllUidsByParent($agent_login);//所有代理ＩＤ
 		     //计算所有用户
 		     $uids = array_merge($uids,array((int)$agent_login));//代理本身需要计算进来

@@ -57,41 +57,44 @@ class IndexController extends HomeController {
         //最近中奖(中奖记录)
         $pk_list = M('WinExchange')->order('buy_time DESC')->limit(10,20)->select();
         foreach($pk_list as $key => $val){
+            $codeid [] = $val['order_id'];
             $pk_list[$key]['goods_title'] = M('Document')->where("id = {$val['goods_id']}")->getField('title');
-            if($val['is_virtual'] == 1){
+            $pk_list[$key]['period'] = $val['period'];
+            if($val['utype'] == 2){
                 $pk_list[$key]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
             }else{
                 $pk_list[$key]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val['uid']}")->find();
             }
         }
+        $cmap['id'] = array('in',$codeid); 
+        $codarr = M('WinOrder')->where($cmap)->getField('id,type,period');//var_dump($codeid);exit;
+        foreach ($pk_list as $k=>$v) {
+            $pk_list[$k]['codeid'] = ($codarr[$v['order_id']]['type'] ==1) ? '小' : '大';
+        } 
+       
+       // var_dump($pk_list);exit;
         $data['pk_list'] = $pk_list;
-
-
+        
 
         //半价pk榜(购买记录)
 		$buy_list = array();
 		$i = 0;
 		$nowtime = time()-(60*10);
-        $order_list = M('WinOrder')->where("status =1 and create_time >".$nowtime)->order('create_time DESC')->limit(10)->select();
+        $order_list = M('WinOrder')->where("status =1")->order('create_time DESC')->limit(10)->select();
         foreach($order_list as $key => $val1){
 			$buy_list[$i]['goods_title'] = M('Document')->where("id = {$val1['goods_id']}")->getField('title');
 			$buy_list[$i]['buy_time'] = $val1['create_time'];
 			$buy_list[$i]['buy_num'] = $val1['num'];
-            $buy_list[$i]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
+			$buy_list[$i]['period'] = $val1['period'];
+			$buy_list[$i]['type'] = ($val1['type'] == 1) ? '小' : '大';
+			if($val1['utype'] ==1){
+                $buy_list[$i]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
+            }elseif($val1['utype']==2){
+                $buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val1['uid']}")->find();
+             }
        		$i++;
         }			
-        //半价pk榜(中奖记录)
-        $pk_list2 = M('WinExchange')->where("is_virtual =1")->order('buy_time DESC')->limit(1,20)->select();
-        foreach($pk_list2 as $key => $val2){
-			if($i<20){
-				$buy_list[$i]['goods_title'] = M('Document')->where("id = {$val2['goods_id']}")->getField('title');
-				$buy_list[$i]['buy_time'] = $val2['buy_time'];
-				$buy_list[$i]['buy_num'] = $val2['buy_num'];				
-				$buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val2['uid']}")->find();//虚拟用户
-				$i++;
-			}
-        }	
-		
+       
 		$buy_time=array();
 		foreach($buy_list as $buy){
 			$buy_time[]=$buy["buy_time"];
@@ -116,6 +119,46 @@ class IndexController extends HomeController {
         $this->assign('data' , $data);
         $this->meta_title = '首页';
         $this->display();
+    }
+    
+    public function topSort(){
+        $today = strtotime(date("Y-m-d"));
+        $today = 1503053125;
+        $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
+        $users = $Model->query("select w.uid,w.utype,order_id,sum(buy_num) from ewshop_win_exchange as w ,ewshop_win_order as o where w.order_id = o.id  and buy_time > ".$today."   group by uid ,buy_num order by buy_num desc limit 10");    
+        if($users){
+            foreach($users as $k=>$v){
+                if($v['utype'] == 2){
+                    $vuser[] = $v['uid'];    
+                }else{
+                     $user[] = $v['uid'];   
+                 }    
+            } 
+            //var_dump($vuser);exit;
+            if($vuser){
+                 $vmap['id'] = array('in',$vuser); 
+                 $vuser = M('MemberTemp')->where($vmap)->getField('id,headimgurl,nickname',true);//虚拟用户
+             }
+           
+             if($user){
+                $map['uid'] = array('in',$user);
+                $user = M('Member')->where($map)->getField('uid as id,headimgurl,nickname',true);
+             }   
+            
+             $vuser = is_array($vuser) ? $vuser : array();
+             $user = is_array($user) ? $user : array();
+             $usersar = array_merge_recursive($vuser,$user);
+             
+             foreach($users as $k=>$v){
+                if($vuser[$v['uid']]){
+                    $users[$k]['userinfo'] = $vuser[$v[uid]];
+                }
+                if($user[$v['uid']]){
+                     $users[$k]['userinfo'] = $user[$v[uid]];   
+                }
+             }
+        }
+        var_dump($users);exit;
     }
 
     /**

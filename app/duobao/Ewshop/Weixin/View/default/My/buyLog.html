@@ -24,11 +24,11 @@
                         <div class="li-p2">待开奖</div>
                     <elseif condition="$vo['order_type'] eq 2" />
                         <!--<div class="li-p3">恭喜获胜</div>-->
-                        <div class="li-p2"><a href="{:U('My/exchangeList')}" style="color: #db4252;">获胜领奖</a></div>
+                        <div class="li-p2"><a href="{:U('My/exchangeList')}" style="color: #db4252;">点击兑换</a></div>
                     <elseif condition="$vo['order_type'] eq 3" />
-                        <div class="li-p2 li-p4">未中奖</div>
+                        <div class="li-p2 li-p4">未成功</div>
                     <elseif condition="$vo['order_type'] eq 4" />
-                        <div class="li-p2"><a style="color: #db4252;">已兑奖</a></div>
+                        <div class="li-p2"><a style="color: #db4252;">已兑换</a></div>
                     </if>
                 </div>
                 <div class="li2">

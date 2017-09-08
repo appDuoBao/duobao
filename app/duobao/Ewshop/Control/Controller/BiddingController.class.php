@@ -53,8 +53,9 @@ class BiddingController extends ControlController
         $uid = I('uid');
         $uid = trim($uid);
         if ($uid) {
-               $map['uid'] = array('eq',$uid);
-				$map_cur['uid'] = array('eq',$uid);
+             $map['uid'] = array('eq',$uid);
+			$map_cur['uid'] = array('eq',$uid);
+			$map_cur['utype'] = array('eq',1);
 			$orders =M('WinOrder')->where($map_cur)->select();	
 			$orderid = "";
 			foreach ($orders as $k => $ov) {
@@ -78,6 +79,7 @@ class BiddingController extends ControlController
         }
 
         $map['status'] = 1;
+        $map['utype'] = 1;
 		$allprice =M('WinOrder')->where($map)->Sum('money');	
         $list = $this->lists('WinOrder', $map, "create_time desc");
 		
@@ -86,7 +88,7 @@ class BiddingController extends ControlController
             $list[$key]['goods_title'] = M('Document')->getFieldById($val['goods_id'], 'title');
             $list[$key]['pay_status'] = $val['status'] == 1 ? '已支付' : '未支付';                          
 			$list[$key]['commission'] = $val['money'] * $ratio * 0.01;
-			$WinExchange = M('WinExchange')->where("order_id = {$val['id']} and is_virtual = 0")->find();
+			$WinExchange = M('WinExchange')->where("order_id = {$val['id']} and utype = 1")->find();
 			if($WinExchange){
 				$list[$key]['iszhong'] = '中奖';
 				$list[$key]['is_exchange'] = $WinExchange['is_exchange'] == 1 ? '已兑换' : '未兑换';
@@ -110,7 +112,7 @@ class BiddingController extends ControlController
         $this->assign('_list', $list);
 
 
-        $map2['is_virtual'] = 0;
+        $map2['utype'] = 1;
         $dhprice =0;
         $wdhprice =0;
         $allprice1= 0;
@@ -312,7 +314,7 @@ class BiddingController extends ControlController
             }
         }
 
-        $map['is_virtual'] = 0;
+        $map['utype'] = 1;
 		$wdhprice =0;	
         $list = $this->lists('WinExchange', $map, "buy_time desc");
         foreach ($list as $key => $val) {
@@ -360,9 +362,10 @@ class BiddingController extends ControlController
         }
         if($start_date  ||  $end_date){
             $ssmap['status'] = 1;
+            $ssmap['utype'] = 1;
             $sstallprice =M('WinOrder')->where($ssmap)->Sum('money');	//总收益
 
-            $ssmap2['is_virtual'] = 0;
+            $ssmap2['utype'] = 1;
             $sstdhprice =0;
             $sstwdhprice =0;
             $ssallprice2 = 0;
@@ -387,9 +390,10 @@ class BiddingController extends ControlController
 
 
         $map['status'] = 1;
+        $map['utype'] = 1;
 		$allprice =M('WinOrder')->where($map)->Sum('money');	//总收益
 		
-        $map2['is_virtual'] = 0;
+        $map2['utype'] = 1;
 		$dhprice =0;
 		$wdhprice =0;
 		$allprice1= 0;
@@ -416,10 +420,11 @@ class BiddingController extends ControlController
 
 		
         $tmap['status'] = 1;
+        $tmap['utype'] = 1;
 		$tmap['create_time']  = array('egt',strtotime(date('Y-m-d')));//当日
 		$tallprice =M('WinOrder')->where($tmap)->Sum('money');	//总收益
 		
-        $tmap2['is_virtual'] = 0;
+        $tmap2['utype'] = 1;
 		$tmap2['buy_time']  = array('egt',strtotime(date('Y-m-d')));//当日
 		$tdhprice =0;
 		$twdhprice =0;
@@ -444,10 +449,11 @@ class BiddingController extends ControlController
 
         //昨天数据
         $tmap3['status'] = 1;
+        $tmap3['utype'] = 1;
         $tmap3['create_time'] = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60)),array('lt',strtotime(date('Y-m-d'))));
         $tallprice3 =M('WinOrder')->where($tmap3)->Sum('money');	//总收益
 
-        $tmapp3['is_virtual'] = 0;
+        $tmapp3['utype'] = 1;
         $tmapp3['buy_time']  = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60)),array('lt',strtotime(date('Y-m-d'))));
         $tdhprice3 =0;
         $twdhprice3 =0;
@@ -472,10 +478,11 @@ class BiddingController extends ControlController
 
         //前天数据
         $tmap4['status'] = 1;
+        $tmap4['utype'] = 1;
         $tmap4['create_time'] = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60*2)),array('lt',strtotime(date('Y-m-d'))-(24*60*60)));
         $tallprice4 =M('WinOrder')->where($tmap4)->Sum('money');	//总收益
 
-        $tmapp4['is_virtual'] = 0;
+        $tmapp4['utype'] = 1;
         $tmapp4['buy_time']  = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60*2)),array('lt',strtotime(date('Y-m-d'))-(24*60*60)));
         $tdhprice4 =0;
         $twdhprice4 =0;
@@ -568,7 +575,7 @@ class BiddingController extends ControlController
             }
         }
 
-        $map['is_virtual'] = 0;
+        $map['utype'] = 1;
 		$dhprice =0;	
 		$allprice =0;	
         $list = $this->lists('WinExchange', $map, "buy_time desc");
@@ -596,7 +603,7 @@ class BiddingController extends ControlController
 
 
 
-        $map2['is_virtual'] = 0;
+        $map2['utype'] = 1;
         $dhprice =0;
         $wdhprice =0;
         $allprice1= 0;

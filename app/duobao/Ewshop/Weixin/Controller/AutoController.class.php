@@ -35,7 +35,7 @@ class AutoController extends HomeController {
             $data['create_time'] = $lottery_time;//开奖时间
             $data['period'] = $this->getPeriod($lottery_time);//开奖期数
             $data['time'] = $lottery_time_stamp;//开奖时间
-
+            
             if(date('H:i:s',$lottery_time_stamp) != '02:05:00'){
                 $map['create_time'] = $lottery_time;//开奖时间
                 $map['period'] = $this->getPeriod($lottery_time);//开奖期数
@@ -44,6 +44,7 @@ class AutoController extends HomeController {
             }
             //判断是否有code为0的数据
             $is_exist_code = M('WinCode')->where("code = '0' and time < {$lottery_time_stamp}")->order('id desc')->select();
+           
 //            echo M()->getLastSql();
 //            dump($is_exist_code);
             if($is_exist_code){
@@ -83,7 +84,7 @@ class AutoController extends HomeController {
     public function setOrderStatus($code_arr){
         $data = $this->getCodeRand($code_arr['create_time']);
 		if($data){
-			
+			 
 			$lottery_nums = $data['lottery_nums'];
 			
 			$code = $data['code'];
@@ -122,10 +123,17 @@ class AutoController extends HomeController {
 								$exchangeData['create_time']     = time();
 								//$exchangeData['city']     = $this->getIpInfo();//用户的城市信息  速度太慢会有延迟
 								$exchangeData['city']     = getip();//用户的ip信息
+								$exchangeData['period']     = $code_arr['period'];
+								$exchangeData['codeid']     = $code_arr['id'];
+								$exchangeData['utype'] = $val['utype'];//用户类型
 								$iswe = M('WinExchange')->where("uid='".$val['uid']."' and order_id='".$val['id']."'")->find();//判断当前订单是否已经设置当前会员中奖
 								if(empty($iswe)){								
 									M('WinExchange')->add($exchangeData);
+									
 								}
+								//插入虚拟单子数据
+								//$this->setOrderLogRand($code_arr['period'],$code_arr['id']);
+									
 							}
 						}
 					}
@@ -146,10 +154,10 @@ class AutoController extends HomeController {
     public function getCodeRand($lottery_time = ''){
 
 //        $lottery_time = '2017/04/16 23:25:00';
-        $num_56_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>1,'type'=>1,'status'=>1))->sum('money');//买小（28元）的订单数的总金额
-        $num_56_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>1,'type'=>2,'status'=>1))->sum('money');//买大（28元）的订单数的总金额
-        $num_110_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'type'=>1,'status'=>1))->sum('money');//买小（55元）的订单数的总金额
-        $num_110_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'type'=>2,'status'=>1))->sum('money');//买大（55元）的订单数的总金额
+        $num_56_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>1,'utype'=>1,'type'=>1,'status'=>1))->sum('money');//买小（28元）的订单数的总金额
+        $num_56_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>1,'utype'=>1, 'type'=>2,'status'=>1))->sum('money');//买大（28元）的订单数的总金额
+        $num_110_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>1,'status'=>1))->sum('money');//买小（55元）的订单数的总金额
+        $num_110_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>2,'status'=>1))->sum('money');//买大（55元）的订单数的总金额
         if($num_56_small > $num_56_big){
             $code_56_val = 2;//选择大的赢
         }elseif($num_56_small < $num_56_big){
@@ -328,17 +336,19 @@ class AutoController extends HomeController {
      * 设置虚拟的中奖记录
      * @author
      */
-    public function setOrderLogRand(){
+    public function setOrderLogRand($period = '',$codeid= ''){
         //开奖时间是 10:00 - 2:00
+        
         $time_H = date('H');
         $time_i = date('i');
         if(($time_H == 10 && $time_i >= 5)  || $time_H >= 11 || $time_H < 2) {
 			$dasuijishu = array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,10,15,20,25,30,35,40,45,50);
 			$xiaosuijishu = array(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100);
             $data['is_virtual'] = 1;
-            $goods_arr = M('Document')->where("category_id = 217 and status = 1")->select();//获取所有的商品
+            $goods_arr = M('Document')->where("category_id = 217 and status = 1")->order(' rand()')->limit(3)->select();//获取所有的商品
+            
             foreach ($goods_arr as $key => $val) {
-                $data['uid'] = rand(9, 205);
+                $data['uid'] = 10000 . rand(9, 205);
                 $data['goods_id'] = $val['id'];
 				if($val['price']==2){//110价格的产品  最多能买50
 					$iii = rand(0, 40);
@@ -349,6 +359,8 @@ class AutoController extends HomeController {
 				}
                 $data['buy_time'] = time() - rand(10,300);
                 $data['city'] = $this->getRandCity();
+                $data['period'] = $period;
+                $data['codeid'] = $codeid;
                 M('WinExchange')->add($data);
             }
             echo  date('Y-m-d H:i:s').':To write  is successful.'."\n";
@@ -378,13 +390,52 @@ class AutoController extends HomeController {
 //            dump($res);
 //        }
 //    }
-
-    public function test(){
-		$lotterys = getnewlottery();//获取所有开奖结果（10个结果）
-		echo '========</br>';
-		print_r($lotterys);
+    //虚拟用户购买
+    public function doorder(){
+		 $members = M('MemberTemp')->order(' rand()')->limit(5)->getField('id',true);//虚拟用户
+		 $goods =    M('Document')->where("category_id = 217 and status = 1")->order(' rand()')->limit(5)->getField('id,price');//获取所有的商品
+		 $lottery_time = $this->get_time_on_clock(time());//下期开奖时间
+        
+		 foreach($members as $k=>$v){
+		    $data['uid'] = $v;
+		    $data['utype'] = 2;
+		    $gid = array_rand($goods,1); 
+            $data['goods_id'] = $gid;
+            $data['goods_type'] = $goods[$gid]['price'];
+            $data['num'] = rand(1,20);
+            $data['type'] = rand(1,2);
+            $data['create_time'] = time();
+            $data['order_number'] =  'FD-'.date('YmjHis').sprintf("%07d", $uid).$type.rand(1000,9999);//商户订单号;
+            $data['lottery_time'] = $lottery_time;
+            $data['period'] = $this->getPeriod($lottery_time);//开奖期数
+            $data['status'] = 1;//开奖期数
+            $data['ip_info'] = get_client_ip();
+            $data['paytype'] = '微信';
+            $data['pay_time']= time();
+             if($goods[$gid] == 1){
+                $price  =  28;
+                $data['money_w'] = $data['num']*28;
+                $data['money'] = $data['num']*28;
+                if($data['type'] == 1){
+                        $data['number_section'] = '1-28';
+                    }elseif($data['type'] == 2){
+                        $data['number_section'] = '29-56';
+               }
+            }elseif($goods[$gid] == 2){
+                $price  =  55;
+                 $data['money_w'] = $data['num']*55;
+                $data['money'] = $data['num']*55;
+                if($data['type'] == 1){
+                    $data['number_section'] = '1-55';
+                }elseif($data['type'] == 2){
+                    $data['number_section'] = '56-110';
+                }
+            }
+                 //  var_dump($data);exit;
+             M('WinOrder')->add($data);
+             sleep(5);
+		 }
 		
 		
-		echo '</br>========';
     }
 }
