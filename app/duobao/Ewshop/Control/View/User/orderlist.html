@@ -1,0 +1,96 @@
+<extend name="Public/base" />
+<block name="body">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>{$uname}--当前获得收益总计：{$sy}元
+        &nbsp;&nbsp;&nbsp;&nbsp;中奖:{$zj}元
+        &nbsp;&nbsp;&nbsp;&nbsp;总销售业绩:{$zongcount}元
+        
+         &nbsp;&nbsp;&nbsp;&nbsp;按比例收益:{$sy}元
+        
+        </h2>
+    </div>
+    
+    <div class="cf">
+        <!-- 高级搜索 -->
+        <div class="search-form fr cf">
+                <div class="sleft">
+                     <input type="hidden" name="puid" value="{$puid}" class="search-input" />
+                    <input type="date" name="start_date" value="{:I('start_date')|$start_date}" class="search-input" />开始日期&nbsp;&nbsp;
+                </div>
+                
+                <div class="sleft">
+                    <input type="date" name="end_date" value="{:I('end_date')|$end_date}" class="search-input" />结束日期&nbsp;&nbsp;
+                </div>                     
+                <a class="sch-btn" href="javascript:;" id="search" url="{:U('orderlist')}"><i class="btn-search"></i></a>
+
+        </div>
+    </div>    
+    <!-- 数据列表 -->
+    <div class="data-table table-striped">
+        <table class="">
+            <thead>
+            <tr>
+                <th class="">订单号</th>
+                <th class="">用户名</th>
+                <th class="">购买金额</th>
+                <th class="">分佣时间</th>
+                <th class="">开奖期数</th>
+                <th class="">购买数量</th>
+                <th class="">号码段数</th>
+                <th class="">是否中奖</th>
+                <th class="">佣金比例</th>
+            </tr>
+            </thead>
+            <tbody>
+            <notempty name="_list">
+                <volist name="_list" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo.money}</td>
+                        <td><span>{$vo.create_time|time_format}</span></td>
+                        <td>{$vo.period}
+                        </td>
+                        <td>{$vo.num}</td>
+                        <td>{$vo.number_section}</td>
+                        <td>{$vo.is_win}</td>
+                        <td>{$cur_ratio}</td>
+                    </tr>
+                </volist>
+                <else />
+                <td colspan="6" class="text-center"> aOh! 暂时还没有内容!</td>
+            </notempty>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+    
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function () {
+            var url   = $(this).attr('url');
+            var query = $('.search-form').find('input').serialize();
+            query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
+            query     = query.replace(/^&/g , '');
+            if (url.indexOf('?') > 0) {
+                url += '&' + query;
+            } else {
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function (e) {
+            if (e.keyCode === 13) {
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('User/daili')}");
+    </script>    
+</block>
