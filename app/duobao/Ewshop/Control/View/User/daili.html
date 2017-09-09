@@ -1,0 +1,121 @@
+<extend name="Public/base" />
+<block name="body">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>代理商列表</h2>
+    </div>
+    <div class="cf">
+        <!-- 高级搜索 -->
+        <div class="search-form fr cf">
+            <div class="sleft">
+                 <input type="hidden" name="status" value="{:I('get.status')}"/>
+                <input type="text" name="nickname" class="search-input" value="{:I('nickname')}" placeholder="请输入用户名">
+            </div>
+             <div class="sleft">
+                <input type="text" name="mobile" class="search-input" value="{:I('mobile')}" placeholder="请输入手机号">
+            </div>           
+            <a class="sch-btn" href="javascript:;" id="search" url="{:U('daili')}"><i class="btn-search"></i></a>
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table table-striped">
+        <table class="">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox" /></th>
+                <th class="">UID</th>
+                <th class="">电话</th>
+                
+                <th class="">用户名</th>
+                <th class="">
+                    
+                    <select name="status">
+
+                       
+                        <option value="0" <eq name="Think.get.status" value="0">selected</eq> >总代理</option>
+
+                        <option value="1" <eq name="Think.get.status" value="1">selected</eq> >普通代理</option>
+
+                       
+
+                    </select>
+                    
+                </th>
+                
+                <th class="">登录次数</th>
+                <th class="">最后登录时间</th>
+                <th class="">最后登录IP</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <notempty name="_list">
+                <volist name="_list" id="vo">
+                    <tr>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.uid}" /></td>
+                        <td>{$vo.uid}</td>
+                        <td>{$vo.mobile}</td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo.usertype}</td>
+                        <td>{$vo.login}</td>
+                        <td><span>{$vo.last_login_time|time_format}</span></td>
+                        <td><span>{:long2ip($vo['last_login_ip'])}</span></td>
+                        <td>
+                        
+							<a title="购买记录" href="{:U('Bidding/index?uid='.$vo['uid'])}">购买记录</a>
+                          <!--  <a title="兑换记录" href="{:U('/Control/Bidding/exchange?uid='.$vo['uid'].'&nickname='.$vo['nickname'])}">兑换记录</a>
+                            -->
+                            <a title="查看代理信息" href="{:U('userview?puid='.$vo['uid'])}">查看</a>
+							<a title="分享会员" href="{:U('fenxianguser?puid='.$vo['uid'])}">分享会员</a>
+                            <a title="佣金记录" href="{:U('fenyonglog?puid='.$vo['uid'])}">佣金记录</a>
+                            <a title="佣金记录" href="{:U('orderlist?puid='.$vo['uid'])}">新佣金</a>
+                            <a title="佣金记录" href="{:U('Branding/index?puid='.$vo['uid'])}">推广代理</a>
+                        </td>
+                    </tr>
+                </volist>
+                <else />
+                <td colspan="8" class="text-center"> aOh! 暂时还没有内容!</td>
+            </notempty>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script type="text/javascript">
+        
+          $('select[name=status]').change(function (){
+
+            $('input[name=status]').val($(this).val());
+
+            $("#search").click();
+
+        })
+        
+        //搜索功能
+        $("#search").click(function () {
+            var url   = $(this).attr('url');
+            var query = $('.search-form').find('input').serialize();
+            query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
+            query     = query.replace(/^&/g , '');
+            if (url.indexOf('?') > 0) {
+                url += '&' + query;
+            } else {
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function (e) {
+            if (e.keyCode === 13) {
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('User/daili')}");
+    </script>
+</block>
