@@ -1,0 +1,144 @@
+<extend name="Public/base"/>
+<block name="body">
+   <script type="text/javascript" src="/Public/Control/js/popup_layer.js"></script>
+   <link href="/Public/Control/css/popup_layer.css" type="text/css" rel="stylesheet">
+   
+    <div class="main-title">
+        <h2><a  href="{:U('User/userview?puid='.$parent['parent_id'])}"><font color="green">上级代理详情</font></a></h2>
+    </div>
+        <div class="form-item">
+            公司名称：{$parent.company}
+        </div>
+        <div class="form-item">联系人姓名：{$parent.name}</div>
+        <div class="form-item">联系人电话：{$parent.mobile}</div>
+        <div class="form-item">联系地址：{$parent.address}</div>
+        <div class="form-item">返佣比例：{$parent.ratio}%</div>
+        <div class="form-item">返佣类型：{$parent.ratio_type}</div>
+        <div class="form-item">开户行：{$parent.kaihuhang}</div>
+        <div class="form-item">卡号：{$parent.kahao}</div>
+        <div class="form-item">户名：{$parent.xingming}</div>
+        <div class="form-item">昵称：{$parent.nickname}</div>
+        <div class="form-item">手机号：{$parent.mobile}</div>
+        
+         
+        <a href="javascript:void(0)"><div class="form-item" id="parentid">上级ID：{$parent.parent_id}</div></a>
+          <div class="form-item" id="parent" >上级代理：{$parent.pname}</div>
+        <div class="form-item">二维码：<img style="width:200px;high:200px" src="{$parent.erm}" /></div>
+        
+        <div class="form-item">注册时间：{$parent.create_time|time_format}</div>
+       <br/>
+    <hr />    
+       <hr />    
+     <div class="main-title">
+        <h2>总代理详情</h2>
+    </div>
+        <div class="form-item">
+            公司名称：{$roots.company}
+        </div>
+        <div class="form-item">联系人姓名：{$roots.name}</div>
+        <div class="form-item">联系人电话：{$roots.mobile}</div>
+        <div class="form-item">联系地址：{$roots.address}</div>
+        <div class="form-item">返佣比例：{$roots.ratio}%</div>
+        <div class="form-item">返佣类型：{$roots.ratio_type}</div>
+        <div class="form-item">开户行：{$roots.kaihuhang}</div>
+        <div class="form-item">卡号：{$roots.kahao}</div>
+        <div class="form-item">户名：{$roots.xingming}</div>
+        <div class="form-item">昵称：{$roots.nickname}</div>
+        <div class="form-item">手机号：{$roots.mobile}</div>
+        <div class="form-item">二维码：<img style="width:200px;high:200px" src="{$roots.erm}" /></div>
+        
+        <div class="form-item">注册时间：{$roots.create_time|time_format}</div>
+        
+        
+        
+        
+        
+    
+        <div class="form-item">
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+        </div>
+        
+        
+   <!-- 弹出层 begain--> 
+        <div id="blk1" class="blk" style="display:none;">
+            <div class="head"><div class="head-right"></div></div>
+            <div class="main">
+                <h2>代理列表</h2>
+                <a href="javascript:void(0)" id="close1" class="closeBtn">关闭</a>
+                <ul id="showdata">
+                    <li><a href="#">项目1</a></li>
+                    <li><a href="#">项目2</a></li>
+                    <li><a href="#">项目3</a></li>
+                    <li><a href="#">项目4</a></li>
+                    <li><a href="#">项目5</a></li>
+                    <li><a href="#">项目6</a></li>
+                    <li><a href="#">项目7</a></li>
+                  
+                </ul>
+                  <input id="thisid" type="hidden" value="{$info.jid}" />
+                  <input id="puid" namev="" type="hidden" value="" />
+                  <a href="javascript:void(0)" id="confirm" class="confirm">确定</a>
+              
+            </div>
+            <div class="foot"><div class="foot-right"></div></div>
+        </div>
+
+   
+   <!--end 弹出层 -->    
+
+</block>
+<block name="script">
+    <script type="text/javascript">
+        
+        $("#parentid").click(function(){
+              getParents();
+              new PopupLayer({trigger:"#parent",popupBlk:"#blk1",closeBtn:"#close1"});
+              $('#parent').trigger("click");
+            });
+       function getpdata(id,uid){
+           // alert(id);
+        }
+      //
+        function getParents(pid){
+            var htmlstr ='';
+             $.post("{:U('getparents')}",{pid:pid},function(result){
+                  if(result.ret ==0){
+                     $.each(result.data,function(k,v){
+                        htmlstr += '<li class="clidata" data_id="'+v.id+'" data_uid ='+v.uid+'><a href="#"   >'+v.name+'</a></li>';
+                     });
+                     
+                     $("#showdata").empty();
+                     $("#showdata").append(htmlstr);  
+                     $(".clidata").bind('click',function(){
+                       $(".clidata").css('background-color','');
+                        var obj = $(this);
+                        var pid = obj.attr('data_id');  
+                        var uid = obj.attr('data_uid');
+                        var namev = obj.children('a').text();
+                        obj.css('background-color','red');
+                        $("#puid").val(uid);
+                        $("#puid").attr('namev',namev);
+                      });
+                  }
+                  
+              },'json');   
+        }
+        $("#confirm").click(function(){
+            var thisid = $("#thisid").val();
+            var puid = $("#puid").val();   
+            if(thisid && puid){
+                $.post("{:U('updatepid')}",{id:thisid,puid:puid},function(result){
+                  if(result.ret ==0){
+                    $('#close1').trigger("click");
+                    window.location.reload();
+                  }
+                  
+              },'json');     
+            }
+        });
+        
+        
+        //导航高亮
+        highlight_subnav("{:U('User/daili')}");
+    </script>
+</block>

@@ -141,6 +141,22 @@ class UserController extends ControlController {
         $this->meta_title = '分享会员';
         $this->display();
     }	
+    public function agentinfo(){
+            
+            $pid = I("puid");
+            $root = I("root_id");
+            if($pid || $root){
+                $uids =array($pid,$root);
+                $map['uid'] = array('in',$uids);
+                $agent = M('Join')->where($map)->getField('uid,company,name,mobile,ratio,parent_id,ratio_type,address');
+                $parents = ($pid) ? $agent[$pid] : '';
+                $roots = ($root) ? $agent[$root] : '';
+                $this->assign('parent',$parents);
+                $this->assign('roots',$roots);
+            }
+           // var_dump($parents);exit;
+            $this->display('');
+    }
     /**
      * 分佣明细
      * @author ew_xiaoxiao

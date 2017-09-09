@@ -152,6 +152,7 @@
                 <th class="">用户名</th>
                  <th class="">会员类型</th>
                 <th class="">登录次数</th>
+                 <th class="">注册时间</th>
                 <th class="">最后登录时间</th>
                 <th class="">最后登录IP</th>
                 <th class="">状态</th>
@@ -171,6 +172,7 @@
                         </td>
 						 <td><?php echo ($vo["usertype"]); ?></td>
                         <td><?php echo ($vo["login"]); ?></td>
+                        <td><?php echo (time_format($vo["reg_time"])); ?></td>
                         <td><span><?php echo (time_format($vo["last_login_time"])); ?></span></td>
                         <td><span><?php echo long2ip($vo['last_login_ip']);?></span></td>
                         <td><?php echo ($vo["status_text"]); ?></td>
@@ -182,7 +184,7 @@
                             <a title="购买记录" href="<?php echo U('Bidding/index?uid='.$vo['uid']);?>">购买记录</a>
                            <a title="兑换记录" href="<?php echo U('Bidding/exchange?uid='.$vo['uid']);?>">兑换记录</a>
                             
-							<a title="分享会员" href="<?php echo U('fenxianguser?puid='.$vo['uid']);?>">分享会员</a>
+							<a title="查看代理" href="<?php echo U('agentinfo?puid='.$vo['parent_id'].'&root_id='.$vo['root_id']);?>">查看代理</a>
                             <a title="佣金记录" href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">佣金记录</a>
                           <!--  <a href="<?php echo U('User/changeStatus?method=deleteUser&id='.$vo['uid']);?>" class="confirm ajax-get">删除</a>-->
                         </td>

@@ -122,10 +122,22 @@ class IndexController extends HomeController {
     }
     
     public function topSort(){
-        $today = strtotime(date("Y-m-d"));
-        $today = 1503053125;
+        $ttype = $_GET['t'];
+        if($ttype=='to'){
+           $today = strtotime(date("Y-m-d"));
+          // $today = 1503053125;
+         }
+         if($ttype == 'mo'){
+           $today = time() - (7 * 24 *60 * 60);
+           //
+         }else{
+             $today = strtotime(date("Y-m-d"));
+             
+              $ttype = 'to';
+          }
+         
         $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
-        $users = $Model->query("select w.uid,w.utype,order_id,sum(buy_num) from ewshop_win_exchange as w ,ewshop_win_order as o where w.order_id = o.id  and buy_time > ".$today."   group by uid ,buy_num order by buy_num desc limit 10");    
+        $users = $Model->query("select w.uid,w.utype,order_id,sum(buy_num) as num from ewshop_win_exchange as w ,ewshop_win_order as o where w.order_id = o.id  and buy_time > ".$today."   group by uid  order by num desc limit 10");    
         if($users){
             foreach($users as $k=>$v){
                 if($v['utype'] == 2){
@@ -158,7 +170,18 @@ class IndexController extends HomeController {
                 }
              }
         }
-        var_dump($users);exit;
+        $one = array_shift($users);
+        $two  = array_shift($users);
+        $three = array_shift($users);
+        
+        $this->assign('type',$ttype);
+        $this->assign('one',$one);
+        $this->assign('two',$two);
+        $this->assign('three',$three);
+        
+        $this->assign('users',$users);
+        $this->display();
+       
     }
 
     /**

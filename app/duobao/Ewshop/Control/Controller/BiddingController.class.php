@@ -20,6 +20,7 @@ class BiddingController extends ControlController
      * author
      */
     public function index(){
+        //ini_set('memory_limit', '-1');
         //当前管理员id
         $gid = $_SESSION['onethink_admin']['user_auth']['uid'];
         $groupid = M('admin')->where(array('uid'=>$gid))->getField('groupid');
@@ -65,6 +66,7 @@ class BiddingController extends ControlController
 				$map2['order_id'] = array("in", $orderid);
 			}
         }
+        
         if (!empty($_GET['goods'])) {
             $_GET['goods'] = htmlspecialchars(trim($_GET['goods']));
             $goodsIdList = M()->query("SELECT id FROM ewshop_document WHERE title LIKE '%{$_GET['goods']}%'");
@@ -84,56 +86,75 @@ class BiddingController extends ControlController
         $list = $this->lists('WinOrder', $map, "create_time desc");
 		
         foreach ($list as $key => $val) {
-            $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
-            $list[$key]['goods_title'] = M('Document')->getFieldById($val['goods_id'], 'title');
+            $order[] = $val['id'];
+            $lottery_time[] = $val['lottery_time'];
+            $users[] = $val['uid'];
+            $goods[] = $val['goods_id'];
             $list[$key]['pay_status'] = $val['status'] == 1 ? '已支付' : '未支付';                          
 			$list[$key]['commission'] = $val['money'] * $ratio * 0.01;
-			$WinExchange = M('WinExchange')->where("order_id = {$val['id']} and utype = 1")->find();
-			if($WinExchange){
-				$list[$key]['iszhong'] = '中奖';
-				$list[$key]['is_exchange'] = $WinExchange['is_exchange'] == 1 ? '已兑换' : '未兑换';
-			}else{
-				$list[$key]['iszhong'] = '未中奖';
-			}
-			
-			$winCode = M('WinCode')->where("create_time = '".$val['lottery_time']."'")->find();
-			$list[$key]['code'] = $winCode['code'];
-			//if($val['goods_type']==1){
-				$list[$key]['xkjnum'] = $winCode['code_56'];//开奖大小
-				$list[$key]['xkjdx'] = $winCode['code_56_type'];//开奖大小
-			//}elseif($val['goods_type']==2){
-				$list[$key]['dkjnum'] = $winCode['code_110'];//开奖大小
-				$list[$key]['dkjdx'] = $winCode['code_110_type'];//开奖大小
-			//}
+           
+            
         }
-		
+         $gmap['id'] = array('in',$goods);
+         $goodinfo = M('Document')->where($gmap)->getField('id,title',true);
+         $umap['uid'] =array('in',$users); 
+         $usesinfo = M('Member')->where($umap)->getField("uid as id,nickname",true);
+         $omap['order_id'] =array('in',$order);	
+         $omap['utype'] = array('eq',1); 
+         $WinExchange = M('WinExchange')->where($omap)->getField('order_id,is_exchange');
+
+		$wmap['create_time'] = array('eq',$lottery_time);
+   		//$winCode = M('WinCode')->where($wmap)->getField('id,code,code_56,code_56_type,code_110,code_110_type',true);
+     
+		 foreach ($list as $key => $val) {
+            
+            $list[$key]['goods_title'] = $goodinfo[$val['goods_id']];
+            $list[$key]['nickname']  = $usesinfo[$val['uid']];
+            if(isset($WinExchange[$val['id']])){
+                $list[$key]['iszhong'] = '中奖';
+			    $list[$key]['is_exchange'] = $WinExchange[$val['id']]['is_exchange'] == 1 ? '已兑换' : '未兑换';
+		    }else{
+		        $list[$key]['iszhong'] = '未中奖'; 
+		    }
+		    
+//		    	$list[$key]['code'] = $winCode['code'];
+//			
+//				$list[$key]['xkjnum'] = $winCode['code_56'];//开奖大小
+//				$list[$key]['xkjdx'] = $winCode['code_56_type'];//开奖大小
+//			
+//				$list[$key]['dkjnum'] = $winCode['code_110'];//开奖大小
+//				$list[$key]['dkjdx'] = $winCode['code_110_type'];//开奖大小
+//		
+            
+        }
+       //exit;
         int_to_string($list);
-		$this->assign('allprice', $allprice);
+		//$this->assign('allprice', $allprice);
         $this->assign('_list', $list);
 
-
-        $map2['utype'] = 1;
-        $dhprice =0;
-        $wdhprice =0;
-        $allprice1= 0;
-        $list2 = M('WinExchange')->where($map2)->select();
-        foreach ($list2 as $key => $val) {
-            $price = M('Document')->getFieldById($val['goods_id'], 'price');
-            if($price==1){
-                $allprice1 = $val['buy_num'] * 50;
-            }elseif($price==2){
-                $allprice1 = $val['buy_num'] * 100;
-            }
-            if($val['is_exchange'] == 1){
-                $dhprice += $allprice1;//已经兑奖金额
-            }else{
-                $wdhprice += $allprice1;//未兑奖金额
-            }
-            $allprice2 += $allprice1;//中奖总金额
-        }
-        $this->assign('allzprice', $allprice2);
-        $this->assign('dhprice', $dhprice);
-        $this->assign('wdhprice', $wdhprice);
+//
+//        $map2['utype'] = 1;
+//        $dhprice =0;
+//        $wdhprice =0;
+//        $allprice1= 0;
+//        $list2 = M('WinExchange')->where($map2)->select();
+//        foreach ($list2 as $key => $val) {
+//            $price = M('Document')->getFieldById($val['goods_id'], 'price');
+//            if($price==1){
+//                $allprice1 = $val['buy_num'] * 50;
+//            }elseif($price==2){
+//                $allprice1 = $val['buy_num'] * 100;
+//            }
+//            if($val['is_exchange'] == 1){
+//                $dhprice += $allprice1;//已经兑奖金额
+//            }else{
+//                $wdhprice += $allprice1;//未兑奖金额
+//            }
+//            $allprice2 += $allprice1;//中奖总金额
+//        }
+//        $this->assign('allzprice', $allprice2);
+//        $this->assign('dhprice', $dhprice);
+//        $this->assign('wdhprice', $wdhprice);
 
 
         $this->meta_title = '订单列表';//exit('tet');
@@ -315,24 +336,41 @@ class BiddingController extends ControlController
         }
 
         $map['utype'] = 1;
+        $map['is_virtual'] = 0;
 		$wdhprice =0;	
         $list = $this->lists('WinExchange', $map, "buy_time desc");
         foreach ($list as $key => $val) {
-            $list[$key]['orderinfo'] = M('WinOrder')->where("id = {$val['order_id']} and status = 1")->find();
-            $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
-            $list[$key]['goods_title'] = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'title');
-			$price = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'price');
-			if($price==1){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
-			}elseif($price==2){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
-			}
+             $orders[] = $val['order_id'];
+             $uids[] = $val['uid'];
+             $goods[] = $val['goods_id'];
+             
             $list[$key]['is_exchange_val'] = ($val['is_exchange'] == 1) ? '已兑换' : '未兑换';
 			if($val['is_exchange'] != 1){
 				$wdhprice += $list[$key]['allprice'];//未兑奖金额
 			}
 			
         }
+              $omap['id'] = array('in',$orders);
+              $omap['status'] = array('eq',1);
+              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,lottery_time',true);
+              $umap['uid'] = array('in',$uids);
+              $users = M('Member')->where($umap)->getField("uid as id,nickname");
+              $gmap['id'] = array('in',$goods);
+              $goodsin= M('Document')->where($gmap)->getField('id,title,price');
+           
+          foreach ($list as $key => $val) {
+            $list[$key]['orderinfo'] = $orderarr[$val['order_id']];
+            $list[$key]['nickname'] = $users[$val['uid']];
+            $list[$key]['goods_title'] = $goodsin[$val['goods_id']]['title'];
+            if($goodsin[$val['id']]['price']==1){
+				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
+			}elseif($goodsin[$val['id']]['price']==2){
+				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
+			}
+            
+        }
+          
+			
         int_to_string($list);
         $this->assign('_list', $list);
 		$this->assign('wdhprice', $wdhprice);//未兑奖金额
@@ -366,6 +404,7 @@ class BiddingController extends ControlController
             $sstallprice =M('WinOrder')->where($ssmap)->Sum('money');	//总收益
 
             $ssmap2['utype'] = 1;
+            $ssmap2['is_virtual'] = 0;
             $sstdhprice =0;
             $sstwdhprice =0;
             $ssallprice2 = 0;
@@ -394,6 +433,7 @@ class BiddingController extends ControlController
 		$allprice =M('WinOrder')->where($map)->Sum('money');	//总收益
 		
         $map2['utype'] = 1;
+        $map2['is_virtual'] = 0;
 		$dhprice =0;
 		$wdhprice =0;
 		$allprice1= 0;
@@ -425,6 +465,7 @@ class BiddingController extends ControlController
 		$tallprice =M('WinOrder')->where($tmap)->Sum('money');	//总收益
 		
         $tmap2['utype'] = 1;
+        $tmap2['is_virtual'] = 0;
 		$tmap2['buy_time']  = array('egt',strtotime(date('Y-m-d')));//当日
 		$tdhprice =0;
 		$twdhprice =0;
@@ -454,6 +495,7 @@ class BiddingController extends ControlController
         $tallprice3 =M('WinOrder')->where($tmap3)->Sum('money');	//总收益
 
         $tmapp3['utype'] = 1;
+         $tmapp3['is_virtual'] = 0;
         $tmapp3['buy_time']  = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60)),array('lt',strtotime(date('Y-m-d'))));
         $tdhprice3 =0;
         $twdhprice3 =0;
@@ -483,6 +525,7 @@ class BiddingController extends ControlController
         $tallprice4 =M('WinOrder')->where($tmap4)->Sum('money');	//总收益
 
         $tmapp4['utype'] = 1;
+        $tmapp4['is_virtual'] = 0;
         $tmapp4['buy_time']  = array(array('egt',strtotime(date('Y-m-d'))-(24*60*60*2)),array('lt',strtotime(date('Y-m-d'))-(24*60*60)));
         $tdhprice4 =0;
         $twdhprice4 =0;
@@ -576,56 +619,61 @@ class BiddingController extends ControlController
         }
 
         $map['utype'] = 1;
+        $map['is_virtual'] = 0;
 		$dhprice =0;	
 		$allprice =0;	
         $list = $this->lists('WinExchange', $map, "buy_time desc");
-	//$list = M('WinExchange')->where('uid=188')->select();
-	//var_dump($list);exit;
+	
+//        foreach ($list as $key => $val) {
+//            $list[$key]['orderinfo'] = M('WinOrder')->where("id = {$val['order_id']} and status = 1")->find();
+//            $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
+//            $list[$key]['goods_title'] = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'title');
+//			$price = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'price');
+//			if($price==1){
+//				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
+//			}elseif($price==2){
+//				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
+//			}
+//            $list[$key]['is_exchange_val'] = ($val['is_exchange'] == 1) ? '已兑换' : '未兑换';
+//			if($val['is_exchange'] == 1){
+//				$dhprice += $list[$key]['allprice'];//已经兑奖金额
+//			}
+//			$allprice += $list[$key]['allprice'];//中奖总金额
+//			
+//        }
+
         foreach ($list as $key => $val) {
-            $list[$key]['orderinfo'] = M('WinOrder')->where("id = {$val['order_id']} and status = 1")->find();
-            $list[$key]['nickname'] = M('Member')->where("uid='$val[uid]'")->getField("nickname");
-            $list[$key]['goods_title'] = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'title');
-			$price = M('Document')->getFieldById($list[$key]['orderinfo']['goods_id'], 'price');
-			if($price==1){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
-			}elseif($price==2){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
-			}
+             $orders[] = $val['order_id'];
+             $uids[] = $val['uid'];
+             $goods[] = $val['goods_id'];
+             
             $list[$key]['is_exchange_val'] = ($val['is_exchange'] == 1) ? '已兑换' : '未兑换';
 			if($val['is_exchange'] == 1){
-				$dhprice += $list[$key]['allprice'];//已经兑奖金额
+				$wdhprice += $list[$key]['allprice'];//未兑奖金额
 			}
 			$allprice += $list[$key]['allprice'];//中奖总金额
-			
+        }
+              $omap['id'] = array('in',$orders);
+              $omap['status'] = array('eq',1);
+              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,lottery_time',true);
+              $umap['uid'] = array('in',$uids);
+              $users = M('Member')->where($umap)->getField("uid as id,nickname");
+              $gmap['id'] = array('in',$goods);
+              $goodsin= M('Document')->where($gmap)->getField('id,title,price');
+           
+          foreach ($list as $key => $val) {
+            $list[$key]['orderinfo'] = $orderarr[$val['order_id']];
+            $list[$key]['nickname'] = $users[$val['uid']];
+            $list[$key]['goods_title'] = $goodsin[$val['goods_id']]['title'];
+            if($goodsin[$val['id']]['price']==1){
+				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
+			}elseif($goodsin[$val['id']]['price']==2){
+				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
+			}
+            $allprice += $list[$key]['allprice'];//中奖总金额
         }
         int_to_string($list);
         $this->assign('_list', $list);
-
-
-
-        $map2['utype'] = 1;
-        $dhprice =0;
-        $wdhprice =0;
-        $allprice1= 0;
-        $list2 = M('WinExchange')->where($map2)->select();
-        foreach ($list2 as $key => $val) {
-            $price = M('Document')->getFieldById($val['goods_id'], 'price');
-            if($price==1){
-                $allprice1 = $val['buy_num'] * 50;
-            }elseif($price==2){
-                $allprice1 = $val['buy_num'] * 100;
-            }
-            if($val['is_exchange'] == 1){
-                $dhprice += $allprice1;//已经兑奖金额
-            }else{
-                $wdhprice += $allprice1;//未兑奖金额
-            }
-            $allprice2 += $allprice1;//中奖总金额
-        }
-        $this->assign('allprice', $allprice2);
-        $this->assign('dhprice', $dhprice);
-        $this->assign('wdhprice', $wdhprice);
-
 
 		//$this->assign('dhprice', $dhprice);//兑换总金额
 		//$this->assign('allprice', $allprice);//中奖总金额
