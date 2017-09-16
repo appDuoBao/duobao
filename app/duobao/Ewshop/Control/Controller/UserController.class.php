@@ -145,6 +145,7 @@ class UserController extends ControlController {
             
             $pid = I("puid");
             $root = I("root_id");
+            $uid = I("uid");
             if($pid || $root){
                 $uids =array($pid,$root);
                 $map['uid'] = array('in',$uids);
@@ -153,6 +154,7 @@ class UserController extends ControlController {
                 $roots = ($root) ? $agent[$root] : '';
                 $this->assign('parent',$parents);
                 $this->assign('roots',$roots);
+                $this->assign('uid',$uid);
             }
            // var_dump($parents);exit;
             $this->display('');
@@ -835,6 +837,22 @@ class UserController extends ControlController {
          }
          echo 'data is null';
             
+    }
+    
+    public function updatepidm(){
+         header("Content-type: text/html; charset=utf-8");
+         $id = I('id');
+         $puid = I('puid');
+         if($id && $puid){ 
+            $data['parent_id'] = $puid;
+            $data['join_type'] = 1;
+            $ret = M('Member')->where('uid = '.$id)->save($data); 
+            if($ret){
+                exit(json_encode(array('ret'=>0,'data'=>'ok'))); 
+             }
+         }
+           
+         exit(json_encode(array('ret'=>1,'data'=>'error'))); 
     }
 
 

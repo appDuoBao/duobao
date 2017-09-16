@@ -291,7 +291,7 @@ class IndexController extends ControlController {
         $order['mcSequenceNo'] = "123456789";
         $order["mcTransDateTime"] = date('YmdHis');
         $order["orderNo"] = $orderSn;
-        $order["amount"] = 1000;//bcmul($shiji,100,4);
+        $order["amount"] = bcmul($shiji,100,4);
         $order["cardNo"] = self::do_des($cardinfo['card_no'],self::$deskey); //'9df04f691e75d4fad0b57592b1dcfc14906ad91d4dbb3063';
         $order["accName"] =  $cardinfo['username'];
         $order["accType"] = '0';
@@ -320,7 +320,6 @@ class IndexController extends ControlController {
         if($ret['rspCode']=='IPS00000'){
             return 1;    
         }else{
-	   var_dump($order,$ret);exit;
             error_log(json_encode($ret)."\n\t",3,'/home/tmp/pay.log');     
         }
                 
@@ -494,4 +493,24 @@ public static function encodeArr($input){
         $pad = $blocksize - (strlen($text) % $blocksize);
         return $text . str_repeat(chr($pad), $pad);
     }
+   public function updatebank(){
+         $uid = $this->uid;
+         $bid = I("bid");
+         $flag = I("flag");
+         if($uid && $bid){
+            if($flag == 1){
+                $data['defaultcard'] = 0;  
+                $ret = M('Account')->where('uid = '.$uid .' and id !='.$bid)->save($data);
+                $datau['defaultcard'] = 1;
+                $ret = M('Account')->where('id ='.$bid)->save($datau);
+                exit(json_encode(array('ret'=>0,'data'=>'ok'))); 
+            }elseif ($flag == 2) {
+                $data['status'] = 2; 
+                $ret = M('Account')->where('id ='.$bid)->save($data);
+                exit(json_encode(array('ret'=>0,'data'=>'ok'))); 
+            }
+         } 
+         exit(json_encode(array('ret'=>1,'data'=>'error')));    
+    }
+    
 }

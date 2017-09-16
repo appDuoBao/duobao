@@ -84,7 +84,9 @@ class BiddingController extends ControlController
         $map['utype'] = 1;
 		$allprice =M('WinOrder')->where($map)->Sum('money');	
         $list = $this->lists('WinOrder', $map, "create_time desc");
-		
+		if(!$list){
+		    $this->display();return;
+		}
         foreach ($list as $key => $val) {
             $order[] = $val['id'];
             $lottery_time[] = $val['lottery_time'];
@@ -352,7 +354,7 @@ class BiddingController extends ControlController
         }
               $omap['id'] = array('in',$orders);
               $omap['status'] = array('eq',1);
-              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,lottery_time',true);
+              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,order_number,lottery_time',true);
               $umap['uid'] = array('in',$uids);
               $users = M('Member')->where($umap)->getField("uid as id,nickname");
               $gmap['id'] = array('in',$goods);
@@ -362,9 +364,9 @@ class BiddingController extends ControlController
             $list[$key]['orderinfo'] = $orderarr[$val['order_id']];
             $list[$key]['nickname'] = $users[$val['uid']];
             $list[$key]['goods_title'] = $goodsin[$val['goods_id']]['title'];
-            if($goodsin[$val['id']]['price']==1){
+            if($goodsin[$val['goods_id']]['price']==1){
 				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
-			}elseif($goodsin[$val['id']]['price']==2){
+			}elseif($goodsin[$val['goods_id']]['price']==2){
 				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
 			}
             
@@ -655,7 +657,7 @@ class BiddingController extends ControlController
         }
               $omap['id'] = array('in',$orders);
               $omap['status'] = array('eq',1);
-              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,lottery_time',true);
+              $orderarr = M('WinOrder')->where($omap)->getField('id,utype,goods_id,period,num,order_number,lottery_time',true);
               $umap['uid'] = array('in',$uids);
               $users = M('Member')->where($umap)->getField("uid as id,nickname");
               $gmap['id'] = array('in',$goods);
@@ -665,10 +667,10 @@ class BiddingController extends ControlController
             $list[$key]['orderinfo'] = $orderarr[$val['order_id']];
             $list[$key]['nickname'] = $users[$val['uid']];
             $list[$key]['goods_title'] = $goodsin[$val['goods_id']]['title'];
-            if($goodsin[$val['id']]['price']==1){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 50;
-			}elseif($goodsin[$val['id']]['price']==2){
-				$list[$key]['allprice'] = $list[$key]['orderinfo']['num'] * 100;
+            if($goodsin[$val['goods_id']]['price']==1){
+				$list[$key]['allprice'] = $list[$key]['buy_num'] * 50;
+			}elseif($goodsin[$val['goods_id']]['price']==2){
+				$list[$key]['allprice'] = $list[$key]['buy_num'] * 100;
 			}
             $allprice += $list[$key]['allprice'];//中奖总金额
         }

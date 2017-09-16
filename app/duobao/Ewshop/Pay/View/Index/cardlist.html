@@ -31,6 +31,8 @@
         </script>
          <link rel="stylesheet" href="Public/Pay/css/style.css?a=bcaa">
         <script type="text/javascript" src="Public/Pay/js/libs/zepto.min.js"></script>
+         <link rel="stylesheet" href="Public/Pay/css/commonalert.css?a=bcaa">
+        <script type="text/javascript" src="Public/Pay/js/alertPopShow.js"></script>
     </head>
     <body>
         <div class="container bank-cart">
@@ -38,8 +40,9 @@
             <section class="main ">
                <notempty name="list">  
                <volist name="list" id="vo"> 
-               <div class="cart-box">
+               <div class="cart-box" data-id="{$vo.id}">
                  <div class="cart">
+                 
                   <h3>{$vo.bankname}</h3>
                   <p class="info">储蓄卡</p>
                   <p class="no">
@@ -64,11 +67,69 @@
                 </li>  </a>
                 </ul>
               </div>
+              <style>
+                .payment_time_mask{
+                	
+                	text-align: center;
+                }
+                .payment_time_mask li {
+                   height: 38px;
+                	line-height: 38px;
+                	background-color: #fff;
+                	border-bottom: 1px solid #ccc;
+                	list-style-type:none;
+                }
+              </style>
 
             </section>
              <script type="text/javascript">
-              // $("#addcard").click(function(){
-                    
-               // });
+               var flag = 'c';
+               $('.cart-box').on('click', function(){
+                
+                 var obj = $(this);
+                 var bid = obj.attr('data-id');  
+                 if(!bid) return; 
+        		 popTipShow.confirm('银行卡菜单','<div z-index="999" class="payment_time_mask"><li onclick="selec(this,1)" class="muca">默认银行卡</li><li onclick="selec(this,2)" class="muca">删除银行卡</li></div>',['确 定','取 消'],
+        			function(e){
+        			  //callback 处理按钮事件
+        			  var button = $(e.target).attr('class');
+        			   
+        			  if(button == 'ok'){
+        				//按下确定按钮执行的操作
+        				//todo ....				
+        				this.hide();
+        				setTimeout(function() {
+        				    
+        				        $.post("{:U('updatebank')}",{bid:bid,flag:flag},function(result){
+                                if(result.ret ==0){
+                                    webToast("操作成功","top", 2000);
+                                    window.location.reload()
+                                }
+                              
+                                },'json'); 
+                               
+        					
+        				}, 300);
+        			  }
+        
+        			  if(button == 'cancel') {
+        				//按下取消按钮执行的操作
+        				//todo ....
+        				this.hide();
+//        				setTimeout(function() {
+//        					webToast("您选择“取消”了","bottom", 2000);
+//        				}, 300);
+        			  }
+        			}
+        		);
+           });
+          
+            function selec(obj,act){
+                  $(".muca").css("background-color","");
+                   flag = act; 
+                   var objs  = $(obj);
+                   objs.css("background-color","yellow");
+                      
+            }
             </script>
            <include file="Public:pay" />

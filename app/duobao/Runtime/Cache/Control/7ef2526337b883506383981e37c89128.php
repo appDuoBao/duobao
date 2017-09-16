@@ -165,7 +165,7 @@
                         <td><?php echo ($vo["uid"]); ?></td>
                         <td><?php echo ($vo["mobile"]); ?></td>
 						<td>
-						<a href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">
+						<a href="<?php echo U('Bidding/index?uid='.$vo['uid']);?>">
 						    <?php if($vo["nickname"] == '' ): echo ($vo["mobile"]); ?>
 							<?php else: ?> 
 						<?php echo ($vo["nickname"]); endif; ?></a>
@@ -184,7 +184,7 @@
                             <a title="购买记录" href="<?php echo U('Bidding/index?uid='.$vo['uid']);?>">购买记录</a>
                            <a title="兑换记录" href="<?php echo U('Bidding/exchange?uid='.$vo['uid']);?>">兑换记录</a>
                             
-							<a title="查看代理" href="<?php echo U('agentinfo?puid='.$vo['parent_id'].'&root_id='.$vo['root_id']);?>">查看代理</a>
+							<a title="查看代理" href="<?php echo U('agentinfo?puid='.$vo['parent_id'].'&root_id='.$vo['root_id'].'&uid='.$vo['uid']);?>">查看代理</a>
                             <a title="佣金记录" href="<?php echo U('fenyonglog?puid='.$vo['uid']);?>">佣金记录</a>
                           <!--  <a href="<?php echo U('User/changeStatus?method=deleteUser&id='.$vo['uid']);?>" class="confirm ajax-get">删除</a>-->
                         </td>

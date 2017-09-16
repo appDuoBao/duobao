@@ -80,7 +80,7 @@ class IndexController extends HomeController {
 		$buy_list = array();
 		$i = 0;
 		$nowtime = time()-(60*10);
-        $order_list = M('WinOrder')->where("status =1")->order('create_time DESC')->limit(10)->select();
+        $order_list = M('WinOrder')->where("status =1")->order('create_time DESC')->limit(20)->select();
         foreach($order_list as $key => $val1){
 			$buy_list[$i]['goods_title'] = M('Document')->where("id = {$val1['goods_id']}")->getField('title');
 			$buy_list[$i]['buy_time'] = $val1['create_time'];

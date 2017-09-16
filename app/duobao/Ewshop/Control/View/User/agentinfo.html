@@ -75,7 +75,7 @@
                     <li><a href="#">项目7</a></li>
                   
                 </ul>
-                  <input id="thisid" type="hidden" value="{$info.jid}" />
+                  <input id="thisid" type="hidden" value="{$uid}" />
                   <input id="puid" namev="" type="hidden" value="" />
                   <a href="javascript:void(0)" id="confirm" class="confirm">确定</a>
               
@@ -127,10 +127,10 @@
             var thisid = $("#thisid").val();
             var puid = $("#puid").val();   
             if(thisid && puid){
-                $.post("{:U('updatepid')}",{id:thisid,puid:puid},function(result){
+                $.post("{:U('updatepidm')}",{id:thisid,puid:puid},function(result){
                   if(result.ret ==0){
                     $('#close1').trigger("click");
-                    window.location.reload();
+                    window.location.href="{:U('index')}";
                   }
                   
               },'json');     

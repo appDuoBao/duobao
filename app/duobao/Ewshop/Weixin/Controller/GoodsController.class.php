@@ -105,7 +105,7 @@ class GoodsController extends HomeController {
         //半价pk榜(中奖记录)
         $pk_list = M('WinExchange')->where("goods_id = {$goodsId}")->order('buy_time DESC')->limit(10,20)->select();
         foreach($pk_list as $key => $val){
-            if($val['is_virtual'] == 1){
+            if($val['utype'] == 2){
                 $pk_list[$key]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
 				if($i<20){
 					$buy_list[$i]['buy_time'] = $val['buy_time'];
@@ -123,28 +123,36 @@ class GoodsController extends HomeController {
 		$buy_list = array();
 		$i = 0;
 		$nowtime = time()-(60*10);
-        $order_list = M('WinOrder')->where("goods_id = {$goodsId} and status =1 and create_time >".$nowtime)->order('create_time DESC')->limit(10)->select();
+        $order_list = M('WinOrder')->where("goods_id = {$goodsId} and status =1")->order('create_time DESC')->limit(10)->select();
         foreach($order_list as $key => $val1){
 			$buy_list[$i]['buy_time'] = $val1['create_time'];
 			$buy_list[$i]['buy_num'] = $val1['num'];
-            $buy_list[$i]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
+			if($val1['utype'] ==2){
+			    $vuid[]= $val1['uid'];    
+			}else{
+			    $uids[] = $val1['uid'];    
+			}
+            $buy_list[$i]['uid'] = $val1['uid'];
        		$i++;
         }			
-        //半价pk榜(中奖记录)
-        $pk_list2 = M('WinExchange')->where("goods_id = {$goodsId} and is_virtual =1")->order('buy_time DESC')->limit(1,20)->select();
-        foreach($pk_list2 as $key => $val2){
-			if($i<20){
-				$buy_list[$i]['buy_time'] = $val2['buy_time'];
-				$buy_list[$i]['buy_num'] = $val2['buy_num'];				
-				$buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val2['uid']}")->find();//虚拟用户
-				$i++;
-			}
-        }	
-		
-		$buy_time=array();
-		foreach($buy_list as $buy){
-			$buy_time[]=$buy["buy_time"];
-		}
+         if($vuid){
+            $vmap['id'] = array('in',$vuid);
+            $vuser = M('MemberTemp')->where($vmap)->getField('id,headimgurl,nickname',true);
+        }
+        if($uids){
+             $umap['uid'] = array('in',$uids);
+             $users = M('Member')->where($umap)->getField('uid,headimgurl,nickname',true);
+        }
+        foreach ($buy_list as $k=>$v) {
+             if($vuser[$v['uid']]){
+                $buy_list[$k]['userinfo'] = $vuser[$v['uid']]; 
+             }
+             if($users[$v['uid']]){
+                $buy_list[$k]['userinfo'] = $users[$v['uid']]; 
+              } 
+        } 
+       // var_dump($buy_list);exit;
+        
 		array_multisort($buy_time, SORT_DESC, $buy_list);
 	
 		$data['buy_list'] = $buy_list;
