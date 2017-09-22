@@ -84,7 +84,7 @@
     <div class="tab-con">
         <ul class="lis"  >
 	        <volist name="data.buy_list" id="vo1">
-	            <li>
+	           <a href="{:U('My/buyLog?uid='.$vo1['userinfo']['uid'])}"> <li>
 	                <div class="lf">
 	                    <img src="{$vo1.userinfo.headimgurl}" alt="">
 	                </div>
@@ -99,11 +99,12 @@
 	                    <p class="lt1"><span>{$vo.num}</span>单</p><p class="lt2">参与</p>
 	                </div>-->
 	            </li>
+	        </a>
 	        </volist>
 	    </ul>
 	    <ul class="lis" style="display:none">
 	        <volist name="data.pk_list" id="vo">
-	            <li>
+	             <a href="{:U('My/buyLog?uid='.$vo['userinfo']['uid'])}"><li>
 	                <div class="lf">
 	                    <img src="{$vo.userinfo.headimgurl}" alt="">
 	                </div>
@@ -120,6 +121,7 @@
 	                    <p class="lt1"><span>{$vo.num}</span>单</p><p class="lt2">参与</p>
 	                </div>-->
 	            </li>
+	        </a>
 	        </volist>
 	    </ul>
 	    		

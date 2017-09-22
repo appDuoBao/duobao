@@ -260,15 +260,6 @@ class UserController extends ControlController {
             }
         }
 
-//        $map['mobile'] = $phone;
-//        $user_id       = M('UcenterMember')->where($map)->getField('id');
-//        if ($user_id) {
-//            $return = array ("status" => 0 , "info" => '手机号已经被注册');
-//            header('Content-type: text/html; charset=UTF-8');
-//            $this->ajaxreturn($return);
-//            exit();
-//        }
-
         $mobile_code = random(4 , 1);//生成手机验证码
         $send_code   = (!empty($_SESSION['send_code'])) ? $_SESSION['send_code'] : '8888';//获取提交随机加密码
         $content     = "您的短信验证码为：" . $mobile_code . "，有效期一小时。【千亩阳光】";

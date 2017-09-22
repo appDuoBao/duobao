@@ -107,11 +107,12 @@
 }
 .con2 .con2x{
     float: left;
-    background: rgba(219,66,82,1);
+	background: rgba(243,141,49,1);
+    
 }
 .con2 .con2d{
     float: right;
-    background: rgba(243,141,49,1);
+    background: rgba(219,66,82,1);
 }
 .tabtitle{
     padding:  0 0.32rem;

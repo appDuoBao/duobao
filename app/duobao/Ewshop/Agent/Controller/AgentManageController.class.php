@@ -516,4 +516,70 @@ class AgentManageController extends ControlController {
 		$this->display();  
 	    
 	}
+	public function vmshow(){
+	    
+	    $puid = $_SESSION['user_agent']['id'];
+	    $goods =    M('Document')->where("category_id = 217 and status = 1")->getField('id,price');
+	    $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id',true);
+	    
+	    $this->assign('goods',$goods);
+	    $this->assign('member',$members);
+	    $this->display();    
+	}
+	public function vmorder(){
+	     
+	    $puid = $_SESSION['user_agent']['id'];
+	    $num = I("num");
+	    $gid = I('gid');//
+	    $btype = I('btype');//大，小
+	    $uids = i('uids');
+	    if($uids){
+	        $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id',true);//虚拟用户
+	    }
+		$goods =    M('Document')->where("category_id = 217 and status = 1 and id =".$gid)->getField('id,price');//获取所有的商品
+	    $lottery_time = $this->get_time_on_clock(time());//下期开奖时间
+        $members = ($member) ? $members : $uids;
+        if(!$members){
+            exit('error');    
+        }
+		  foreach($members as $k=>$v){
+		    $data['uid'] = $members;
+		    $data['utype'] = 2;
+		    $gid = $gid; 
+            $data['goods_id'] = $gid;
+            $data['goods_type'] = $goods[$gid]['price'];
+            $data['num'] = $num;
+            $data['type'] = $btype;
+            $data['create_time'] = time();
+            $data['order_number'] =  'FD-'.date('YmjHis').sprintf("%07d", $uid).$type.rand(1000,9999);//商户订单号;
+            $data['lottery_time'] = $lottery_time;
+            $data['period'] = $this->getPeriod($lottery_time);//开奖期数
+            $data['status'] = 1;//开奖期数
+            $data['ip_info'] = get_client_ip();
+            $data['paytype'] = '微信';
+            $data['pay_time']= time();
+             if($goods[$gid] == 1){
+                $price  =  28;
+                $data['money_w'] = $data['num']*28;
+                $data['money'] = $data['num']*28;
+                if($data['type'] == 1){
+                        $data['number_section'] = '1-28';
+                    }elseif($data['type'] == 2){
+                        $data['number_section'] = '29-56';
+               }
+            }elseif($goods[$gid] == 2){
+                $price  =  55;
+                 $data['money_w'] = $data['num']*55;
+                $data['money'] = $data['num']*55;
+                if($data['type'] == 1){
+                    $data['number_section'] = '1-55';
+                }elseif($data['type'] == 2){
+                    $data['number_section'] = '56-110';
+                }
+            }
+                 //  var_dump($data);exit;
+             M('WinOrder')->add($data);
+             //sleep(5);
+		}
+	}
 }

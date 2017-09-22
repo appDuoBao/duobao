@@ -21,7 +21,7 @@ class PublicController extends \Think\Controller {
      * @author ew_xiaoxiao
      */
     public function login($username = null, $password = null, $verify = null){
-        exit('tst');
+        
         if(IS_POST){         
            
 			    $user = M('UcenterMember');
@@ -97,8 +97,44 @@ class PublicController extends \Think\Controller {
     			     $this->success('修改成功！' , U('Public/login'));    
     			}
 	    }
+	    $_SESSION['send_code'] = random(6 , 1);  
 		$this->display();
     }
+    public function sendphone(){
+        $phone = $_POST['phone'];
+        if (empty($phone)) {
+            $return = array ("status" => 0 , "info" => '手机号不正确');
+            header('Content-type: text/html; charset=UTF-8');
+            $this->ajaxreturn($return);
+            exit();
+        }
+
+        $oldphone = $_GET['oldphone'];//修改手机号操作：原手机号码
+        if ($oldphone) {
+            if ($phone == $oldphone) {
+                $return = array ("status" => 0 , "info" => '请填写新的手机号码');
+                $this->ajaxreturn($return);
+                exit();
+            }
+        }
+
+        $mobile_code = random(4 , 1);//生成手机验证码
+        $send_code   = (!empty($_SESSION['send_code'])) ? $_SESSION['send_code'] : '8888';//获取提交随机加密码
+        $content     = "您的短信验证码为：" . $mobile_code . "，有效期一小时。【千亩阳光】";
+        $result      = sendsmscode($phone , $content , $send_code , $mobile_code);
+
+        $this->ajaxreturn($result);
+
+    }
+     public function checkphone(){
+      // if (trim($_POST['miss']) == $_SESSION['mobile_code']) {
+            $return = array ("status" => 1 , "info" => "");
+      //  } else {
+           // $return = array ("status" => 0 , "info" => '验证码不正确');
+       // }
+        $this->ajaxreturn($return);
+    }
+
 	
 
 }

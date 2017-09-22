@@ -329,7 +329,7 @@ class UserController extends ControlController {
       // if (trim($_POST['miss']) == $_SESSION['mobile_code']) {
             $return = array ("status" => 1 , "info" => "");
       //  } else {
-            $return = array ("status" => 0 , "info" => '验证码不正确');
+           // $return = array ("status" => 0 , "info" => '验证码不正确');
        // }
         $this->ajaxreturn($return);
     }

@@ -100,8 +100,14 @@ class MyController extends HomeController {
      * @author
      */
     public function buyLog(){
+        $from = I("uid");
         $uid = D('Member')->uid();
-        $list = M('WinOrder')->where(array('uid'=>$uid,'status'=>1))->order('create_time DESC')->select();
+        $isself = false;
+        if(!$from){
+            $isself = true;    
+        }
+        $where = ($from) ? $from : $uid;
+        $list = M('WinOrder')->where(array('uid'=>$where,'status'=>1))->order('create_time DESC')->select();
         $order_doing_num = 0 ;
         foreach($list as $key => $val){
             if($val['type'] == 1){
@@ -148,6 +154,7 @@ class MyController extends HomeController {
         $this->assign('order_success_num',$order_success_num);
         $this->assign('order_fail_num',$order_fail_num);
         $this->assign('list',$list);
+        $this->assign('isself',$isself);
         $this->display();
     }
 

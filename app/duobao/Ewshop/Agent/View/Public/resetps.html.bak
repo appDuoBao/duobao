@@ -15,22 +15,32 @@
   
   <div class="login-body">
     <div class="login-main pr">
-      <form action="{:U('login')}" method="post" class="login-form">
+      <form  id="formUser" action="{:U('resetps')}" method="post" class="login-form">
         <h3 class="welcome">代理管理系统</h3>
         <div id="itemBox" class="item-box">
           <div class="item"> <i class="icon-login-user"></i>
-            <input type="text" name="username" placeholder="请填写手机号" autocomplete="off" />
+            <input type="text" id="mobile" name="username" placeholder="请填写手机号" autocomplete="off" />
+            <span class="check_tips error_tip" id="dmobile"></span>
           </div>
           <span class="placeholder_copy placeholder_un">请填写用户名</span>
           <div class="item b0"> <i class="icon-login-pwd"></i>
-            <input type="password" name="password" placeholder="请填写密码" autocomplete="off" />
+            <input type="password" id="rpass" name="password" placeholder="请填写密码" autocomplete="off" />
           </div>
           <div class="item b0"> <i class="icon-login-pwd"></i>
-            <input type="password" name="repassword" placeholder="请填写密码" autocomplete="off" />
+            <input type="password" id="pass" name="repassword" placeholder="请填写密码" autocomplete="off" />
           </div>
           <span class="placeholder_copy placeholder_pwd">请填写密码</span> </div>
+            
+            <div class="item b0"> <i class="icon-login-pwd"></i>
+            <input type="text" name="miss" style="width:88px" id="miss" oninput="checkphone();" placeholder="验证码">
+            <span class="check_tips error_tip" id="dmiss" style="right: 2.5rem;"></span>
+        </div>
+			  <div class="login_btn_panel">
+			    <button type="button" id="sendma" style="width:98px;" onclick="sendphone();" name="sendma">获取验证码</button>
+			</div>
+          
         <div class="login_btn_panel">
-          <button class="login-btn" type="submit"> <span class="in"><i class="icon-loading"></i>修改中 ...</span> <span class="on">修改</span> </button>
+          <button class="login-btn" onclick="register()" type="button"> <span class="in"><i class="icon-loading"></i>修改中 ...</span> <span class="on">修改</span> </button>
           <div class="check-tips"></div>
         </div>
       </form>
@@ -195,6 +205,114 @@
             }
 
 		});
+		
+		var secs = 60;
+	function backcount(){
+		$(".yzm").attr("onClick",'');
+		for(i=1;i<=secs;i++) {
+			window.setTimeout("update1(" + i + ")", i * 1000);
+		}
+	}
+	function update1(num) {
+		if(num == secs) {
+			$("#sendma").html('获取验证码');
+			$(".yzm").attr("onClick",'sendphone();');
+		}else {
+			printnr = secs-num;
+			$("#sendma").html("(" + printnr +")秒后重发");
+		}
+	}
+	function err_msg(str, id) {
+		document.getElementById('d'+id).style.display = "inline-block";
+		document.getElementById('d'+id).innerHTML=str;
+	}
+
+	function ismobile_registered(){
+		var mobile=$("#mobile").val();
+		if(mobile ==''){
+			err_msg('请填写手机号码', 'mobile');
+		}else{
+			if(!(/^1[34578]\d{9}$/.test(mobile))){
+				err_msg('不正确的手机号码', 'mobile');
+			}else{
+				err_msg('', 'mobile');
+//				$.ajax({
+//					type:'post', //传送的方式,get/post
+//					url:'{:U("User/ismobile_registered")}', //发送数据的地址
+//					data:{mobile:mobile},
+//					dataType: "json",
+//					success:function(data)
+//					{
+//						err_msg(data.info, 'mobile');
+//					}
+//				})
+			}
+		}
+	}
+
+
+	function sendphone(){
+		var phone=$("#mobile").val();
+		if(!(/^1[34578]\d{9}$/.test(phone))){
+			err_msg('不正确的手机号码', 'mobile');
+			return false;
+		}
+		if($('#dmobile').html()=="手机号已经被使用" || $('#dmobile').html()=="短信已发送") {
+			return false;
+		}
+		$.ajax({
+			type:'post', //传送的方式,get/post
+			url:'{:U("public/sendphone")}', //发送数据的地址
+			data:{phone:phone},
+			dataType: "json",
+			success:function(data){
+				err_msg(data.info, 'mobile');
+			}
+		})
+		backcount();
+	}
+
+	function checkphone(){
+		var miss=$("#miss").val();
+		if(miss ==''){
+			err_msg('请填写验证码', 'miss');
+		}else{
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("public/checkphone")}', //发送数据的地址
+				data:{miss:miss},
+				dataType: "json",
+				success:function(data)
+				{
+					err_msg(data.info, 'miss');
+				}
+			})
+		}
+	}
+	function register(){
+		var mobile=$("#mobile").val();
+		if(mobile ==''){
+			err_msg('请填写手机号码', 'mobile');
+			return false;
+		}
+		if($('#dmobile').html() != "" && $('#dmobile').html() != "短信已发送") {
+			return false;
+		}
+		var miss=$("#miss").val();
+		if(miss ==''){
+			alert('请填写验证码');
+			return false;
+		}
+		if($('#dmiss').html() != "") {
+			alert('验证码不正确');
+			return false;
+		}
+		if($("#pass").val() == "" || $("#rpass")== ""){
+		    alert('密码不正确');
+			return false;
+		 }
+		$('#formUser').submit();//提交
+	}
 
     </script>
 </body>

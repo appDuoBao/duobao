@@ -55,15 +55,15 @@ class IndexController extends HomeController {
         $data['time_end'] = $this->get_time_on_clock(time());//倒计时时间
 
         //最近中奖(中奖记录)
-        $pk_list = M('WinExchange')->order('buy_time DESC')->limit(10,20)->select();
+        $pk_list = M('WinExchange')->order('buy_time DESC')->limit(20)->select();
         foreach($pk_list as $key => $val){
             $codeid [] = $val['order_id'];
             $pk_list[$key]['goods_title'] = M('Document')->where("id = {$val['goods_id']}")->getField('title');
             $pk_list[$key]['period'] = $val['period'];
             if($val['utype'] == 2){
-                $pk_list[$key]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
+                $pk_list[$key]['userinfo'] = M('MemberTemp')->field('id as uid,headimgurl,nickname')->where("id = {$val['uid']}")->find();//虚拟用户
             }else{
-                $pk_list[$key]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val['uid']}")->find();
+                $pk_list[$key]['userinfo'] = M('Member')->field('uid,headimgurl,nickname')->where("uid = {$val['uid']}")->find();
             }
         }
         $cmap['id'] = array('in',$codeid); 
@@ -80,7 +80,7 @@ class IndexController extends HomeController {
 		$buy_list = array();
 		$i = 0;
 		$nowtime = time()-(60*10);
-        $order_list = M('WinOrder')->where("status =1")->order('create_time DESC')->limit(20)->select();
+        $order_list = M('WinOrder')->where("status =1")->order('create_time DESC')->limit(10)->select();
         foreach($order_list as $key => $val1){
 			$buy_list[$i]['goods_title'] = M('Document')->where("id = {$val1['goods_id']}")->getField('title');
 			$buy_list[$i]['buy_time'] = $val1['create_time'];
@@ -88,9 +88,9 @@ class IndexController extends HomeController {
 			$buy_list[$i]['period'] = $val1['period'];
 			$buy_list[$i]['type'] = ($val1['type'] == 1) ? '小' : '大';
 			if($val1['utype'] ==1){
-                $buy_list[$i]['userinfo'] = M('Member')->field('headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
+                $buy_list[$i]['userinfo'] = M('Member')->field('uid,headimgurl,nickname')->where("uid = {$val1['uid']}")->find();
             }elseif($val1['utype']==2){
-                $buy_list[$i]['userinfo'] = M('MemberTemp')->field('headimgurl,nickname')->where("id = {$val1['uid']}")->find();
+                $buy_list[$i]['userinfo'] = M('MemberTemp')->field('id as uid,headimgurl,nickname')->where("id = {$val1['uid']}")->find();
              }
        		$i++;
         }			
@@ -102,8 +102,6 @@ class IndexController extends HomeController {
 		array_multisort($buy_time, SORT_DESC, $buy_list);
 		$data['buy_list'] = $buy_list;
 		
-
-
         //开奖号码
         $code_list = M('WinCode')->where("code <> '0'")->order('id desc')->limit('10')->select();
         foreach($code_list as $key => $val){

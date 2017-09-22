@@ -137,6 +137,11 @@ class MemberModel extends Model {
         return $this->field($field)->where($map)->find();
     }
 	
+	public function uid(){
+        $user = session("user_auth");
+        $uid  = $user["uid"];
+        return $uid;
+  }	
 	
 	
 }

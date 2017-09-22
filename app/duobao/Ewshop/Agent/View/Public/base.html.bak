@@ -61,7 +61,7 @@
     <ul class="nav-list user-menu hidden">
       <li class="manager">你好，<em title="{:session('user_auth.username')}">{:session('user_auth.username')}</em></li>
       <li><a href="{:U('Cache/delcache')}">清除缓存</a></li>
-      <li><a href="{:U('Public/updatePassword')}">修改密码</a></li>
+      <li><a href="{:U('Public/resetps')}">修改密码</a></li>
      
       <li><a href="{:U('AgentManage/agentinfo')}">我的信息</a></li>
       <li><a href="{:U('Public/logout')}">退出</a></li>
@@ -96,6 +96,7 @@
         <h3><i class="icon icon-unfold"></i>订单管理</h3>
           <ul class="side-sub-menu">
             <li> <a class="item" href="{:U('AgentManage/orderlist')}">所有订单</a> </li>
+            <li> <a class="item" href="{:U('AgentManage/orderlist')}">代下订单</a> </li>
          </ul>
          <h3><i class="icon icon-unfold"></i>代理管理</h3>
           <ul class="side-sub-menu">
