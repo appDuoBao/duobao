@@ -34,12 +34,12 @@ class AgentManageController extends ControlController {
             
             $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
             if($login['join_type']==='0'){
-                $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and root_id = " .$puid);
+                $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and root_id = " .$puid);
 		    }else{ //需要加入分页
 		          $uids = self::getAllUidsByParent($puid);
 		          array_push($uids,$puid);
 		          $ids = implode(',',$uids);
-		          $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id in (" .$ids." )");    
+		          $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id in (" .$ids." )");    
 		       	         
 		     }
 		    
@@ -519,8 +519,8 @@ class AgentManageController extends ControlController {
 	public function vmshow(){
 	    
 	    $puid = $_SESSION['user_agent']['id'];
-	    $goods =    M('Document')->where("category_id = 217 and status = 1")->getField('id,price');
-	    $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id',true);
+	    $goods =    M('Document')->where("category_id = 217 and status = 1")->getField('id,price,title');
+	    $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id,nickname,headimgurl',true);
 	    
 	    $this->assign('goods',$goods);
 	    $this->assign('member',$members);
@@ -533,17 +533,21 @@ class AgentManageController extends ControlController {
 	    $gid = I('gid');//
 	    $btype = I('btype');//大，小
 	    $uids = i('uids');
-	    if($uids){
+	    if(!is_numeric($num)){
+	        $this->error("购买数量不能为空");    
+	    }
+	    if(!$uids){
 	        $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id',true);//虚拟用户
 	    }
 		$goods =    M('Document')->where("category_id = 217 and status = 1 and id =".$gid)->getField('id,price');//获取所有的商品
 	    $lottery_time = $this->get_time_on_clock(time());//下期开奖时间
-        $members = ($member) ? $members : $uids;
+        $members = ($member) ? $members : array($uids);
         if(!$members){
             exit('error');    
         }
+       
 		  foreach($members as $k=>$v){
-		    $data['uid'] = $members;
+		    $data['uid'] = $v;
 		    $data['utype'] = 2;
 		    $gid = $gid; 
             $data['goods_id'] = $gid;
@@ -579,7 +583,94 @@ class AgentManageController extends ControlController {
             }
                  //  var_dump($data);exit;
              M('WinOrder')->add($data);
-             //sleep(5);
+             $this->success('下单成功');
 		}
 	}
+	
+	function get_time_on_clock($timestamp = ''){
+		$timestamp = !empty($timestamp) ? $timestamp : time();
+//		$timestamp = '1492364763';
+//		echo date('Y/m/d H:i:s',$timestamp);
+		$time_H = date('H',$timestamp);
+		$time_m = date('i',$timestamp);
+//		dump($time_H);
+//		dump($time_m);
+		$as = 10;
+		if($time_H >= 22 || $time_H < 2 || ($time_H == 2 && $time_m < 1)){
+			$as = 5;
+		}
+//		dump($as);
+
+		if($time_H > 2 && $time_H < 10){
+			return date('Y/m/d ', $timestamp)  . '10:00:00';
+		}else{
+			$minute = date('i', $timestamp);
+			$timestamp += $as*60;//时间戳加十分钟
+
+			if($minute == '00'){
+				$minute = $as;
+			}else{
+				if($minute%$as == 0){
+					$minute =  ($minute/$as + 1)*$as;//分钟数除以10，然后向上取整，乘10
+				}else{
+					$minute =  ceil($minute/$as)*$as;//分钟数除以10，然后向上取整，乘10
+				}
+				if($minute == 60){//当分钟数是60，分钟数为0
+					$minute = '00';
+				}
+
+			}
+			return date('Y/m/d H:', $timestamp) . $minute . ':00';
+		}
+
+	}
+	
+	public function getPeriod($lottery_time = ''){
+		$lottery_time = !empty($lottery_time) ? $lottery_time : $this->get_time_on_clock(time());
+		$timestamp = !empty($timestamp) ? $timestamp : time();
+
+//		$timestamp = '1492279082';
+//		echo date('Y/m/d H:i:s',$timestamp);
+//
+//		$lottery_time = $this->get_time_on_clock($timestamp);
+
+		$time_H = date('H',$timestamp);
+		$time_m = date('i',$timestamp);
+//		dump($time_H);
+//		dump($time_m);
+
+		$as = 10;
+		if($time_H >= 22 || $time_H < 2 || ($time_H == 2 && $time_m < 1)){
+			$as = 5;
+			if(($time_H >= 0 && $time_H < 2) ||  ($time_H == 2 && $time_m < 1)){
+				$period = 96 + (strtotime($lottery_time) - strtotime(date('Y/m/d ').'00:00:00'))/(60*$as);
+			}else{
+				$period = 72 + (strtotime($lottery_time) - strtotime(date('Y/m/d ') . '22:00:00')) / (60 * $as);
+			}
+		}else{
+			$period = (strtotime($lottery_time) - strtotime(date('Y/m/d ') . '10:00:00')) / (60 * $as);
+		}
+//		dump($as);
+//		dump($period);
+		return $period;
+	}
+	
+	 public function agentup(){
+            
+            $pid = I("puid");
+            //$root = I("root_id");
+            $uid = I("uid");
+            if($pid ){
+                $uids =array($pid);
+                $map['uid'] = array('in',$uids);
+                $agent = M('Join')->where($map)->getField('uid,company,name,mobile,ratio,parent_id,ratio_type,address');
+                $parents = ($pid) ? $agent[$pid] : '';
+               // $roots = ($root) ? $agent[$root] : '';
+                $this->assign('parent',$parents);
+                //$this->assign('roots',$roots);
+                $this->assign('uid',$uid);
+            }
+           // var_dump($parents);exit;
+            $this->display('');
+    }
 }

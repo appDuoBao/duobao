@@ -392,10 +392,10 @@ class AutoController extends HomeController {
 //    }
     //虚拟用户购买
     public function doorder(){
-		 $members = M('MemberTemp')->order(' rand()')->limit(5)->getField('id',true);//虚拟用户
+		 $members = M('MemberTemp')->where('pid = 0')->order(' rand()')->limit(5)->getField('id',true);//虚拟用户
 		 $goods =    M('Document')->where("category_id = 217 and status = 1")->order(' rand()')->limit(5)->getField('id,price');//获取所有的商品
 		 $lottery_time = $this->get_time_on_clock(time());//下期开奖时间
-        
+       
 		 foreach($members as $k=>$v){
 		    $data['uid'] = $v;
 		    $data['utype'] = 2;
