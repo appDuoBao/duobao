@@ -1,0 +1,147 @@
+<extend name="Public/base"/>
+
+
+
+<block name="body">
+
+	<div class="main-title">
+
+		<h2>财务统计</h2>
+
+	</div>
+    <div class="cf">
+        <div class="fl">
+        </div>
+        <!-- 高级搜索 -->
+        <div class="search-form fr cf">
+
+            <div class="sleft">
+                <input type="date" name="start_date" value="{:I('start_date')}" class="search-input" />开始日期&nbsp;&nbsp;
+            </div>
+
+            <div class="sleft">
+                <input type="date" name="end_date" value="{:I('end_date')}" class="search-input" />结束日期&nbsp;&nbsp;
+            </div>
+            <a href="javascript:;" id="search" url="{:U('tongji')}" class="btn sch-btn">搜索</a>
+        </div>
+    </div>
+	<div class="data-table table-striped">
+
+        <table id="datatable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>总销量(元)</th>
+                    <th>总奖金额</th>
+                    <th>已兑奖金额</th>
+                    <th>未兑奖金额</th>
+                    <th>利润</th>
+                </tr>
+            </thead>
+            <tbody>
+            <if condition="$sstallprice neq ''">
+            <tr>
+                <th>{:I('start_date')}至{:I('end_date')}</th>
+                <td>{$sstallprice|default="0"}</td>
+                <td>{$sstdhprice+$sstwdhprice}</td>
+                <td>{$sstdhprice|default="0"}</td>
+                <td>{$sstwdhprice|default="0"}</td>
+                <td>{$sstallprice-$sstwdhprice-$sstdhprice}元</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </if>
+            <tr>
+                    <th>总计</th>
+                    <td>{$allprice|default="0"}</td>
+                    <td>{$dhprice+$wdhprice}</td>
+                    <td>{$dhprice|default="0"}</td>
+                    <td>{$wdhprice|default="0"}</td>
+                    <td>{$allprice-$wdhprice-$dhprice}元</td>
+                </tr>
+
+                <tr>
+                    <th>今日</th>
+                    <td>{$tallprice|default="0"}</td>
+                    <td>{$tdhprice+$twdhprice}</td>
+                    <td>{$tdhprice|default="0"}</td>
+                    <td>{$twdhprice|default="0"}</td>
+                    <td>{$tallprice-$twdhprice-$tdhprice}元</td>
+                </tr>
+
+                <tr>
+                    <th>昨日</th>
+                    <td>{$tallprice3|default="0"}</td>
+                    <td>{$tdhprice3+$twdhprice3}</td>
+                    <td>{$tdhprice3|default="0"}</td>
+                    <td>{$twdhprice3|default="0"}</td>
+                    <td>{$tallprice3-$twdhprice3-$tdhprice3}元</td>
+                </tr>
+
+                <tr>
+                    <th>前天</th>
+                    <td>{$tallprice4|default="0"}</td>
+                    <td>{$tdhprice4+$twdhprice4}</td>
+                    <td>{$tdhprice4|default="0"}</td>
+                    <td>{$twdhprice4|default="0"}</td>
+                    <td>{$tallprice4-$twdhprice4-$tdhprice4}元</td>
+                </tr>
+
+            </tbody>
+        </table>
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+ <script type="text/javascript">
+     //搜索功能
+     $("#search").click(function () {
+         var url   = $(this).attr('url');
+         var query = $('.search-form').find('input').serialize();
+         query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
+         query     = query.replace(/^&/g , '');
+         if (url.indexOf('?') > 0) {
+             url += '&' + query;
+         } else {
+             url += '?' + query;
+         }
+         window.location.href = url;
+     });
+
+     $("#export").click(function () {
+         var url   = $(this).attr('url');
+         var query = $('.search-form').find('input').serialize();
+         query     = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g , '');
+         query     = query.replace(/^&/g , '');
+         if (url.indexOf('?') > 0) {
+             url += '&' + query;
+         } else {
+             url += '?' + query;
+         }
+         window.location.href = url;
+     });
+
+     //回车搜索
+     $(".search-input").keyup(function (e) {
+         if (e.keyCode === 13) {
+             $("#search").click();
+             return false;
+         }
+     });
+            //导航高亮
+
+            highlight_subnav("{:U('tongji')}");
+
+    </script>
+
+</block>
