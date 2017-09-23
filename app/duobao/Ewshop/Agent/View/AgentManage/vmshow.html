@@ -1,0 +1,65 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>代下订单</h2>
+    </div>
+    <form action="{:U('vmorder')}" method="post" class="form-horizontal">
+        
+        <div class="form-item">
+            <label class="item-label">选择商品</label>
+            <div class="controls">
+                <select name="gid">
+                     <notempty name="goods">
+                <volist name="goods" id="vo">
+                   <option value="{$vo.id}">{$vo.title}</option>
+                </volist>
+                    </notempty>
+                    </select>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">选择用户</label>
+            <div class="controls">
+                <select name="uids">
+                     <notempty name="member">
+                <volist name="member" id="vo">
+                   <option value="{$vo.id}">{$vo.nickname}</option>
+                </volist>
+                    </notempty>
+                    </select>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">大小</label>
+            <div class="controls">
+                <select name="btype">
+                    
+                   <option value="1">小</option>
+                    
+                   <option value="2">大</option>
+              
+                    </select>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">购买数量</label>
+            <div class="controls">
+                <input type="text" class="text input-large"  name="num" value="">
+            </div>
+        </div>
+       
+        
+        <div class="form-item">
+            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+        </div>
+    </form>
+</block>
+
+<block name="script">
+    <script type="text/javascript">
+        //导航高亮
+        highlight_subnav('{:U('BrandingManage/index')}');
+    </script>
+</block>

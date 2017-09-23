@@ -291,8 +291,12 @@ class AgentManageController extends ControlController {
     	    }
     		//按比例收益,这地方计算不对，应该是减去商品本身的价格
 	    }
+	    
+	    //计算用户数
+	    $sumuser = M('Member')->where('parent_id = '.$agent_login)->Count('uid');
+	    $this->assign('sumuser',$sumuser);
 		$this->assign('start_date',$start_date);
-	        $this->assign('end_date',$end_date);
+	    $this->assign('end_date',$end_date);
 		$this->assign('uname',$loginfo['name']);
 		$this->assign('cur_ratio',$cur_ratio);
 		$this->assign('sy',$sy);
