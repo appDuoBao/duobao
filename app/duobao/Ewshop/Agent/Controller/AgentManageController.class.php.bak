@@ -34,12 +34,12 @@ class AgentManageController extends ControlController {
             
             $Model = new \Think\Model(); // 实例化一个model对象 没有对应任何数据表
             if($login['join_type']==='0'){
-                $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and root_id = " .$puid);
+                $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and root_id = " .$puid ."order by m.reg_time desc");
 		    }else{ //需要加入分页
 		          $uids = self::getAllUidsByParent($puid);
 		          array_push($uids,$puid);
 		          $ids = implode(',',$uids);
-		          $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id in (" .$ids." )");    
+		          $list = $Model->query("select id,username,nickname,mobile,uid,m.last_login_ip,m.reg_time,m.last_login_time,parent_id from  __PREFIX__ucenter_member as u,__PREFIX__member as m where u.id=m.uid and parent_id in (" .$ids." )" . " order by m.reg_time desc");    
 		       	         
 		     }
 		    
@@ -294,7 +294,7 @@ class AgentManageController extends ControlController {
 	    
 	    //计算用户数
 	    $sumuser = M('Member')->where('parent_id = '.$agent_login)->Count('uid');
-	    print_r($sumuser);exit;
+	    $this->assign('sumuser',$sumuser);
 		$this->assign('start_date',$start_date);
 	    $this->assign('end_date',$end_date);
 		$this->assign('uname',$loginfo['name']);
@@ -539,6 +539,9 @@ class AgentManageController extends ControlController {
 	    $uids = i('uids');
 	    if(!is_numeric($num)){
 	        $this->error("购买数量不能为空");    
+	    }
+	    if(!$uids){
+	         $this->error("用户为空，请先申请用户");   return;
 	    }
 	    if(!$uids){
 	        $members = M('MemberTemp')->where('pid = ' .$puid)->getField('id',true);//虚拟用户

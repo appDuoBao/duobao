@@ -59,6 +59,7 @@ class ControlController extends Controller {
             }
         }
         $this->assign('__MENU__', $this->getMenus());
+        $this->assign('uid',UID);
     }
 
     /**

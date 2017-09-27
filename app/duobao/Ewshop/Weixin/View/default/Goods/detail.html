@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="__CSS__/common.css?t=123">
     <link rel="stylesheet" href="__CSS__/chanpin.css?t=123">
-    <link rel="stylesheet" href="__CSS__/chanpinbuy.css">
+    <link rel="stylesheet" href="__CSS__/chanpinbuy.css?t=123">
     <link rel="stylesheet" href="__CSS__/dingdan.css">
 
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -138,9 +138,10 @@
                 <input type="hidden" id="goods_type" value="{$data.goodsDetail.price}">
                 <input type="hidden" id="pay_type">
                 <div class="sum">总需：<span class="sumn">{$data.price_half_1}</span> 微币<!--(当前拥有{$price}微币)--></div>
-                <!--<div class="pay" onclick="callpay();">立即支付</div>-->
-                <!--<div class="pay" onclick="judge();">立即支付</div>-->
-                <div class="pay" onclick="getpay();">立即支付</div>
+                  <input  id="buyer_id" vtype="ip" value="" placeholder="支付宝账号" maxlength="16" placeholder="长度16">
+                <div class="pay" onclick="callpay();">支付宝支付</div>
+                <!--<div class="pay" onclick="judge();">支付</div>-->
+                <div class="pay" onclick="getpay();">微信支付</div>
             </div>
             <div class="line"></div>
             <div class="close"></div>
@@ -378,19 +379,50 @@
     //        })
     //    }
     //
-    //    function callpay(){
-    //        if (typeof WeixinJSBridge == "undefined"){
-    //            return false;
-    //            if( document.addEventListener ){
-    //                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
-    //            }else if (document.attachEvent){
-    //                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
-    //                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
-    //            }
-    //        }else{
-    //            jsApiCall();
-    //        }
-    //    }
+      function callpay(){
+          var myunix = "{$data.myunix}";
+          var myjsunix = nowunix = Date.parse( new Date())/1000;
+
+         if((myunix - myjsunix) < 30){
+            alert('即将开奖，敬请期待下一期');
+            return false;
+         }
+         
+         var total_fee = $('.sumn').html();
+        var type = $('#pay_type').val();
+        var num = $(".btn2").val();
+        var goods_type = $('#goods_type').val();
+        var lottery_time = $(".fnTimeCountDown").data('end');
+        var goods_id = '{:I("get.id")}';
+        var buyer_id = $("#buyer_id").val();
+        if(buyer_id == ''){
+            alert("请输入支付宝账号");   
+            return false; 
+        }
+        if(total_fee == ''  || type =='' || num =='' || lottery_time =='' || goods_id ==''){
+            alert('操作异常,请选择购买数量！');
+            return false;
+        }
+        $.ajax({
+            type: 'post', //传送的方式,get/post
+            url: './index.php?s=Weixin/Request/submitOrderInfo',
+            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:2,buyer_id:buyer_id,buyer_logon_id:'',buyer_id:buyer_id},
+            dataType: "json",
+            success: function (res) {
+                
+                if(res.status== 500){
+                    alert(res.msg);    
+                }
+                if(res.status == 0){
+                  
+                    window.location.href = res.pay_url;
+                }
+
+               
+            }
+        });
+         
+      }
 
 
     var flag = 0;
@@ -488,8 +520,8 @@
         }
         $.ajax({
             type: 'post', //传送的方式,get/post
-            url: '/Weixin/Request/submitOrderInfo',
-            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id},
+            url: '../index.php?s=/Weixin/Request/submitOrderInfo',
+            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:1},
 //            dataType: "json",
             success: function (res) {
                 if(typeof(res) === 'string'){
