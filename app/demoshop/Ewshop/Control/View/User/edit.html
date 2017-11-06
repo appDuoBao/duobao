@@ -1,0 +1,90 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>新增用户</h2>
+    </div>
+    <form action="{:U()}" method="post" class="form-horizontal">
+	<input type="hidden" class="text input-large" name="id" value="{$info.uid}">
+	<input type="hidden" class="text input-large" name="uid" value="{$info.uid}">
+        <div class="form-item">
+            <label class="item-label">用户名<span class="check-tips">（登录名）</span></label>
+            <div class="controls">
+            {$info.username}
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">昵称<span class="check-tips"></span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="nickname" value="{$info.nickname}">
+            </div>
+        </div>
+       <div class="form-item">
+            <label class="item-label">手机号<span class="check-tips"></span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="mobile" value="{$info.mobile}">
+            </div>
+        </div>	
+		 <div class="form-item">
+            <label class="item-label">是否是分销商<span class="check-tips"></span></label>
+            <div class="controls">
+					<if condition="$info.isdis eq 1">是<else />否</if>
+            </div>
+        </div>		
+		 <div class="form-item">
+            <label class="item-label">性别<span class="check-tips"></span></label>
+            <div class="controls">
+                <label class="radio"><input type="radio" name="sex" value="0" <if condition="($info.sex neq 1) AND ($info.nickname neq 2) "> checked="checked"</if>>未知</label>
+				<label class="radio"><input type="radio" name="sex" value="1" <if condition="$info.sex eq 1"> checked="checked"</if>>男</label>
+				<label class="radio"><input type="radio" name="sex" value="2" <if condition="$info.sex eq 2"> checked="checked"</if>>女</label>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">账户金额<span class="check-tips"></span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="account" value="{$info.account}">
+            </div>
+        </div>	
+        <div class="form-item">
+            <label class="item-label">最后登录时间<span class="check-tips"></span></label>
+            <div class="controls">
+               {$info.last_login_time|date="Y-m-d",###}
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">登录次数<span class="check-tips"></span></label>
+            <div class="controls">
+               {$info.login}
+            </div>
+        </div>		
+        <div class="form-item">
+            <label class="item-label">密码<span class="check-tips">（用户密码不能少于6位）</span></label>
+            <div class="controls">
+                <input type="password" class="text input-large" name="password" value="">
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label">确认密码</label>
+            <div class="controls">
+                <input type="password" class="text input-large" name="repassword" value="">
+            </div>
+        </div>
+      <div class="form-item">
+            <label class="item-label">邮箱<span class="check-tips">（用户邮箱，用于找回密码等安全操作）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="email" value="{$info.email}">
+            </div>
+        </div>
+        <div class="form-item">
+            <button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+        </div>
+    </form>
+</block>
+
+<block name="script">
+    <script type="text/javascript">
+        //导航高亮
+        highlight_subnav('{:U('User/index')}');
+    </script>
+</block>

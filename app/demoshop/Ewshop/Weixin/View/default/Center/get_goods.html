@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="__CSS__/styles.css" rel="stylesheet" />
+<script src="__JS__/script.js"/></script>
+<script src="__JS__/jquery.min.js"/></script>
+
+<title></title>
+</head>
+<body>
+<form id="myform1" action="#" method="post">
+<div class="wrap clear">
+	<ul class="address">
+		<li>
+        	<span>申请服务：</span>
+            <select class="vit" name="value" id="vit"><option selected="" value="1">退货</option><option value="2">换货</option></select>
+            <em></em>
+        </li>
+        <li>
+        	<span>退货原因：</span>
+            <input type="text" name="reason"/>
+        </li>
+        <li>
+        	<span>备注：</span>
+            <textarea name="info"></textarea>  
+        </li>
+    </ul>
+    <div class="addess">
+		<input type="hidden" value="{$id}" name="tag"/>
+        <input type="submit" value="确认"  onclick="test()"/>
+    </div>
+</div>
+</form>
+<div class="height"></div>
+</body>
+<script type="text/javascript">
+				function test() {
+					if($("#vit").val()==1){
+						$('#myform1').attr('action',"{:U('center/get_goodsreturn')}")
+					}else{
+						$('#myform1').attr('action',"{:U('center/get_changereturn')}")
+					}
+					
+			}
+</script>
+</html>

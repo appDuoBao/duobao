@@ -1,0 +1,510 @@
+@charset "utf-8";
+/* CSS Document */
+/**收货地址选择弹出框**/
+.new-dizhi {
+  position: fixed;
+  display: none;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 400px;
+  background: #fff;
+  box-shadow: 0 0 10px #999;
+  z-index: 100;
+  margin-left: -300px;
+  margin-top: -200px;
+}
+.new-dizhi .dz-title {
+  width: 100%;
+  height: 59px;
+  border-bottom: 1px solid #E6E6E6;
+  line-height: 59px;
+  position: relative;
+  font-size: 18px;
+  text-indent: 20px;
+}
+.new-dizhi .dz-title button {
+  top: 10px;
+  right: 10px;
+  line-height: 16px;
+  background: #fff;
+  position: absolute;
+  cursor: pointer;
+  color: #999;
+}
+.new-dizhi .dz-title button:hover {
+  color: #FC7100;
+}
+.new-dizhi .dz-content {
+  padding-top: 20px;
+}
+.new-dizhi .dz-content ul {
+  overflow: hidden;
+}
+.new-dizhi .dz-content ul li {
+  float: left;
+  margin-bottom: 20px;
+  line-height: 35px;
+  min-height: 35px;
+}
+.new-dizhi .dz-content ul li input {
+  width: 330px;
+  height: 33px;
+  border: 1px solid #E6E6E6;
+  text-indent: 20px;
+}
+.new-dizhi .dz-content ul li select {
+  width: 101px;
+  height: 33px;
+  margin-right: 10px;
+  border: 1px solid #E6E6E6;
+  color: #666666;
+}
+.new-dizhi .dz-content ul li label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.new-dizhi .dz-content ul li label input {
+	position: relative;
+	top: 4px;
+	width: 10px;
+	height: 10px;
+	display: none;
+}
+.new-dizhi .dz-content ul li button {
+  width: 130px;
+  height: 38px;
+  background: #8dc63f;
+  color: #Fff;
+  font-size: 16px;
+}
+.new-dizhi .dz-content .dz-right {
+  margin-left: 20px;
+}
+.new-dizhi .dz-content .dz-left {
+  width: 150px;
+  text-align: right;
+}
+.new-dizhi .dz-content .dz-left i {
+	    position: relative;
+    top: 0;
+    left: -4px;
+  color: red;
+}
+/**收货地址选择弹出框**/
+
+/**加入购物车弹出框**/
+#showIncludeCart {
+    z-index: 111;
+    position: absolute;
+    overflow: hidden;
+    width: 400px;
+    left: 0px;
+    top: -94px;
+    background: #FFF none repeat scroll 0% 0%;
+   
+    height: 241px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+   
+}
+.cp_t .buy_pop_close{
+	width: 20px;
+height: 20px;
+line-height: 20px;
+font-weight: 100;
+	position: relative;
+	left: -4px;
+	top: 12px;
+font-size: 30px;
+color: #0095da;
+    color: #000;
+    text-align: center;
+    width: 144px;
+    height: 47px;
+    line-height: 47px;
+   /* background: #0095DA none repeat scroll 0% 0%;*/
+    display: inline-block;
+	padding-right:0px;
+	cursor:pointer;
+	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  -moz-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+   transform: rotate(45deg);
+	z-index: 999;
+}
+
+.buy_pop_close{
+    color: #FFF;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    /*background: #0095DA none repeat scroll 0% 0%;*/
+    display: inline-block;
+    font-size: 14px;
+	padding-right:0px; float:right;
+	cursor:pointer;
+}
+.buy_icon {
+    position: absolute;
+    width: 30px;
+    height: 27px;
+    background: transparent url("../images/buyicon.png") no-repeat scroll 0% 0%;
+    top: 24px;
+    left: 20px;
+}
+.buy_pop_top {
+    margin: 0 auto;
+    height: 200px;
+    position: relative;
+    width: 250px;
+    padding-top: 55px;
+    height: 93px;
+}
+.buy_pop_top .title {
+	font-size: 20px;
+ color: #595757;
+padding-left: 2px;
+padding-top: 15px;
+height: 25px;
+width: 250px;
+text-align: center;
+margin-bottom: 10px;
+}
+.buy_pop_top .font {
+color: #595757;
+
+padding-top: 15px;
+height: 25px;
+width: 250px;
+text-align: center;
+margin-bottom: 10px;
+}
+.red {
+    color: #C30;
+}
+.btn_continue {
+    clear: both;
+    overflow: hidden;
+}
+
+.buy_pop_top .pop_btn_r {
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+}
+
+.buy_pop_top .pop_btn_r a {
+    display: inline-block;
+  	width: 100px;
+  	height: 30px;
+  	line-height: 30px;
+  	font-size: 13px;
+  	text-align: center;
+    background-color: #F60;
+    color: #FFF;
+    
+}
+
+.buy_pop_top .btn_cart {
+    display: inline-block;
+    float: left;
+    
+}
+.buy_pop_top .btn_cart a {
+	width: 100px;
+    display: inline-block;
+    background-color: #8CB91E;
+  height: 30px;
+  	line-height: 30px;
+  	font-size: 13px;
+  	text-align: center;
+  
+    color: #FFF;
+    
+}
+/**加入购物车弹出框**/
+
+/**弹出框登陆框样式**/
+#fullbg1{
+    background-color: #808080;
+    left: 0px;
+    opacity: 0.5;
+    position: absolute;
+    top: 0px;
+    z-index: 9999;
+}
+#dialog,#formsender{
+    background-color: #FFF;
+    border: 1px solid #888;
+    display: none;
+    left: 40%;
+    margin: -100px 0px 0px -100px;
+    padding: 0px;
+    position: fixed !important;
+    top: 35%;
+    z-index: 999999;
+}
+.modal {
+    position: fixed;
+    top: 19%;
+    left: 50%;
+    z-index: 1050;
+    width: 494px;
+    margin-left: -280px;
+    background-color: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+.modal-header {
+    color: #F60;
+}
+.close {
+    top: 0px;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #000;
+    text-shadow: 0px 1px 0px #FFF;
+    position: absolute;
+    right: 0px;
+}
+.modal-header h3 {
+    margin: 14px;
+    font-size: 18px;
+    line-height: 30px;
+    color: #0095DA ;
+    text-align: center;
+    background-color: #FFF;
+}
+.modal .m_img {
+    float: left;
+    width: 28%;
+    height: 100px;
+    padding: 50px 20px 20px;
+    display: block;
+    margin-top: 21px;
+    border-right: 1px solid #E5E5E5;
+}
+.m_img a {
+    margin-bottom: 10px;
+}
+.modal form {
+    float: left;
+    width: 286px;
+    display: block;
+    padding: 7px 2px 2px 20px;
+    margin-top: 21px;
+}
+.modal .form_login {
+    position: relative;
+    margin: 5px 10px;
+    height: 47px;
+    overflow: hidden;
+}
+.modal .form_login {
+    position: relative;
+    margin: 5px 10px;
+    height: 47px;
+    overflow: hidden;
+}
+.modal form input {
+    width: 182px;
+    height: 29px;
+    line-height: 30px;
+    border: 1px solid #D7D7D7;
+    background: #FFF none repeat scroll 0% 0%;
+    color: #333;
+    padding-left: 31px;
+    border-radius: 2px;
+    font-family: Verdana,Tahoma,Arial;
+    font-size: 16px;
+    ime-mode: disabled;
+}
+#dialog .tips {
+    height: 25px;
+    display: block;
+    color: #F00;
+}
+.control-group {
+    overflow: hidden;
+    margin: 16px;
+}
+.modal .form_login {
+    position: relative;
+    margin: 5px 10px;
+    height: 47px;
+    overflow: hidden;
+}
+.modal-header .close img {
+    width: 24px;
+    height: 24px;
+}
+#login_btn {
+    padding: 5px 20px;
+    width: 135px;
+    display: block;
+    text-align: center;
+    background-color: #0095DA ;
+    color: #FFF;
+    cursor: pointer;
+}
+.m_img a{    text-decoration: none;
+    color: #595959;
+    cursor: pointer;
+    outline: 0px none;
+}
+
+.form_login em {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+/**弹出框登陆框样式**/
+
+/**弹出框评论框样式**/
+.pl-alert {
+  width: 576px;
+  height: 280px;
+  position: fixed;
+  top: 50%;
+  display: none;
+  margin-top: -140px;
+  left: 50%;
+  margin-left: -288px;
+  background: #fff;
+  box-shadow: 0 0 20px #999;
+}
+.pl-alert div {
+  line-height: 30px;
+  margin-bottom: 10px;
+}
+.pl-alert div span {
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+}
+.pl-alert div textarea {
+  resize: none;
+  padding: 10px;
+  width: 390px;
+  margin-left: 10px;
+  height: 117px;
+  border: 1px solid #E6E6E6;
+}
+.pl-alert div i {
+  display: inline-block;
+  cursor: pointer;
+}
+.pl-alert div .i,
+.pl-alert div i:hover {
+  color: #FC7100;
+}
+.pl-alert div button ,.pl-alert  .p1-submit{
+	border: none;
+  margin-left: 10px;
+  background: #FC9300;
+  color: #fff;
+  height: 30px;
+  width: 85px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.pl-alert  .p1-submit:hover{opacity: .7;}
+.pl-alert p {
+  height: 30px;
+  width: 100%;
+}
+.pl-alert p button {
+	border: none;
+  background: #fff;
+  font-size: 22px;
+  position: absolute;
+  right: 5px;
+  top: 2px;
+  cursor: pointer;
+}
+.pl-alert p button:hover {
+  color: #FF0000;
+}
+.input-large{
+	height: 25px;
+}
+.buy_pop-div{
+	font-size: 12px;
+width: 500px;
+position: absolute;
+left: -100px;
+top: 10px;
+border-bottom: 1px dashed #ccc;
+padding-left: 50px;
+height: 30px;
+line-height: 30px;
+}
+.hyzx_box {
+    width: 1088px;
+    margin: 32px auto;
+}
+.hyzx_qrzf_bot {
+    margin: 20px 0;
+}
+.hyzx_qrzf_bot_title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.hyzx_qrzf_bot_box {
+    border: 1px solid #e2e2e2;
+    padding: 40px;
+}
+.wxzf {
+    background: url(../images/wxzf_img_bg.png) no-repeat right center;
+    min-height: 441px;
+    padding: 0px 0;
+}
+.wxzf {
+    background: url(../images/wxzf_img_bg.png) no-repeat right center;
+    min-height: 441px;
+    padding: 0px 0;
+}
+.wxzf_l {
+    float: left;
+    width: 400px;
+    margin-left: 20px;
+}
+.wxzf_l_top {
+    width: 350px;
+    height: 350px;
+    border: 1px solid #dddddd;
+    padding: 24px;
+}
+.wxzf_l_bot {
+    color: #fff;
+    font-size: 16px;
+    background: url(../images/ld_ico_img.png) no-repeat 50px center #ff7674;
+    padding: 10px 20px;
+    padding-left: 160px;
+    margin-top: 20px;
+}
+.cls {
+    clear: both;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+}
+.red1{
+	margin-top: 5px;
+	border-radius: 3px;
+	display: inline-block;
+	/*padding: 3px 5px;*/
+	background: #771a82;
+	color: #fff;
+	padding: 10px 20px;
+	font-size: 14px;
+}
+.mm_w_p{padding-left: 190px;}
+
+
+/**弹出框评论框样式**/

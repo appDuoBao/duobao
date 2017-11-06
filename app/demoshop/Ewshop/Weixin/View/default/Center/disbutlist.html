@@ -1,0 +1,28 @@
+<include file="Public/header_users"/>
+	<div id="list">
+		<div class="list1 clear">
+			<a href="{:U('center/disbutlist')}"><div class="listL list_on on_list" style="border-left:none">分销产品{$uid|get_goodnum}</br><span>{$uid|get_goodnum}</span></div></a>
+			<a href="{:U('center/disbutuserlist')}"><div class="listL">分销会员</br><span>{$uid|getcount}</span></div></a>
+			<a href="{:U('center/disbutorderlist')}"><div class="listL">分销订单</br><span>{$uid|disbut_list}</span></div></a>
+			<a href="{:U('center/disbutcashlist')}"><div class="listL">分销佣金</br><span>{$uid|discash}</span></div></a>
+		</div>
+	</div>
+<ul class="products">
+<volist name="list" id="vo"> 
+	<li>
+
+        <a href="{:U('Article/detail?id='.$vo['id'])}"><img src="{$vo.id|get_cover_id|get_cover='path'}"  width="90px" height="90px"></a>
+        <div class="produ" style="width:6.2rem;">
+        	<a href="{:U('Article/detail?id='.$vo['id'])}"><h2>{$vo.id|get_good_name}</h2></a>
+			<p>{$vo.category_id|get_category_name}-{$vo.description}</p>
+            <span>￥{$vo.price}</span>
+			<a href="{:U('Center/disbutinfo?id='.$vo['id'])}" class="button_a">￥我要分销</a></p>
+        </div>
+		
+    </li>
+	</volist>
+</ul>
+<div class="cls" style="clear:both"></div>
+<div class="page">{$page}</div> 
+</body>
+</html>

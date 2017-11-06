@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="css/styles.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/script.js"/></script>
+<title></title>
+</head>
+<body>
+<div class="ruten">
+	<a href="#">返回首页</a><span></span>
+    <a href="#"><strong>删除商品</strong></a>
+</div>
+<ul class="products produ wrap">
+	<li>
+    	<label class="button-label"><p class="cat"><input type="checkbox"  class="fa"/></p></label>
+        <img src="img/img_book.jpg"/>
+        <div class="produ pro">
+        	<h2>营销关键点——引爆他人消费的18关键词</h2>
+            <span>￥680.00</span>
+            <strong class="jh_num clear">
+                <input type="button" value="-" class="jh_minus">
+                <input type="text" value="1" class="number">
+                <input type="button" value="+" class="jh_plus">
+            </strong>
+        </div>
+    </li>
+    <li>
+    	<label class="button-label"><p class="cat"><input type="checkbox"  class="fa"/></p></label>
+        <img src="img/img_book.jpg"/>
+        <div class="produ pro">
+        	<h2>营销关键点——引爆他人消费的18关键词</h2>
+            <span>￥680.00</span>
+            <strong class="jh_num clear">
+                <input type="button" value="-" class="jh_minus">
+                <input type="text" value="1" class="number">
+                <input type="button" value="+" class="jh_plus">
+            </strong>
+        </div>
+    </li>
+    <li>
+    	<label class="button-label"><p class="cat"><input type="checkbox"  class="fa"/></p></label>
+        <img src="img/img_book.jpg"/>
+        <div class="produ pro">
+        	<h2>营销关键点——引爆他人消费的18关键词</h2>
+            <span>￥680.00</span>
+            <strong class="jh_num clear">
+                <input type="button" value="-" class="jh_minus">
+                <input type="text" value="1" class="number">
+                <input type="button" value="+" class="jh_plus">
+            </strong>
+        </div>
+    </li>
+    <li>
+    	<label class="button-label"><p class="cat"><input type="checkbox"  class="fa"/></p></label>
+        <img src="img/img_book.jpg"/>
+        <div class="produ pro">
+        	<h2>营销关键点——引爆他人消费的18关键词</h2>
+            <span>￥680.00</span>
+            <strong class="jh_num clear">
+                <input type="button" value="-" class="jh_minus">
+                <input type="text" value="1" class="number">
+                <input type="button" value="+" class="jh_plus">
+            </strong>
+        </div>
+    </li>
+</ul>
+<div class="detain dets">
+    <strong>已选择<em>1</em>件商品</strong>
+    <span>应付：<i>￥29.9</i></span>
+</div>
+<div class="det_bot wrap clear">
+	<div class="bot_l">
+    	<label class="button-label"><p><input type="checkbox"  class="fa"/></p><span>全选</span></label>
+    </div>
+    <div class="bot_c">
+    	<p>总计：<span>￥123.00</span></p>
+        <strong>（不含运费）</strong>
+    </div>
+    <input type="submit" value="去结算"/>
+</div>
+
+<div class="fixde">
+	<img src="img/you_pic.png"/>
+    <p>请选择要删除的商品</p>
+</div>
+<div class="fix">
+	<img src="img/you_pic.png"/>
+    <p>是否将已选中的1件商品删除?</p>
+    <input type="button" value="确定"/>
+    <input type="button" class="fix_q" value="取消"/>
+</div>
+<script>
+	$(function(){
+		$('.ruten strong').click(function(){
+			if($('.button-label p input').is(':checked')){
+				$('.fix').show()
+			}else{
+				$('.fixde').toggle()	
+			}	
+		})
+		$('.fixde').click(function(){
+			$(this).hide()	
+		})
+		$(function(){
+			$('.bot_l .button-label').click(function(){
+				
+				if($('.bot_l .button-label p input').is(':checked')){
+					$('.button-label .cat input').parents('label').addClass('hover')
+				}else{
+					$('.button-label .cat input').parents('label').removeClass('hover')
+				}	
+			})
+		})
+	})
+</script>
+</body>
+</html>

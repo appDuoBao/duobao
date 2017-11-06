@@ -1,0 +1,21 @@
+<include file="Public/header"/>
+	<body>
+		<div>
+			<!--<nav class="w_title" style="padding-bottom: 0;">
+				<a href="#">行业资讯</a>
+				<a class="w_nowList" href="#">活动通知</a>
+			</nav>-->
+			<article id="w_newsShow">
+				<header>
+					<h5>{$infos.title}</h5>
+					<span style="padding-right: 0.5rem;">一网天行</span>
+					<span class="newsShowT-1">{$infos['create_time|date="Y-m-d",###']}</span>
+					<div style="clear: both;"></div>
+				</header>
+				<div class="w_content">
+					{$infos.content}
+				</div>
+			</article>
+		</div>
+	</body>
+</html>

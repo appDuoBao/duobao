@@ -1,0 +1,107 @@
+<extend name="Public/base" />
+
+<block name="body">
+
+	<div class="main-title">
+
+		<h2></h2>
+
+	</div>
+
+
+
+	<div class="cf">
+
+		  <button class="btn ajax-post confirm" url="{:U('del')}" target-form="ids">删 除</button>
+
+        <div class="search-form fr cf">
+
+            <div class="sleft">
+
+                <input type="text" name="title" class="search-input" value="{:I('title')}" placeholder="咨询内容">
+
+                <a class="sch-btn" href="javascript:;" id="search" url="__SELF__"><i class="btn-search"></i></a>
+
+            </div>
+
+        </div>
+
+	</div>
+
+
+
+	<div class="data-table table-striped">
+
+		 <table>
+
+			<thead>
+
+				<tr>
+
+					<th class="row-selected">
+
+					 <input class="checkbox check-all" type="checkbox">
+
+					</th>
+
+					<th>ID</th>
+					
+					<th>时间</th>
+
+					<th>订单号</th>
+
+                    <th>状态</th>
+					
+					<th>操作</th>
+				
+				</tr>
+
+			</thead>
+
+			<tbody>
+
+				<notempty name="list">
+
+				<volist name="list" id="teacher">
+
+					<tr>
+
+					<td><input class="ids row-selected" type="checkbox" name="id[]" value="{$teacher.id}"></td>
+
+						<td>{$teacher.id}</td>
+						<td>{$teacher.create_time|date="Y-m-d H:i:s",###}</td>
+						<td>{$teacher.tool}</td>
+						<td>{$teacher.status}</td>
+					   <td>
+                            <a title="编辑" href="{:U('agreed?id='.$teacher['id'])}">查看</a>
+                            <a class="confirm ajax-get" title="删除" href="{:U('del?id='.$teacher['id'])}">删除</a>
+                        </td>
+						
+
+					</tr>
+
+				</volist>
+
+				<else/>
+
+				<td colspan="8" class="text-center"> aOh! 暂时还没有内容! </td>
+
+				</notempty>
+
+			</tbody>
+
+		</table>
+
+       
+
+        <!-- 分页 -->
+
+        <div class="page">
+
+{$_page}
+
+        </div>
+
+	</div>
+
+</block>

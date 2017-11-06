@@ -1,0 +1,36 @@
+<include file="Public/header_user"/>
+<div class="gr_u">
+<div class="gr_ss">
+<h1>分销会员金额记录列表</h1>
+</div>
+
+<div class="qx">
+    <form method="post" class="person-info" name="form" action="{:U('')}">
+    <table>
+
+
+        <tr>
+        <td align="right">用户名：</td>
+        <td>{$info.nickname}</td>
+        </tr>
+        <tr>
+        <td align="right">分销产品数：</td>
+        <td>{$info.num}</td>
+        </tr>
+
+        <tr>
+        <td align="right">分销所得百分比：</td>
+        <td><input type="text"  class="jf_u" name="disnum" id="disnum" value="{$info.disnum}" />(填写数字即可，例如10则代表10%)</td>
+        </tr>
+        <tr>
+        <td align="right">&nbsp;</td>
+         <input type="hidden" name="uid" value="{$info.uid}" />
+        <td><input type="submit"  value="保存" class="jf_uu" /></td>
+        </tr>
+
+    </table>
+</form>
+</div>
+
+</div>
+<include file="Public/footer"/>

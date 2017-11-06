@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<include file="Public/titlejscss"/>
+
+</head>
+<body>
+<div class="bcy_top">
+  <div class="bcy_logo"><a href="{:U("/Weixin/Index/index")}"><img src="__IMG__/jhq_logo.PNG"></a></div>
+  <div class="bcy_search">
+	<form action="{:U("Search/index")}" name="Searchform"  method="post" >
+    <input type="hidden" name="type" id="type" value="1">
+      <div class="bcy_search_cen">
+        <input class="bcy_text" type="text" name="words" placeholder="搜索百草园商品"  <if condition="$keyword">value="{$keyword}"<else /> </if>/>
+        <input class="bcy_submit" type="submit" value="" />
+      </div>
+    </form>
+  </div>
+</div>
+<div class="fw">
+<volist name="ad" id="vo"> 
+    <a href="{$vo.url|get_nav_url}" ><img src="__IMG__/bcy_wx_banner.png"/></a>
+</volist>   
+</div>
+<div class="fw_w">
+<div class="fw_e"><p><img src="__IMG__/fw2.jpg" />真伪查询</p></div>
+<div class="ew_tt_cen">
+    <form action="{:U('index/authenticity')}" method="post" id="myform">
+      <div class="ew_tt_cen_seach">
+        <input class="ew_text"  name="sn_code" id="sn_code" placeholder="请输入您的产品SN号" type="text" />
+        <input class="ew_submit" value="" type="submit" />
+      </div>
+    </form>
+  </div>
+<div class="cls"></div>
+</div>
+<!----------------------------y------------------------------>
+<div class="fw_r"><div class="fw_t">发货须知</div><div class="cls"></div></div>
+<div class="fw_y">
+<div class="fw_u"><p><img src="__IMG__/fw5.png" /></p><h1>发货时间</h1><h2>订单生成48小时之内发货（大型活动期间，客服另行通知）</h2></div>
+<div class="fw_u"><p><img src="__IMG__/fw6.png" /></p><h1>发货快递</h1><h2>如果您所在的区域不在配送收送范围，请和在线客服联系</h2></div>
+<div class="fw_u"><p><img src="__IMG__/fw7.png" /></p><h1>收货提醒</h1><h2>请您在签收快递前确认商品完好无损后再签收，如检验商品过程中发现缺货、少货，可以拒签并第一时间联系我们</h2></div>
+<div class="cls"></div>
+</div>
+<div class="fw_r"><div class="fw_t">七天无理由退货</div><div class="cls"></div></div>
+<div class="fw_i">
+<div class="fw_o"><img src="__IMG__/fw11.png" /></div>
+<div class="fw_p"><h1>退换货规则</h1><p>如因由卖方工作疏失造成的退换货，可免寄回邮费。退货即可全额退款不需要再扣除邮费，换货也无需补加邮费，具体情况咨询客服AirAngel官网所售商品，在不影响二次销售的前提下，均支持7天无理由退换货，30天包换，1年保修（以快递签收日期为准）</p></div>
+<div class="cls"></div>
+</div>
+<div class="fw_i">
+<div class="fw_o"><img src="__IMG__/fw22.png" /></div>
+<div class="fw_p"><h1>保修</h1><p>均可享受免费维修；超出保修期仅收取工本费、配件、赠品不在保修范围内，顾客要求提供保修服务时，应出示产品保修卡或有效发票。 </p></div>
+<div class="cls"></div>
+</div>
+<div class="fw_i">
+<div class="fw_o"><img src="__IMG__/fw33.png" /></div>
+<div class="fw_p"><h1>注意事项</h1><p>1.同款产品，非人为损坏可以更换；如需更换不同款的商品，需先将原产品退款，再购买新产品付款（原则上只适用于低价产品更换高价产品）<br />2.保修期内，均可享受免费维修；超出保修期仅收取工本费、配件、赠品不在保修范围内<br />3.商品要求具备商品收到时的完整外包装，无包装破损可享受退货；如果缺少随商品附带的保修卡、配件等不予退货</p></div>
+<div class="cls"></div>
+</div>
+<div class="fw_i">
+<div class="fw_o"><img src="__IMG__/fw44.png" /></div>
+<div class="fw_p"><h1>售后&资费 </h1><p><img src="__IMG__/fw55.png" /></p></div>
+<div class="cls"></div>
+</div>
+
+</div>
+
+<div class="bcy_fixed_to"></div>
+
+<include file="Public/footer"/>

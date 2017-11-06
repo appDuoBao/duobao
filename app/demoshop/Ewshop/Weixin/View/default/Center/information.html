@@ -1,0 +1,215 @@
+<include file="Public/uheader"/>
+<body>
+	<div class="user-2">
+		<a href="javascript:">
+			<div class="user-2-wrap" id = "touxiang">
+				<em class="color-hei line-144">头像</em>
+				<div>
+					<php>echo $uid</php>
+					<img src="{$faceid|get_cover='path'}"/>
+					<input name="userimg" id = "userimg" type="file" accept="image/*"/>
+				</div>
+				<em class="iconfont line-144">&#xe662;</em>
+			</div>
+		</a>
+		<a href="javascript:">
+			<div class="user-2-wrap" id = "xiugai">
+				<em class="color-hei">昵称</em>
+				<div>{$nickname}</div>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+	</div>
+	
+	<div id = "xgname">
+	 <form method="post" class="person-info" name="form" action="{:U('center/update')}">
+	  <volist name="information" id="po"> 
+		<div class="input-wrap mrt-30">
+		 
+			<input name="nickname"  id="nickname" value="{$po.nickname}" type="text" />
+			<em style="display: none;" class="iconfont">&#xe603;</em>
+		</div>
+		   <input type="hidden" name="uid" value="{$po.uid}" />
+		<button type="submit" class="max-btn mrt-40 btn-red">保存</button>
+		
+		 </volist>
+		 </form>
+		 <button id = "fanhui" class="max-btn mrt-40 btn-hui">返回</button>
+		 
+	</div>
+	
+	<div id="showImg">
+		<img/>
+		<div class="jindu">
+			<div></div>
+			<p>正在上传头像...<span>0</span>%</p>
+		</div>
+	</div>
+	
+	<style type="text/css">
+		#xgname,#showImg{
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			left: 100%;
+			background: #F6F6F6;
+			transition: left .5s;
+		}
+		#showImg{
+			background-color: rgba(0,0,0,0.9);
+			z-index: 10000;
+		}
+		#showImg .jindu{
+			width: 90%;
+			position: absolute;
+			bottom: 20px;
+			height: 20px;
+			margin-left: 5%;
+			background: #fff;
+			border-radius: 10px;
+			color: #fff;
+		}
+		#showImg .jindu p{
+			position: absolute;
+			width: 100%;
+			height: 20px;
+			line-height: 20px;
+			top: -30px;
+			text-align: center;
+			font-size: 16px;
+		}
+		#showImg .jindu div{
+			height: 16px;
+			position: absolute;
+			left: 0;
+			background: #4B00CB;
+			border-radius: 8px;
+			left: 2px;
+			top: 2px;
+			transition: background 1s;
+		}
+		#showImg img{
+			position: absolute;
+			max-height: 100%;
+			max-width: 100%;
+			top: 50%;
+			left: 50%;
+		}
+		#userimg{
+			height: 100%;
+			width: 100%;
+			display: none;
+		}
+		.btn-hui{
+			background: #DDDDDD;
+		}
+	</style>
+	
+	<script>
+		
+		function getFileUrl(sourceId) { 
+			var url; 
+			url = window.webkitURL.createObjectURL(document.getElementById(sourceId).files.item(0)); 
+			return url; 
+		} 
+		
+		$("#touxiang").click(function(){
+			document.getElementById("userimg").click();
+		})
+		
+		$("#userimg").change(function(){
+			var url = getFileUrl("userimg");
+			$("#showImg").css("left","0%")
+			$("#showImg img").attr("src" , url);
+			
+			var img = $("#showImg img")[0];
+			
+			upload(this.files[0] ,url);
+			
+			img.onload = function(){
+				var w = this.offsetWidth;
+				var h = this.offsetHeight;
+				this.style.marginLeft = -w / 2+"px";
+				this.style.marginTop = -h/2+"px";
+			}
+			
+			
+		})
+		
+		function AJAX(){
+			return new XMLHttpRequest;
+		}
+		function upload(file ,url){
+			var ajax = AJAX();
+			var formData = new FormData;
+			formData.append("file" , file);
+			ajax.onload = function(){
+				var num = parseInt(ajax.responseText);
+				if(num > 0){
+					var ajax1 = AJAX();
+					ajax1.onload = function(){
+						if(ajax1.responseText == 1 || ajax1.responseText == 0){
+							var timer = setTimeout(function(){
+								clearTimeout(timer);
+								$("#showImg").css("left","100%");
+							},1000);
+							$("#touxiang div img").attr("src",url);
+						}
+					}
+					ajax1.open("get","{:U('Center/setIcon')}?num="+num,true);
+					ajax1.send(null);
+				}
+			}
+			var load  = ajax.upload;
+			var color = ["#4B00CB","#B21212","#A4CA59","#03984D"].reverse();
+			load.onprogress = function(ev){
+				var bai = parseInt((ev.loaded / ev.total) * 100);
+				var w = $("#showImg .jindu").width()-4;
+				w = w / 100;
+				var div = $("#showImg .jindu div")[0];
+				var b = Math.round(bai / 25);
+				$("#showImg .jindu p").html("正在上传头像...<span>"+bai+"</span>%");
+				if(bai >= 100){
+					$("#showImg .jindu p").html("上传头像成功！");
+				}
+				div.style.background = color[b];
+				div.style.width = w * bai + "px";
+			}
+			ajax.open("POST","{:U('File/uploadPicture')}",true);
+			ajax.setRequestHeader("X-Request-With","XMLHttpRequest");
+			ajax.send(formData);
+			
+		}
+		
+		
+		$("#xgname input").each(function(){
+			if(this.value){
+				$(this).parent().find("em").show();
+			}else{
+				$(this).parent().find("em").hide();
+			}
+		})
+		$("#xgname #name").on("keyup",function(){
+			if(this.value){
+				$(this).parent().find("em").show();
+			}else{
+				$(this).parent().find("em").hide();
+			}
+		})
+		$("#xgname em").click(function(){
+			$(this).parent().find("input").val("");
+			$(this).hide();
+		})
+		
+		$("#xiugai").click(function(){
+			$("#xgname").css("left","0%");
+		})
+		
+		$("#fanhui").click(function(){
+			$("#xgname").css("left","100%");
+		})
+		
+	</script>
+	
+<include file="Public/footer"/>

@@ -1,0 +1,53 @@
+<include file="Public/header_user"/>
+<div class="bcy_body">
+ 
+<span  style="display: block;padding:15px;font-size:0.8rem;text-align:center;color:red;margin:20px 0;">{$msg} &nbsp;&nbsp;{$id}</span>
+<form action='{:U()}' method="post" name="actform" style="padding:2%;" onsubmit="return doCheck()">
+    <input type="hidden" name="id" value="{$id}">
+    <div id="write">
+    <ul> <li><div class="form-item">
+    <!--<label class="item-label">提示:<span class="red">{$tip}</span> </label>-->
+    </div></li>
+    <li>
+    <div class="form-item">
+    <label class="item-label"><span class="check-tips"></span> </label>
+    <div class="controls">
+    	<input type="text" class="text input-large" placeholder="说明" id="ewshop_center_input" name="title" >				
+    </div>
+    </div></li>
+    <li>
+    <div class="form-item">
+    <label class="item-label"><span class="check-tips"></span> </label>
+    <div class="controls">
+    <textarea  placeholder="描述"  rows="9" cols="60" name="reason" id="reason"></textarea>				
+    </div>
+    </div></li>
+    <li>
+    	<div class="submit">
+    		<input type="submit" class="btn_submit_pay" value="提交" />
+    	</div>
+    </li>
+    </ul> 
+    </div>
+</form>
+
+ 
+</div>
+ <script type="text/javascript">
+    function doCheck(){
+      var title = $('#title').val();
+      var reason = $('#reason').val();
+      if(title == ''){
+        alert("标题不能为空！");
+        $('#title').focus();
+        return false;
+      }else if(reason == '') {
+        alert("说明不能为空！");
+        $('#reason').focus();
+        return false;
+      }else{
+        return true;
+      }
+    }
+  </script>
+<include file="Public/footer"/>

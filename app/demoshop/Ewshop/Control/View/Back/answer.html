@@ -1,0 +1,34 @@
+<extend name="Public/base"/>
+#tab1 table{border-right:1px solid #F00;border-bottom:1px solid #F00}
+#tab1 table td{border-left:1px solid #F00;border-top:1px solid #F00}
+<block name="body">
+ <div class="apply"> 
+<form action="{:U('Back/set_status')}"  method="post"> 
+<h3 style="display: block;color:white;background:#f60">买家申请退货说明</h3>
+      
+<div class="apply-wrap">
+<div class="back-detail-asc">	<p>申请时间：{$info.create_time|date='Y-m-d H:i:s',###} </p><p>订单号：{$info.tool} </p>
+<p>金额：{$info.total} 数量：{$info.num}</p>
+ <p>原因:{$info.info}</p>
+        
+ <p>补充：{$info.reason}</p>
+ </div>
+ <div class="back-good-img">
+	 <a><img width="220px"  heigh="220px" src="{$info.goodid|get_cover_id|get_cover='path'}"/></a>
+ </div>
+ </div>
+ 
+ </div>
+		<input type="hidden" name="id" value="{$info.id}"/>
+		<if condition="$info.status neq '5'">
+			<input type="radio" name="sex" value="2"/>同意
+			<if condition="$info.status eq '3'">
+				<input type="radio" name="sex" checked value="3" />拒绝
+			<else />
+				<input type="radio" name="sex" value="3" />拒绝
+			</if>
+		<input type="submit" value="提交"/>
+		<else />
+		</if>
+</form> 
+ </block>

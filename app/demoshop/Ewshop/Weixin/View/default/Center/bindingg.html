@@ -1,0 +1,34 @@
+<include file="Public/header_cash"/>
+<body>
+	<div class="warp">
+	<section id="bg"class="warp">
+	</section>
+<!------------------------------dl------------------------------------------>
+<div class="yh">
+<form action='{:U("cash")}' method="post"  name="myform"  class="payform" target="_blank">
+<table>
+<if condition="$bankcard neq ''"><p style="font-size:.5rem; margin-bottom:.5rem;">当前绑定的银行卡尾号为{$bankcard}</p><else /></if>
+<tr>
+<td>卡号：</td>
+<td><input type="text" placeholder="请输入您的银行卡号" name="bankcard"></td>
+</tr>
+<tr>
+<td>开户行：</td>
+<td><input type="text" placeholder="请输入开户行名称" name="bankname"></td>
+</tr>
+<tr>
+<td>户名：</td>
+<td><input type="text" placeholder="请输入开户时填写的名字" name="bankpeople"></td>
+</tr>
+</table>
+<p><input type="submit" value="提交"></p>
+</form>
+</div>
+<!------------------------------bottom-------------------------------------->
+
+
+
+
+</div>
+</body>
+</html>

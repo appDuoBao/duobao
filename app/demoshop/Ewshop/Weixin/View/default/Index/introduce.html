@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<meta content="telephone=no,email=no" name="format-detection" />
+<title>{$meta_title}_{:C('WEB_SITE_TITLE')}</title>
+
+<script type="text/javascript">
+window.onload=function(){
+	setTimeout(scrollTo,0,0,0);
+}	
+</script>
+<link rel="stylesheet" href="__CSS__/swiper.min.css">
+<link rel="stylesheet" href="__CSS__/animate.min.css">
+<link href="__CSS__/xc/xc.css" rel="stylesheet" type="text/css" />
+<script src="__JS__/swiper.min.js"></script>
+</head>
+<body>
+ <div class="swiper-container">
+    <div class="swiper-wrapper">
+    <!-------------slide1----------------->
+        <section class="swiper-slide swiper-slide1">
+ 				 
+        </section>
+     <!---------------slide2-------------->   
+        <section class="swiper-slide swiper-slide2">
+         
+        
+        </section>
+     <!----------------slide3-------------->
+        <section class="swiper-slide swiper-slide3">
+        
+        
+        </section>
+        <!-------------slide4----------------->
+        <section class="swiper-slide swiper-slide4">
+        
+        </section>
+        
+         <section class="swiper-slide swiper-slide5">
+         <a href="http://bcyzy.akng.net/list-57-1.html"></a>
+        </section>
+        
+         <section class="swiper-slide swiper-slide6">
+        
+        </section>
+        
+        
+        
+    </div>
+    
+   <img src="__IMG__/xc/top_img.png" style="width:54px;height:54px; top:400px; left:150px;" id="array" class="resize"> 
+  <div class="swiper-pagination" style="display:none;"></div>  
+</div>
+
+
+<script>  
+
+scaleW=window.innerWidth/320;
+scaleH=window.innerHeight/480;
+var resizes = document.querySelectorAll('.resize');
+          for (var j=0; j<resizes.length; j++) {
+           resizes[j].style.width=parseInt(resizes[j].style.width)*scaleW+'px';
+		   resizes[j].style.height=parseInt(resizes[j].style.height)*scaleH+'px';
+		   resizes[j].style.top=parseInt(resizes[j].style.top)*scaleH+'px';
+		   resizes[j].style.left=parseInt(resizes[j].style.left)*scaleW+'px'; 
+          }
+		  
+  var mySwiper = new Swiper ('.swiper-container', {
+   direction : 'vertical',
+   pagination: '.swiper-pagination',
+  //virtualTranslate : true,
+   mousewheelControl : true,
+   onInit: function(swiper){
+   swiperAnimateCache(swiper);
+   swiperAnimate(swiper);
+	  },
+   onSlideChangeEnd: function(swiper){
+	swiperAnimate(swiper);
+    },
+	onTransitionEnd: function(swiper){
+	swiperAnimate(swiper);
+    },
+	
+	
+	watchSlidesProgress: true,
+
+      onProgress: function(swiper){
+        for (var i = 0; i < swiper.slides.length; i++){
+          var slide = swiper.slides[i];
+          var progress = slide.progress;
+          var translate = progress*swiper.height/4;  
+		  scale = 1 - Math.min(Math.abs(progress * 0.5), 1);
+          var opacity = 1 - Math.min(Math.abs(progress/2),0.5);
+          slide.style.opacity = opacity;
+		  es = slide.style;
+		  es.webkitTransform = es.MsTransform = es.msTransform = es.MozTransform = es.OTransform = es.transform = 'translate3d(0,'+translate+'px,-'+translate+'px) scaleY(' + scale + ')';
+
+        }
+      },
+	
+	   onSetTransition: function(swiper, speed) {
+        for (var i = 0; i < swiper.slides.length; i++){
+          es = swiper.slides[i].style;
+		  es.webkitTransitionDuration = es.MsTransitionDuration = es.msTransitionDuration = es.MozTransitionDuration = es.OTransitionDuration = es.transitionDuration = speed + 'ms';
+
+        }
+      },
+	
+	
+	
+	   })         
+  </script>
+</body>
+</html>

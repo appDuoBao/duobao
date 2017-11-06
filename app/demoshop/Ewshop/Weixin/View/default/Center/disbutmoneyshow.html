@@ -1,0 +1,39 @@
+<include file="Public/header_user"/>
+<div class="gr_u">
+<div class="gr_ss">
+<h1>分销会员金额记录列表</h1>
+</div>
+
+<div class="qx">
+    <empty name='list'>
+        <p class="no_fenxiao">没有分销会金额记录！<a href='{:U("center/disbutlist")}' class="red">去分销</a></p>
+    <else />
+        <table width="100%">
+        <tr>
+        <th>获得时间</th>
+        <th>获取佣金</th>
+		<if condition="is_dismember()">
+		<th>上级分销会员</th>
+		</if>
+		<th>来源于</th>
+
+        </tr>
+        <volist name="list" id="vo"> 
+        <tr>
+        <td align="center">{$vo.createtime|date='Y-m-d H:i:s',###}</td>
+        <td align="center">{$vo.disbutmoney}</td>
+		<if condition="is_dismember()">
+		<td align="center">{$vo.upmember}</td>
+		</if>
+         <td align="center"><if condition="is_dismember()">{$vo.moneypeople}<else/>{$downname}</if></td>
+        </tr>
+        </volist>
+        </table>
+        <div class="cj_r page">
+        {$page}
+        </div>
+    </empty>
+</div>
+
+</div>
+<include file="Public/footer"/>

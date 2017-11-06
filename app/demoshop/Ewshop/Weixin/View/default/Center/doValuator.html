@@ -1,0 +1,67 @@
+<include file="Public/header_user"/>
+<div class="bcy_body">
+<form action="{:U('center/dowValuator')}" method="post" name="actform" style="padding:2%;" onsubmit="return doCheck()">
+ <input type="hidden" id="orderid" name="orderid" value="{$orderid}" />
+  <input type="hidden" id="cpid" name="cpid" value="{$goodid}" />
+    <input type="hidden" name="id" value="{$id}">
+    <div id="write">
+    <ul> <li><div class="form-item">
+    <!--<label class="item-label">提示:<span class="red">{$tip}</span> </label>-->
+    </div></li>
+    <li style="padding-left: 1.1rem;padding-right: 1.1rem;">
+    	<div class="order_mes">
+			<div class = "xg-pingfen">
+				<span>评分 : </span>
+				<i class="iconfont" style="margin-left: 10px;" oid="1">&#xe616;</i>
+				<i class="iconfont" oid="2">&#xe616;</i>
+				<i class="iconfont" oid="3">&#xe616;</i>
+				<i class="iconfont" oid="4">&#xe616;</i>
+				<i class="iconfont" oid="5">&#xe616;</i>
+				 <script>
+			$("#xg-pingfen i").click(function(){
+				var servenum = $(this).attr("oid");
+				$("#serve").val(servenum);
+			})
+		 </script>
+				<input name="serve" class="serve" type="hidden"  value=""/>
+			</div>
+			<textarea  name="content" class="p1-textarea"  placeholder="评论内容..."  id="content"></textarea>
+		</div>
+    </li>
+    <li>
+    	<div class="submit">
+    		<input type="submit" name="dosubmit" class="btn_submit_pay" value="提交" />
+    	</div>
+    </li>
+    </ul> 
+    </div>
+</form>
+
+ 
+</div>
+<script>
+	$(".xg-pingfen i").click(function(){
+		var servenum = $(this).attr("oid");
+		$(this).siblings(".serve").val(servenum);
+		$(this).parents('.xg-pingfen').find('i').removeClass('i');
+		$(this).parents('.xg-pingfen').find("i:lt("+ servenum +")").addClass('i');
+	})
+</script>
+ <script type="text/javascript">
+    function doCheck(){
+      var title = $('#title').val();
+      var reason = $('#reason').val();
+      if(title == ''){
+        alert("标题不能为空！");
+        $('#title').focus();
+        return false;
+      }else if(reason == '') {
+        alert("说明不能为空！");
+        $('#reason').focus();
+        return false;
+      }else{
+        return true;
+      }
+    }
+  </script>
+<include file="Public/footer"/>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       <script type="text/javascript" src="__JS__/jquery.js"></script>
+	<script type="text/javascript" src="__JS__/ew_js.js"></script>
+    <link href="__CSS__/style.css" rel="stylesheet" />
+	<title></title>
+	
+</head>
+<body>
+	<div class="warp">
+	<section id="bg"class="warp">
+		<div class="bg"><img src="__IMG__/a1.jpg"/></div>
+	</section>
+<!------------------------------dl------------------------------------------>
+<div class="dl">
+<form class="form-horizontal" role="form" action="__SELF__" method="post" name="formUser"  onsubmit="return register();">
+<div class="dl_one"><input type="text" placeholder="手机号" class="dl_q" name="mobile_phone" id="mobile_phone" onBlur="ismobile_registered();" />
+<span class="check_tips error_tip" id="dmobile_phone"></span></div>
+<div class="p1"><div class="dl_one"><input type="text" placeholder="验证码"  name="miss" id="miss" onBlur="checkphone();" ><span class="check_tips error_tip" id="dmiss"></span></div>
+<span><a id="sendma" name="sendma" onClick="sendphone();">获取验证码</a></span>
+<br clear="all" /></div>
+
+<div class="dl_one"><input type="text" placeholder="用户名" class="dl_q" id="username" name="username" onBlur="isname_registered();" />
+<span class="check_tips error_tip" id="dusername"></span></div>
+
+<div class="dl_one"><input type="password" placeholder="密码"  class="dl_q"  id="password1" onblur="check_password(this.value);" onkeyup="checkIntensity(this.value)" name="password"/>
+<span class="check_tips error_tip" id="dpassword1"></span></div>
+
+<div class="dl_one">
+<input type="password" placeholder="确认密码"  class="dl_q" name="repassword" id="conform_password" onblur="check_conform_password(this.value);"/>
+<span class="check_tips error_tip" id="dconform_password"></span>
+</div>
+
+<input  type="submit" value="注册" class="dl_w" />
+</form>
+</div>
+<div class="dl_r"><p><img src="__IMG__/a2.jpg"><a>同意《华泰益合用户协议》</a></p><p class="dl_t"><a href="{:U("User/login")}">已有账号，直接登录</a></p></div>
+
+<!------------------------------bottom-------------------------------------->
+<script language=javascript>
+	
+	var secs = 60;
+	function backcount(){
+		$("#sendma").attr("onClick",'');
+		for(i=1;i<=secs;i++) {
+			window.setTimeout("update1(" + i + ")", i * 1000);
+		}
+	}
+	function update1(num) {
+		if(num == secs) {
+			 $("#sendma").html('获取短信验证码');
+			 $("#sendma").attr("onClick",'sendphone();');
+		}else {
+			 printnr = secs-num;
+			 $("#sendma").html("(" + printnr +")秒后重发");
+		}
+	}
+
+	function err_msg(str, id) {
+	  document.getElementById('d'+id).innerHTML=str;
+	}	  
+	
+	function sendphone(){
+		if(document.getElementById('dmobile_phone').innerHTML!="" && document.getElementById('dmobile_phone').innerHTML!="短信已发送到您的手机，请查看") {
+			$("#mobile_phone").focus();
+			return;
+		}	
+		var phone=$("#mobile_phone").val();
+		if(phone.length!=11||isNaN(phone)){
+			err_msg('这个不是个正确的手机号码', 'mobile_phone');
+			$("#mobile_phone").focus();
+	  	}else{
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("User/sendphone")}', //发送数据的地址
+				data:{phone:phone,send_code:<php> if($_SESSION['send_code']){echo $_SESSION['send_code'];}else{echo '8888';}</php>},
+				dataType: "json",
+				success:function(data)
+				{
+					err_msg(data.info, 'mobile_phone');
+				},
+				error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+			})
+			backcount();
+		}
+	}
+	
+	function ismobile_registered(){
+		var mobile_phone=$("#mobile_phone").val();		
+		if(mobile_phone ==''){
+			err_msg('请填写手机号码', 'mobile_phone');
+		}else{
+			if(mobile_phone.length!=11||isNaN(mobile_phone)){
+				err_msg('这个不是个正确的手机号码', 'mobile_phone');
+				$("#mobile_phone").focus();
+		    }else{		
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("User/ismobile_registered")}', //发送数据的地址
+					data:{mobile_phone:mobile_phone},
+					dataType: "json",
+					success:function(data)
+					{
+						err_msg(data.info, 'mobile_phone');
+					},
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+				})	
+		    }
+		}			
+	}
+function getStrLength(str) {  
+    var cArr = str.match(/[^\x00-\xff]/ig);  
+    return str.length + (cArr == null ? 0 : cArr.length);  
+}  
+	function isname_registered(){
+		var username=$("#username").val();		
+		if(username ==''){
+			err_msg('请填写用户名', 'username');
+		}else{
+			if(getStrLength(username) < 4 ){
+				err_msg('用户名不能小于4个字符', 'username');
+				$("#username").focus();
+		    }else{		
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("User/isname_registered")}', //发送数据的地址
+					data:{username:username},
+					dataType: "json",
+					success:function(data)
+					{
+						err_msg(data.info, 'username');
+					},
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+				})	
+		    }
+		}			
+	}
+		
+	function checkphone(){
+		var miss=$("#miss").val();
+		if(miss ==''){
+			err_msg('请填写短信验证码', 'miss');
+		}else{
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("User/checkphone")}', //发送数据的地址
+				data:{miss:miss},
+				dataType: "json",
+				success:function(data)
+				{
+					err_msg(data.info, 'miss');
+				},
+				error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+			})			  
+		  
+		}			
+	}
+		
+	function check_password( password )
+	{
+		if(password.length < 6 ){
+			err_msg('密码不能小于6位', 'password1');
+			return false;
+		}else{
+			err_msg('', 'password1');
+		}
+		conform_password = document.getElementById('conform_password').value;
+		if(conform_password!=''){
+			
+			if ( conform_password != password )
+			{
+				err_msg('两次密码不一致', 'conform_password');
+				$("#conform_password").focus();
+			}
+			else
+			{
+				err_msg('', 'password1');
+				err_msg('', 'conform_password');
+			}			
+		}
+		
+	}
+	
+	function check_conform_password( conform_password )
+	{
+		password = document.getElementById('password1').value;
+		
+		if ( conform_password.length < 6 )
+		{
+			err_msg('密码不能小于6位', 'conform_password');
+			$("#conform_password").focus();
+			return false;
+		}
+		if ( conform_password != password )
+		{
+			err_msg('两次密码不一致', 'conform_password');
+			$("#conform_password").focus();
+		}
+		else
+		{
+			err_msg('', 'password1');
+			err_msg('', 'conform_password');
+		}
+	}
+	
+	function register(){
+		var username=$("#username").val();
+		if(username ==''){
+			err_msg('请填写用户名', 'username');
+			$("#username").focus();
+			return false;
+		}		
+		if(document.getElementById('dusername').innerHTML!="") {
+			$("#username").focus();
+			return false;
+		}			
+		var mobile_phone=$("#mobile_phone").val();
+		if(mobile_phone ==''){
+			err_msg('请填写手机号码', 'mobile_phone');
+			$("#mobile_phone").focus();
+			return false;
+		}
+		if(document.getElementById('dmobile_phone').innerHTML!="" && document.getElementById('dmobile_phone').innerHTML!="短信已发送到您的手机，请查看") {
+			$("#mobile_phone").focus();
+			return false;
+		}		
+		var miss=$("#miss").val();
+		if(miss ==''){
+			err_msg('请填写短信验证码', 'miss');
+			$("#miss").focus();
+			return false;
+		}
+		if(document.getElementById('dmiss').innerHTML!="") {
+			$("#miss").focus();
+			return false;
+		}	
+
+		var password=$("#password1").val();
+		if(password ==''){
+			err_msg('请填写设置密码', 'password1');
+			$("#password").focus();
+			return false;
+		}	else{
+		  err_msg('', 'password1');
+	  	}	
+		
+		var conform_password=$("#conform_password").val();
+		if(conform_password ==''){
+			err_msg('请填写确认密码', 'conform_password');
+			$("#conform_password").focus();
+			return false;
+		}else{
+		  err_msg('', 'conform_password');
+	  	}
+		if(password!=conform_password){
+			err_msg('两次密码不一致，请重新填写', 'conform_password');
+			$("#conform_password").focus();
+			return false;		
+	 	 }else{
+	    	err_msg('', 'conform_password');
+	  	}
+
+	  return true;
+	}
+</script>
+
+
+
+
+</div>
+</body>
+</html>

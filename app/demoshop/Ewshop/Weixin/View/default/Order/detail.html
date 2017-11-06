@@ -1,0 +1,118 @@
+<include file="Public/uheader"/>
+
+	<body>
+		<div class="xd-box">
+		 <volist name="detaillist" id="po"> 
+			<div class="state">订单状态：
+			 <php>
+           $status=$po['status'];
+      </php>
+			 <php>
+                   if($status==-1){echo "待支付";};
+                   if($status==1){echo "待发货";}; 
+                   if($status==2){echo "已发货";};
+                   if($status==3){echo "交易成功";};
+                   if($status==4){echo "申请取消订单";};
+                   if($status==5){echo "取消订单被拒绝";};
+                   if($status==6){echo "订单已取消";};
+              </php>
+			  <if condition="$po['toolid']">
+			  <a href="{:U('order/wuliu?id='.$po['orderid'])}">查看物流</a>
+			  </if>
+			</div>
+			<div class="xd-information">
+				<h3>配送信息</h3>
+				<table border="0">
+				   <volist name="translist" id="vo">
+					<tr>
+						<td valign="top">姓名</td>
+						<td>{$vo.realname}</td>
+					</tr>
+					<tr>
+						<td>电话</td>
+						<td>{$vo.cellphone}</td>
+					</tr>
+					<tr>
+						<td valign="top">地址</td>
+						<td>北京 北京市 昌平区 {$vo.address}</td>
+					</tr>
+					  </volist>	
+				</table>
+
+			</div>
+			<div class="xd-detailed">
+				<h3>购物清单</h3>
+				  <volist name="po['id']" id="vo"> 
+				<div class="xd-list1">
+				<img src="{$vo.goodid|get_cover_id|get_cover='path'}" alt="" />
+				<ul>
+					<li><a href="{:U('Article/detail?id='.$vo['goodid'])}">{$vo.goodid|get_good_name}</a></li>
+					<li>规格：羊毛、xxl、绿色   </li>
+				</ul>
+				<div class="xd-list1-wc">
+					<span><em>¥1000</em></span>
+					<span><em>¥1000</em></span>
+					 <span>x{$vo.num}</span>
+				</div>
+				
+				
+				
+			</div>
+			<div class="x-ly">
+				<h3 class="ly"><span>留言:</span> <span>观看的</span></h3>
+			</div>
+			
+			
+			
+			
+			 </volist> 
+			<div class="xd-Payment-method">
+				<ul>
+				
+					<li>商品总金额 <span>¥{$po.total|default="0"}</span></li>
+					<if condition="$po['shipprice']!=0">
+					<li>运费 <span>¥{$po.shipprice|default="0"}</span></li>
+					</if> 
+					<li class="xd-bac">支付方式 <span>在线支付</span></li>
+					<li class="xd-bac">支付金额 <span>¥{$po.pricetotal|default="0"}</span></li>
+					
+				</ul>
+				<p>订单编号：{$po.tag}</p>
+				<p>创建时间：{$po.create_time|date='Y-m-d H:i:s',###}</p>
+				
+			</div>
+				
+				
+				
+			</div>
+			
+			
+			
+		</div>
+		
+		
+		
+		
+		<div class="xd-button">
+			<div class="xd-button-1">
+			 <form method="post" name="payform" id="payform" action="{:U('Shopcart/topay')}" >
+            	<input type="hidden" name="orderid" value="{$po.orderid}" />
+            </form>  
+				 <if condition="($po['ispay'] eq '1') AND ($po['status'] eq '-1')">  
+                <a href="javascript:;">取消订单</a>
+                <select id="xdxdxdxd">
+				  	<option>不想买了</option>
+				  	<option>太贵了</option>
+				  </select>
+                <a href='javascript:void(0);' onclick="document.getElementById('payform').submit();"class="hover">去支付</a>
+                </if>
+			</div>
+		</div>
+		  </volist>	
+		<script>
+			$("#xdxdxdxd").change(function(){
+				
+				alert("你选择了"+this.value)
+				
+			})
+		</script>

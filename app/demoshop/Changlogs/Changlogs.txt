@@ -1,0 +1,88 @@
+###-------------------------------------------------------------------------------------------------------------------------------------###
+###-----------------------------------------------------#数据更改记录文件#--------------------------------------------------------------### 
+###-------------------------------------------------------------------------------------------------------------------------------------###
+
+###--------------------------------------------------------------------------------------------------
+###操作说明  操作时间  增加满减促销表  2016-3-27
+###--------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_dzp` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL COMMENT '活动名称',
+  `zige` tinyint(1) NOT NULL DEFAULT '1' COMMENT '抽奖资格1：所有会员',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '抽奖方式1：一次性2：每天',
+  `times` int(11) NOT NULL DEFAULT '1' COMMENT '奖品次数',
+  `start_time` varchar(20) NOT NULL COMMENT '活动起始时间',
+  `end_time` varchar(20) NOT NULL COMMENT '活动结束时间',
+  `content` varchar(512) NOT NULL COMMENT '简介描述',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态1：正常2：禁用',
+  `create_time` int(10) unsigned NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='大转盘抽奖表' AUTO_INCREMENT=9 ;
+
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_dzpdata` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `zid` int(11) NOT NULL COMMENT '转盘活动id',
+  `pid` int(11) NOT NULL COMMENT '奖品id',
+  `uid` int(11) NOT NULL COMMENT '用户id',
+  `create_time` int(10) NOT NULL COMMENT '抽奖时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='大转盘抽奖数据表' AUTO_INCREMENT=3 ;
+
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_dzpprize` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pid` int(11) NOT NULL COMMENT '大转盘活动id',
+  `level` int(1) NOT NULL COMMENT '奖品等级',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '奖品类型1：优惠券2：商品',
+  `name` varchar(128) NOT NULL COMMENT '奖品名称',
+  `prize_id` int(10) NOT NULL COMMENT '奖品id',
+  `num` int(11) NOT NULL DEFAULT '1' COMMENT '奖品数量',
+  `bilv` decimal(5,2) NOT NULL COMMENT '中奖比率',
+  `content` varchar(512) NOT NULL COMMENT '简介描述',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态1：正常2：禁用',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='大转盘奖品表' AUTO_INCREMENT=15 ;
+
+
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_mj` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL COMMENT '促销名称',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '参与类型1：全部产品2：指定分类3：指定产品',
+  `ids` text NOT NULL COMMENT '指定分类或产品id，用,拼接',
+  `top_price` decimal(10,2) NOT NULL COMMENT '达到价格',
+  `mj_price` decimal(10,2) NOT NULL COMMENT '减免金额',
+  `start_time` varchar(20) NOT NULL COMMENT '开始时间',
+  `end_time` varchar(20) NOT NULL COMMENT '结束时间',
+  `create_time` int(10) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='满减促销表' AUTO_INCREMENT=2 ;
+
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_yhj` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL COMMENT '优惠券名称',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '发放类型1：按用户发放2：线下发放',
+  `price` decimal(10,2) NOT NULL COMMENT '优惠券金额',
+  `min_price` decimal(10,2) NOT NULL COMMENT '最小订单金额',
+  `start_time` varchar(20) NOT NULL COMMENT '使用起始时间',
+  `end_time` varchar(20) NOT NULL COMMENT '使用结束时间',
+  `create_time` int(10) unsigned NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='优惠券表' AUTO_INCREMENT=3 ;
+
+
+CREATE TABLE IF NOT EXISTS `ewshop_promotion_yhjdata` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `yhj_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '优惠券类型',
+  `sn` varchar(20) NOT NULL DEFAULT '0' COMMENT '优惠券编号',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '使用优惠券的会员id',
+  `used_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '使用时间',
+  `order_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '使用优惠券的订单号',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='优惠券数据表' AUTO_INCREMENT=5 ;
+
+

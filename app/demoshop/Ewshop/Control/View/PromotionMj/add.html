@@ -1,0 +1,279 @@
+<extend name="Public/base"/>
+
+
+
+<block name="body">
+
+	<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+
+	<div class="main-title">
+
+		<h2>{:isset($info['id'])?'编辑':'新增'}满减促销</h2>
+
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+
+				<div id="tab1" class="tab-pane in tab1">
+
+					<div class="form-item">
+
+						<label class="item-label">
+
+							满减促销名称<span class="check-tips">（名称不能为空）</span>
+
+						</label>
+
+						<div class="controls">
+
+							<input type="text" name="name" class="text input-large" value="{$info.name|default=''}">
+
+						</div>
+
+					</div>
+					<div class="form-item">
+
+						<label class="item-label">
+
+							开始时间<span class="check-tips"></span>
+
+						</label>
+
+						<div class="controls">
+
+							<input type="text" name="start_time" class="text time" value="{$info.start_time|default=''}">
+
+						</div>
+
+					</div>
+					<div class="form-item">
+						<label class="item-label">
+							结束时间<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+							<input type="text" name="end_time" class="text time" value="{$info.end_time|default=''}">
+						</div>
+					</div>
+ 					<div class="form-item">
+						<label class="item-label">
+							活动范围<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="type" id="type"  onchange="changeRange(this.value)">
+                                <option value="1" <if condition="$info['type']==1">selected</if> >全部产品</option>
+								<option value="2" <if condition="$info['type']==2">selected</if> >指定分类</option>
+                                <option value="3" <if condition="$info['type']==3">selected</if> >指定产品</option>
+                            </select>
+                            <span id="range_search" <if condition="$info['type']==1"> style="display:none"</if> >
+                                <span align="right">搜索并加入活动范围</span>
+                                <span><input name="keyword" type="text" id="keyword">
+                                  <input name="search" type="button" id="search" value="搜索" class="button" onclick="searchItem()" />
+                                  <select name="result" id="result"></select>
+                                  <input type="button" name="add_range" value="+" class="button" onclick="addRange()" />
+                                </span>
+                            </span>                            
+                        </div>
+                         
+                        <div id="range-div"></div>
+					</div>                          
+<script>
+/**
+ * 改变优惠范围
+ * @param int rangeId
+ */
+function changeRange(rangeId)
+{
+  document.getElementById('range-div').innerHTML = '';
+  document.getElementById('result').length = 0;
+  var row = $("#range_search");
+  if (rangeId == 1){
+	row.hide();
+  }else{
+	row.show();
+  }
+}
+
+function searchItem()
+{
+	var keyword  = $("#keyword").val();
+	var ptype = $("#type").val();
+	if (ptype == 1)
+	{
+		alert("选择全部产品时不需要搜索");
+		return;
+	}
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("PromotionMj/ajaxsearch")}', //发送数据的地址
+		data:{keyword:keyword,ptype:ptype},
+		dataType: "json",
+		success:function(data){
+			if (data.status == 1) {
+				var sel = document.getElementById('result');
+ 				sel.length = 0;
+				/* 创建 options */
+				var ids = data.result;
+				if (ids)
+				{
+					
+					for (i = 0; i < ids.length; i++)
+					{
+					  var opt = document.createElement("OPTION");
+					  opt.value = ids[i].id;
+					  opt.text  = ids[i].title;
+					  sel.options.add(opt);
+					}
+				}				
+			}else if(data.status == 0){
+				alert(data.result);
+			}else{
+				aleert('出错了！');
+			}
+			
+		},error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+			alert("表单错误，"+XMLHttpRequest+thrownError); 
+		}
+	})  
+}
+
+function addRange()
+{
+  var selRange = $("#type");
+  if (selRange.value == 1)
+  {
+    alert("选择全部产品时不需要搜索");
+    return;
+  }
+  var selResult = document.getElementById('result');
+  if (selResult.value == 0)
+  {
+    alert("请先搜索");
+    return;
+  }
+  var id = selResult.options[selResult.selectedIndex].value;
+  var name = selResult.options[selResult.selectedIndex].text;
+
+  // 检查是否已经存在
+  var exists = false;
+  if(document.getElementById('range-div').innerHTML!=''){
+	  var eles = $('#range-div input[type="checkbox"]');
+	  for (var i = 0; i < eles.length; i++)
+	  {
+		  if (eles[i].value == id)
+		  {
+			exists = true;
+			alert("该选项已经存在");
+			break;
+		  }
+	  }
+  }
+
+  // 创建checkbox
+  if (!exists)
+  {
+    var html = '<input name="ids[]" type="checkbox" value="' + id + '" checked="checked" />' + name + '<br />';
+    document.getElementById('range-div').innerHTML += html;
+  }
+}
+</script>            
+                    
+ 					<div class="form-item">
+
+						<label class="item-label">
+
+							金额上线<span class="check-tips">（当购买产品金额达到当前金额时触发减免）</span>
+
+						</label>
+
+						<div class="controls">
+
+							<input type="text" name="top_price" class="text input-large" value="{$info.top_price|default=''}">
+
+						</div>
+
+					</div>  
+					<div class="form-item">
+
+						<label class="item-label">
+
+							减免金额<span class="check-tips"></span>
+
+						</label>
+
+						<div class="controls">
+
+							<input type="text" name="mj_price" class="text input-large" value="{$info.mj_price|default=''}">
+
+						</div>
+
+					</div>                                     
+
+				</div>
+
+
+				<div class="form-item">
+
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+$(function(){
+
+    $('.date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language:"zh-CN",
+        minView:0,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+});	
+
+		//导航高亮
+
+		highlight_subnav('{:U('PromotionMj/index')}');
+
+	</script>
+
+</block>
+

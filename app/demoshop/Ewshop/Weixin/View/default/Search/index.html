@@ -1,0 +1,97 @@
+<include file="Public/header"/>
+<nav id="w_caseNav">
+	<div <if condition="($type eq '') OR ($type eq 2) OR ($type eq 5)">class="w_hover"</if>>默认排序<i class="iconfont2">&#xe6b7;</i></div>
+	<div>
+		<a <if condition="$type eq 4">class="w_hover"</if> href="{:U('Search/index','category='.$category['name'].'&type=4'.'&sort=desc'.'&words='.$keyword)}">销量</a>
+	</div>
+	<div class="x-d-span">
+		<a <if condition="$type eq 3">class="w_hover"</if> href="{:U('Search/index','category='.$category['name'].'&type=3&sort='.$sort_val.'&words='.$keyword)}">价格
+		<span >
+			<!--<i class="iconfont2">&#xe6ac;</i>-->
+			<if condition="$sort_val eq desc">
+			<i class="iconfont2 now xdx-ok xdx-1">&#xe6b7;</i>
+					<else/>
+			<i class="iconfont2">&#xe6ac;</i>
+					
+			</if>
+		</span>
+		</a>
+	</div>
+	<div class="w_ClassParent" style="border-right: none;">分类
+		<i class="iconfont2">&#xe6b7;</i>
+		<ul class="w_Class">
+			<volist name="category_list" id="vo">
+				<li><a href="{:U('Search/index?category='.$vo['name'].'&words='.$keyword)}">{$vo.title}</a></li>
+			</volist>
+		</ul>
+	</div>
+	<ul class="w_Under">
+		<li><a href="{:U('Search/index','category='.$category['name'].'&type=1'.'&sort='.$sort_val.'&words='.$keyword)}">默认排序</a></li>
+		<li><a href="{:U('Search/index','category='.$category['name'].'&type=2&sort=desc'.'&words='.$keyword)}">新品优先</a></li>
+		<li><a href="{:U('Search/index','category='.$category['name'].'&type=5&sort=desc'.'&words='.$keyword)}">评价数从高到低</a></li>
+		<li class="w_cancle"><a href="#">取消</a></li>
+	</ul>
+</nav>
+<script>
+
+	$("#w_caseNav > div").click(function(){
+		if($(this).index() == 0){
+			$(".w_Under").css({'display' : 'block'});
+			$(".w_Class").css({'height' : '0'});
+			setTimeout(function(){
+				$(".w_Under").css({'height' : '250/40rem','opacity' : '1'});
+			},1);
+			$(this).children('i').html('&#xe6ac;');
+		}
+	});
+	$(".w_cancle").click(function(){
+		this.parentNode.style.height = 0;
+		this.parentNode.style.opacity = 0;
+		_self = this;
+		setTimeout(function(){
+			_self.parentNode.style.display = "none";
+		},500);
+		return _self = this;
+	});
+	
+	
+	
+	var _Show = true;
+	$(".w_ClassParent").click(function(){
+		var _height = $(this).children(".w_Class").children();
+		$(".w_Under").css({'height' : 0});
+		$(".w_Under").css({'opacity' : 0});
+		$(this).children('i').html('&#xe6b7;');
+		setTimeout(function(){
+			$(".w_Under").css({'display' : 'none'});
+		},500);
+		if(_Show){
+			$(this).children(".w_Class").css({'height' : _height.length*$(_height[0]).height()});
+			$(this).children(".w_Class").prev().html('&#xe6ac;');
+			return _Show = false;
+		}else{
+			$(this).children(".w_Class").css({'height' : '0'});
+			$(this).children(".w_Class").prev().html('&#xe6b7;');
+			return _Show = true;
+		}
+
+	});
+</script>
+<ul id="w_caseList">
+	<volist name="list" id="vo" empty="暂时没有数据">
+		<li>
+			<div>
+				<a href="{:U('Goods/detail?id='.$vo['id'])}"><img src="{$vo.cover_id|get_cover='path'}" /></a>
+			</div>
+			<div>
+				<a href="{:U('Goods/detail?id='.$vo['id'])}">
+					<p>{$vo.title}</p>
+					<p>￥{$vo.price}</p>
+					<p>{$vo.comment}人评价</p>
+				</a>
+			</div>
+		</li>
+	</volist>
+</ul>
+
+<include file="Public/footer"/>

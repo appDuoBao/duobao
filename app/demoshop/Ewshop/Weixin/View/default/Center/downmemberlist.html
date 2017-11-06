@@ -1,0 +1,40 @@
+<include file="Public/header_user"/>
+<div class="gr_u">
+<div class="gr_ss">
+<h1>所有下级分销会员列表</h1>
+</div>
+
+<div class="qx">
+    <empty name='list'>
+        <p class="no_fenxiao">没有分销会员！<a href='{:U("center/disbutlist")}' class="red">去分销</a></p>
+    <else />
+        <table width="100%">
+        <tr>
+        <th>会员名称</th>
+        <th>性别</th>
+        <th>加入时间</th>
+		<th>分销产品数量</th>
+        <th>分销额百分比</th>
+		<th>操作</th>
+        </tr>
+        <volist name="list" id="user"> 
+        <tr>
+        <td align="center"><h2><img src="{$user.uid|get_faceUrl}"  width="20" height="43"/><a href="#">{$user.nickname}</a></h2></td>
+        <td align="center"><if condition="$user.sex eq '1'">男<elseif condition="$user.sex eq '2'" />女<else />保密</if></td>
+        <td align="center">{$user.reg_time|date='Y-m-d',###}</td>
+		<td align="center">{$user.num}</td>
+		<td align="center">{$user.disnum}%</td>
+        <td align="center">
+            <p><a href="{:U('Center/editdisnum?downid='.$user['uid'])}">修改</a>|<a href="{:U('Center/membermnshow?downid='.$user['uid'])}">分销记录</a></p>
+        </td>
+        </tr>
+        </volist>
+        </table>
+        <div class="cj_r page">
+        {$page}
+        </div>
+    </empty>
+</div>
+
+</div>
+<include file="Public/footer"/>

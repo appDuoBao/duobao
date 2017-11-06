@@ -1,0 +1,48 @@
+<volist name="tree" id="channel">
+
+	<dl class="cate-item">
+
+		<dt class="cf">
+
+			<form action="{:U('edit')}" method="post">
+
+				<div class="fold"><input class="ids row-selected" type="checkbox" name="id[]" value="{$channel['id']}"></div>
+
+				<div class="order">{$channel.id}</div>
+                <div class="order"><if condition="$channel['type']==1">头部<else/>底部</if></div>
+                <div class="order">{$channel.sort}</div>
+				<div class="name">
+
+					<span class="tab-sign"></span>
+
+					<a href="{:U('index?pid='.$channel['id'])}">{$channel.title}</a>
+					<!--
+					<a class="add-sub-cate" title="添加子分类" href="{:U('add?pid='.$channel['id'])}">
+						<i class="icon-add"></i>
+					</a>
+                    -->
+					<span class="help-inline msg"></span>
+				</div>
+
+				<div class="btn-toolbar opt-btn cf">
+                    <a title="编辑" href="{:U('edit?id='.$channel['id'].'&pid='.$pid)}">编辑</a>
+                    <a href="{:U('setStatus?ids='.$channel['id'].'&status='.abs(1-$channel['status']))}" class="ajax-get">{$channel.status|show_status_op}</a>
+                    <a class="confirm ajax-get" title="删除" href="{:U('del?id='.$channel['id'])}">删除</a>
+				</div>
+			</form>
+
+		</dt>
+
+		<notempty name="channel['_']">
+
+			<dd>
+
+				{:R('Channel/tree', array($channel['_']))}
+
+			</dd>
+
+		</notempty>
+
+	</dl>
+
+</volist>

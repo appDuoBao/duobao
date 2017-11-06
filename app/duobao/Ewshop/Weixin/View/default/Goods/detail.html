@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="__CSS__/common.css?t=123">
     <link rel="stylesheet" href="__CSS__/chanpin.css?t=123">
-    <link rel="stylesheet" href="__CSS__/chanpinbuy.css?t=123">
+    <link rel="stylesheet" href="__CSS__/chanpinbuy.css?t=12345">
     <link rel="stylesheet" href="__CSS__/dingdan.css">
-
+<script src="__JS__/qrcode.js"></script>
+<script src="ap.js"></script>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <meta http-equiv="refresh" content="60" />  
-
+<!--<script id='spay-script' src='https://jspay.beecloud.cn/1/pay/jsbutton/returnscripts?appId=5303b6b1-5281-4ec2-842f-1cb80280183c'></script>-->
 </head>
 <body>
-
+<div align="center"  id="qrcode" >
+</div>
 <div class="mainall">
     <div class="bg">
         <if condition="$data['goodsDetail']['pics'] neq ''">
@@ -103,7 +105,7 @@
 
     <!--支付弹框-->
     <div class="alert" style="display: none;">
-        <div class="content">
+        <div class="content" align="center" >
             <div class="cont">{$data.goodsDetail.title}</div>
             <div class="conbd">
                 <p class="cbdt">参与单数</p>
@@ -138,10 +140,10 @@
                 <input type="hidden" id="goods_type" value="{$data.goodsDetail.price}">
                 <input type="hidden" id="pay_type">
                 <div class="sum">总需：<span class="sumn">{$data.price_half_1}</span> 微币<!--(当前拥有{$price}微币)--></div>
-                  <input  id="buyer_id" vtype="ip" value="" placeholder="支付宝账号" maxlength="16" placeholder="长度16">
-                <div class="pay" onclick="callpay();">支付宝支付</div>
+                <!--  <input  id="buyer_id" vtype="ip" value="" placeholder="支付宝账号" maxlength="26" placeholder="长度16">-->
+                <div class="pay" onclick="callpay(1);">支付宝扫码</div> 
                 <!--<div class="pay" onclick="judge();">支付</div>-->
-                <div class="pay" onclick="getpay();">微信支付</div>
+                <div class="pay" onclick="callpay(2);">微信支付</div>
             </div>
             <div class="line"></div>
             <div class="close"></div>
@@ -379,7 +381,7 @@
     //        })
     //    }
     //
-      function callpay(){
+      function callpay(ptype){
           var myunix = "{$data.myunix}";
           var myjsunix = nowunix = Date.parse( new Date())/1000;
 
@@ -388,17 +390,13 @@
             return false;
          }
          
-         var total_fee = $('.sumn').html();
-        var type = $('#pay_type').val();
+        var total_fee = $('.sumn').html();
+        var type = ptype;
         var num = $(".btn2").val();
         var goods_type = $('#goods_type').val();
         var lottery_time = $(".fnTimeCountDown").data('end');
         var goods_id = '{:I("get.id")}';
         var buyer_id = $("#buyer_id").val();
-        if(buyer_id == ''){
-            alert("请输入支付宝账号");   
-            return false; 
-        }
         if(total_fee == ''  || type =='' || num =='' || lottery_time =='' || goods_id ==''){
             alert('操作异常,请选择购买数量！');
             return false;
@@ -406,24 +404,37 @@
         $.ajax({
             type: 'post', //传送的方式,get/post
             url: './index.php?s=Weixin/Request/submitOrderInfo',
-            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:2,buyer_id:buyer_id,buyer_logon_id:'',buyer_id:buyer_id},
+            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:2,buyer_id:buyer_id,buyer_logon_id:buyer_id,buyer_id:''},
             dataType: "json",
             success: function (res) {
                 
-                if(res.status== 500){
-                    alert(res.msg);    
+                if(res.ret== 0){
+		      _At.pay(res.url);
+		     window.location.href = res.url;
+                     var options = {text: res.url};
+                    var canvas = BCUtil.createQrCode(options);
+                    var wording=document.createElement('p');
+		    var imgs = convertCanvasToImage(canvas);
+                    var element=document.getElementById("qrcode");
+                    element.appendChild(wording);
+                    element.appendChild(imgs);  
+		    $(".content").html(imgs);
                 }
-                if(res.status == 0){
-                  
-                    window.location.href = res.pay_url;
-                }
-
-               
+                
             }
         });
          
       }
+function convertCanvasToImage(canvas){
 
+     //新Image对象,可以理解为DOM;
+     var image = new Image();
+
+     //canvas.toDataURL返回的是一串Base64编码的URL,当然,浏览器自己肯定支持
+     //指定格式PNG
+     image.src = canvas.toDataURL("image/png");
+     return image;
+}
 
     var flag = 0;
 
@@ -489,7 +500,7 @@
         var myjsunix = nowunix = Date.parse( new Date())/1000;
 
         if((myunix - myjsunix) < 30){
-            alert('即将开奖，敬请期待下一期');
+            alert("即将开奖，敬请期待下一期");
             return false;
         }		
 		
@@ -500,6 +511,7 @@
                 document.attachEvent('WeixinJSBridgeReady', topay);
                 document.attachEvent('onWeixinJSBridgeReady', topay);
             }
+            topay();
         }else{
             topay();
         }

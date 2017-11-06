@@ -1,0 +1,61 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="__CSS__/styles.css" rel="stylesheet" />
+<script src="__JS__/jquery1.42.min.js"></script>
+<script src="__JS__/script.js"></script>
+
+<title></title>
+</head>
+<body>
+<volist name="list" id="po">
+<div class="wrap">
+<form action="{:U('commentform')}" method="post" onsubmit="return checkcomment();" >
+	<input type="hidden" name="goodid[]" value="{$po.goodid}">
+	<input type="hidden" name="tag[]" value="{$po.tag}">
+		<div class="case clear">
+			<img src="{$po.goodid|get_cover_id|get_cover='path'}" width="85" height="98"/>
+			<div class="case_r">
+				<a href="{:U('Article/detail?id='.$po['goodid'])}">{$po.goodid|get_good_name}</a>
+			</div>
+		</div>
+		<div class="fill">填写评价</div>
+		<div class="pron clear">
+			<span>心得：</span>
+				<div class="fil">
+				 <textarea name="content[]" placeholder="对此次购买的商品还满意吗？写点心得给其他顾客参考吧" ></textarea>
+				 <p>评价在5~150字之间</p>
+				
+				</div>
+		</div>
+    <input type="hidden" name="id" value="{$id}">
+	<div class="fil">
+	<input type="submit" name="dosubmit" value="提交" />
+	</div>
+</form>      
+
+</div>
+</volist>
+
+
+<script type="text/javascript"> 
+
+function checkcomment(){
+	var mm = $('input:text[name="content[]"']).val();
+	console.log(mm);
+	if(mm>1){
+		alert('内容不能为空！');
+		return false;	
+	}else{
+		return true;	
+	}
+
+}
+</script>
+<div style="height:5.625rem;"></div>
+</body>
+</html>

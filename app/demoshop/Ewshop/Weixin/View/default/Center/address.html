@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link rel="stylesheet" href="__CSS__/font/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="__CSS__/font1/iconfont.css"/>
+	<link rel="stylesheet" href="__CSS__/style.css" />
+	<script type="text/javascript" src="__JS__/jquery.min.js" ></script>
+	<script type="text/javascript" src="__JS__/common.js" ></script>
+	<script type="text/javascript" src="__JS__/city.data-3.js" ></script>
+	<script type="text/javascript" src="__JS__/citys.js" ></script>
+</head>
+
+<body>
+
+
+
+<!--地址添加层-->
+
+<div id = "newDz" style="position: fixed;width: 100%;top: 100%;height: 100%;background: #FBF9FE;z-index: 50;display: none;transition: top 1s;">
+<input type="hidden" id="addressid">
+		<div class="dz-input-wrap">
+		 
+			<input type="text" placeholder="请填写姓名" id="realname"/>
+		</div>
+		<div class="dz-input-wrap">
+			<input type="text" placeholder="请填写联系电话" id="phone"/>
+		</div>
+		<div class="dz-input-wrap" id = "xuandizhi">
+			<span>请选择省、市、区</span>
+			            <input type="hidden" name="areaid"  id="areaid" value="">
+			<div class="iconfont">&#xe662;</div>
+		</div>
+		<div class="dz-input-wrap">
+			<input  type="text" placeholder="详细地址" name="address"  id="address"/>
+		</div>
+		<!--<div class="dz-input-wrap">
+			<input type="text" placeholder="邮政编码(选填)"/>
+		</div>-->
+		<div class="dz-input-wrap mrt-20 border-top">
+			<span>设为默认收货地址</span>
+			<div>
+				<label>
+					<input id="isdefault" checked="checked"  name="default" type="checkbox"><input type="checkbox"/>
+					<i class="icon">&#xe61e;</i>
+				</label>
+			</div>
+		</div>
+		<button type="button" class="max-btn mrt-40 dz-btn" onClick="savemsg();">保存</button>
+		<button type="button" id = "closeAdd" class="max-btn mrt-40 btn-red">返回</button>
+		<div class="alert-bg" style="display: none;"></div>
+		<div class="select" style="display: none;">
+			<div class="title"><i>配送至</i><span class="icon" id = "close">&#xe652;</span></div>
+			<div class="content">
+				<div class="select-dz">
+					<div class="dizhi-zizhi">
+						<div oid = "0" class="hover">省份</div>
+						<div oid = "1">市</div>
+						<div oid = "2">区</div>
+					</div>
+					<div class="select-dz-wrap">
+						
+						<ul oid = "0">
+							 <volist id="vo" name="arealist">
+								<li ovalue="{$vo.id}">{$vo.name}</li>
+			                </volist>
+						</ul>
+						<ul oid = "1"></ul>
+						<ul oid = "2"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	  <script type="text/javascript">
+			
+			
+			function hide_adr(){
+				
+				var top = $("#newDz")[0].offsetHeight;
+				$("#newDz").css("top",top + "px");
+				var timer = setTimeout(function(){
+					$("#newDz").hide();
+				},1100);
+				
+			}
+	  
+	  
+	  
+			$("#closeAdd").click(function(){
+				hide_adr();
+			});
+                	$(function(){
+
+						if($('.ico_check input').is(":checked"))
+
+						{
+
+							$(this).parent('label').addClass('hover');	
+
+						}
+
+						else
+
+						{
+
+							$(this).parent('label').removeClass('hover');	
+
+						}
+
+						
+
+						$('.ico_check input').on("click",function(){
+
+							
+
+							if($(this).parent('label').hasClass('hover'))
+
+							{
+
+								$(this).parent('label').removeClass('hover');
+
+							}
+
+							else
+
+							{
+
+								$(this).parent('label').addClass('hover');	
+
+							}							
+
+						})
+
+													
+
+					})
+
+                </script>
+	<script>
+		
+		
+		$("label").change(function(){
+			if($(this).find("input").is(":checked")){
+				$(".icon",this).html("&#x3551;");
+				$(".icon",this).addClass("color-che");
+			}else{
+				$(".icon",this).html("&#xe61e;");
+				$(".icon",this).removeClass("color-che");
+			}
+		})
+		$(function(){
+			$(".dizhi-zizhi div").click(function(){
+				var oid = $(this).attr("oid");
+				showUl(oid);
+			})
+			$("#xuandizhi").click(function(){
+				$(".alert-bg").show();
+				$(".select").show();
+				showUl(0);
+			})
+			
+			
+			$(".select-dz-wrap ul").eq(0).find("li").click(function(){
+				$(".select-dz-wrap ul").eq(0).find("li").removeClass("hover");
+				$(this).addClass("hover");
+				
+				var oid = $(this).attr("ovalue");
+				
+				if(oid <= 5 || oid == 33 || oid == 34 || oid == 35 || oid == 3358){
+					var li = document.createElement("li");
+					li.ovalue = oid;
+					li.innerHTML = this.innerHTML;
+					li.onclick = function(){
+						$(this).parent().find("li").removeClass("hover");
+						$(this).addClass("hover");
+						changearea(this.ovalue , 2);
+					}
+					$(".select-dz-wrap ul").eq(1).html("").append(li);
+					showUl(1);
+				}else{
+					changearea(oid , 1);
+				}
+				
+				
+			})
+			
+			$("#close").click(function(){
+				close();
+			})
+			
+		
+			//..............
+			
+			
+		})
+		function close(){
+			var txt = "" , num = 0;
+			var citys = [];
+			$(".select-dz-wrap ul").each(function(){
+				$(this).find("li").each(function(){
+					if($(this).attr("class") == "hover"){
+						num++;
+						citys.push(this.getAttribute("ovalue") || this.ovalue);
+						txt += $(this).html() + " ";
+					}
+				})
+			})
+			
+			
+			
+			if(num < 3){
+				alert("请完整的选择配送地址!")
+				return false;
+			}else{
+				$(".alert-bg").hide();
+				$(".select").hide();
+			}
+			// 请选择省、市、区
+			if(txt){
+				$("#pro").val(citys[0]);
+				$("#city").val(citys[1]);
+				$("#area").val(citys[2]);
+				$("#areaid").val(citys[2]);
+				$("#xuandizhi span").html(txt);
+			}else{
+				$("#xuandizhi span").html("请选择省、市、区");
+			}
+		}
+		function showUl(oid,cityid,fn){
+			$(".select-dz-wrap ul").hide();
+			$(".dizhi-zizhi div").removeClass("hover").eq(oid).addClass("hover");
+			$(".select-dz-wrap ul").each(function(){
+				if($(this).attr("oid") == oid){
+					$(this).show();
+				}
+			})
+		}
+	</script>
+
+<!--地址添加层-->
+
+<div style="padding-bottom: 140px;" class="adr_box">
+<volist name="list" id="vo">
+		<div class="dizhi-wrap" oid="{$vo.id}">
+			<div class="dizhi-top" oid="{$vo.id}">
+				<p>{$vo.realname} <span>{$vo.cellphone}</span><em>默认</em></p>
+				<i>{$vo.address}</i>
+			</div>
+			<div class="dizhi-bottom">
+				<div class="adr_add" onclick="edit_adr(this)">
+						<a href="javascript:void(0);" rel="{$vo.id}"><span class="iconfont">&#xe645;</span> 编辑</a>
+				</div>
+				<div class="delete"  onclick="del_adr({$vo.id})">
+						<a href="javascript:void(0)"><span class="iconfont">&#xe6a5;</span> 删除</a>
+				</div>
+			</div>
+		</div>
+		</volist> 
+		
+	</div>
+		<if condition="$addnum LT 5">
+	<div class="dizhi-wrap-btn">
+
+		 <a href="javascript:void(0);" id="show"><button class="max-btn btn-red">新增收货地址</button></a>
+		
+	</div>
+</if>
+<script>
+
+
+
+	//编辑地址ajax
+	
+	
+	function edit_adr(one){
+	
+		var _this_ = $(one);
+		var addressid = _this_.find('a').attr("rel");
+		
+		$("#newDz").show();
+		var time = setTimeout(function(){
+			$("#newDz").css("top","0px");
+			clearTimeout(time);
+		},16);
+		
+
+		$.ajax({
+
+			type:"post", //传送的方式,get/post
+
+			url:'{:U("Shopcart/getaddress")}', //发送数据的地址
+
+			data:{addressid:addressid},
+
+			dataType:"json",
+
+			success:function(data){
+				
+				$("#realname").val(data.realname);
+
+				$("#phone").val(data.cellphone);
+
+				$("#address").val(data.address);
+
+				$("#addressid").val(addressid);
+
+				$("#areaid").val(data.area);
+
+				$("#areaids").nextAll().remove();//地区下拉框置空
+
+				$('.addresslist').hide();
+
+				$('#formsender').show();	
+
+				$("#xuandizhi span").html(data.name);
+					
+				$("#areaid").val(data.addid);
+
+				
+
+			},
+
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+				alert("表单错误，"+XMLHttpRequest+thrownError); 
+			}
+
+		})	
+		
+	
+	
+	}
+	
+	
+	 
+	 
+	 
+	 
+
+	//点击列表，显示修改层
+
+
+
+	$('#show').on('click',function(){
+		$('#addressid').val('');
+		$("#xuandizhi span").html("请选择省、市、区");
+		$('#newDz input[type="text"]').val('');
+		$("#newDz").show();
+		var time = setTimeout(function(){
+			$("#newDz").css("top","0px");
+			clearTimeout(time);
+		},16);
+			
+	})//点击添加地址。弹出添加层
+
+	
+
+	function savemsg() { 
+
+		
+		if (document.getElementById("isdefault").checked==true) {
+
+		   var info="yes";
+
+		} else {
+
+		   var info="no";
+
+		}
+
+		var addressid=$("#addressid").val();
+
+		var realname=$("#realname").val();
+
+		var areaid=$("#areaid").val();//地区id
+
+		var address=$("#address").val();
+
+		var phone=$("#phone").val();
+
+		if(realname==''){
+
+			alert("收货人不能为空");
+
+			return false;
+
+		}else if(phone==''){
+
+			alert("电话不能为空");
+
+			return false;
+
+		}else if(areaid==''){
+
+			alert("区域不能为空");
+
+			return false;
+
+		}else if(address==''){
+
+			alert("详细地址不能为空");
+
+			return false;
+
+		}
+		
+			
+			$.ajax({
+
+			type:'post', //传送的方式,get/post
+
+			url:'{:U("Shopcart/savemsg")}', //发送数据的地址
+
+			data:{addressid:addressid,areaid:areaid,address:address,phone:phone,realname:realname,msg:info},
+
+			dataType: "json",
+
+			success:function(data){
+				
+				//newDizhi.hide();
+				hide_adr();
+				
+				if(data.msg=='yes'){
+					//if 是点击编辑 地址  将弹出框内容替换成更改后的内容;
+					var new_text = '<p>' + data.realname + '<span>' + data.cellphone + '</span><em>默认</em></p><i>' + data.adrname + data.address + '</i>';
+					$('.dizhi-top[oid="' + data.addressid + '"]').html(new_text);
+
+				}else if(data.msg=='no'){
+					//弹出框 添加地址
+					var new_text = '<div class="dizhi-wrap"  oid="' + data.addressid + '"><div  class="dizhi-top" oid = "' + data.addressid + '"><p>' + data.realname + '<span>' + data.cellphone + '</span><em>默认</em></p><i>' + data.adrname + data.address + '</i></div><div class="dizhi-bottom"><div class="dizhi-bianji" onclick="edit_adr(this)"><a href="javascript:void(0);" rel="' + data.addressid + '"><span class="iconfont">&#xe645;</span> 编辑</a></div><div class="delete" onclick="del_adr(' + data.addressid + ')"><a href="javascript:void(0);"><span class="iconfont">&#xe6a5;</span> 删除</a></div></div></div>';
+									
+					$('.adr_box').prepend(new_text);
+				}
+			},
+
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError)
+			{alert("表单错误，"+XMLHttpRequest+thrownError); }})
+		}
+
+	
+
+	
+	
+	
+	
+	//删除地址ajax
+			function del_adr(id){
+				
+				$.ajax({
+
+					type:'post', //传送的方式,get/post
+
+					url:'{:U("Shopcart/deladr")}', //发送数据的地址
+
+					data:{id:id},
+
+					dataType: "json",
+
+					success:function(data){
+						if(data.status == 1)
+						{
+							$('.dizhi-wrap[oid="' + id + '"]').remove();
+						}
+					},
+
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError)
+					{
+						alert("表单错误，"+XMLHttpRequest+thrownError); }
+					}
+					
+					
+				)
+			
+				
+
+				
+				
+			}
+	
+	
+	
+	
+	
+
+	
+
+	
+
+//城市联动菜单选择
+
+function changearea(oid , indexx){
+
+
+
+	$.ajax({
+
+		type:'post', //传送的方式,get/post
+
+		url:'{:U("Shopcart/changearea")}', //发送数据的地址
+
+		data:{pid:oid},
+
+		dataType: "json",
+
+		success:function(data){
+			
+			var citys = data.list;
+			
+			if(data.msg == "yes"){
+				
+				var ul = document.querySelectorAll(".select-dz-wrap ul")[indexx];
+				ul.innerHTML = "";
+				var doms = document.createDocumentFragment();
+				for(var i = 0 , len = citys.length ; i < len; i++){
+					
+					var li = document.createElement("li");
+					li.onclick = function(){
+						
+						$(this).parent().find("li").removeClass("hover");
+						$(this).addClass("hover");
+						if($(this).parent().attr("oid") < 2){
+							changearea(this.ovalue , 2);
+						}else{
+							close();
+						}
+						
+					}
+					li.ovalue = citys[i]["id"];
+					li.innerHTML = citys[i]["name"];
+					li.pid = citys[i]["pid"];
+					doms.appendChild(li);
+				}
+				ul.appendChild(doms);
+				showUl(indexx);
+				
+			}
+			
+
+		},
+
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表1单错误，"+XMLHttpRequest+thrownError); }
+
+	})
+
+}		
+
+//城市联动菜单选择 thisvalue选择的地区，curid下一级地区id
+
+function changeareabyid(thisvalue,curid){
+
+	$.ajax({
+
+		type:'post', //传送的方式,get/post
+
+		url:'{:U("Shopcart/changearea")}', //发送数据的地址
+
+		data:{pid:thisvalue},
+
+		dataType: "json",
+
+		success:function(data){
+
+			var str = '';
+
+			if(data.msg=='yes'){
+
+				str = str + '<select name="areaids[]" onchange="changearea(this);" ><option value="0">请选择地区</option>';
+
+				$.each(data.list,function(index,v){
+
+					if(curid == v.id){
+
+						str = str + '<option value="'+v.id+'" selected>'+v.name+'</option>';
+
+					}else{
+
+						str = str + '<option value="'+v.id+'">'+v.name+'</option>';
+
+					}
+
+				})	
+
+				str = str + '</select>';			
+
+			}else if(data.msg=='no'){
+
+				$("#areaid").val(thisvalue);
+
+			}
+
+			$("#arealists").append(str);
+
+		},
+
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+
+	})
+
+}
+
+</script>
+
+</body>
+
+</html>

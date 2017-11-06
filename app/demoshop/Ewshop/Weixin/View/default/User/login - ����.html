@@ -1,0 +1,64 @@
+<include file="Public/header"/>
+
+<style type="text/css">
+body{ background:#E7E8EB;}
+</style>
+
+<div class="bcy_body">
+ 
+<div class="shopcart_main_none">
+            
+            <div class="shopcart_main_none_main">
+            <div class="shopcart_main_none_img"><img src="/Public/Weixin/images/gt_ico_background.png"></div>
+            <p>由于您长时间未操作，为了您的账户安全，请返回微信公众号重新进入 !</p></div>
+        </div>
+
+	
+       
+   
+   
+</div>
+
+
+<!--
+<div class="dl_w">
+<div class="dl_e">
+<div class="dl_r">
+<div class="dl_t"><p><a href="#" class="hover">用户登录</a></p><div class="cls"></div></div>
+<form class="form-horizontal login-user"  action="{:U('User/login')}" id="loginform" name="user" method="post"  onsubmit="return act_login();">
+<input name="reffer" type="hidden" value="{$referr}">
+<div class="dl_y">
+<p><input type="text" placeholder="请输入手机号/邮箱" class="dl_u" id="inputusername" name="username"></p>
+<p><input type="password" placeholder="请输入密码" class="dl_uu" id="inputpassword"    name="password"/></p>
+</div>
+<div class="controls Validform_checktip text-warning"  id="errortext" style="color:#F00"></div>
+<div class="dl_o"><p>
+<button type="submit" id="login_btn_cart" >登 录</button>
+</div>
+</form>
+</div>
+
+</div>
+</div>
+-->
+<block name="script">
+	<script type="text/javascript">
+	//提交表单
+	function act_login()
+	{	  	  		  	
+		var username=$("#inputusername").val();
+		if(username ==''){
+			$("#errortext").text('用户名不能为空！');;
+			$("#inputusername").focus();
+			return false;
+		}		
+		var password=$("#inputpassword").val();
+		if(password ==''){
+			$("#errortext").text('密码不能为空！');;
+			$("#inputpassword").focus();
+			return false;
+		}				  			  
+	  $("#loginform").submit();
+	}
+	</script>
+<include file="Public/footer"/>

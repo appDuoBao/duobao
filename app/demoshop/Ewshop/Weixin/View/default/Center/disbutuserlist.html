@@ -1,0 +1,36 @@
+<include file="Public/header_users"/>
+	<div id="list">
+		<div class="list1 clear">
+			<a href="{:U('center/disbutlist')}"><div class="listL" style="border-left:none">分销产品</br><span>{$uid|get_goodnum}</span></div></a>
+			<a href="{:U('center/disbutuserlist')}"><div class="listL list_on on_list">分销会员</br><span>{$uid|getcount}</span></div></a>
+			<a href="{:U('center/disbutorderlist')}"><div class="listL">分销订单</br><span>{$uid|disbut_list}</span></div></a>
+			<a href="{:U('center/disbutcashlist')}"><div class="listL">分销佣金</br><span>{$uid|discash}</span></div></a>
+		</div>
+	</div>
+<div class="wrap">
+	<div class="member_title clear">
+    	<div class="tit">头像</div>
+        <div class="ades">会员信息</div>
+        <div>加入日期</div>
+    </div>
+	<volist name="list" id="user">
+	<ul class="member_list clear">
+    	<li>
+            <img src="{$user.uid|get_faceUrl}"/>
+            <dl>  
+				<dd><div class="ttx_dd">昵称：{$user.nickname}</div></dd>
+                <dd>级别：<if condition="$user.pd eq '1'">直属下线<else />次级下线</if></dd>
+            </dl>
+            <time>{$user.reg_time|date='Y-m-d H:i:s',###}</time>
+        </li>
+    </ul>
+	 </volist>
+	 <div class="page">
+        {$page}
+        </div>
+</div>
+
+<div class="height"></div>
+
+</body>
+</html>

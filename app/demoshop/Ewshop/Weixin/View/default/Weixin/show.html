@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$meta_title}_{:C('WEB_SITE_TITLE')}</title>
+<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="http://res.wx.qq.com/mmbizwap/zh_CN/htmledition/style/client-page1a1cdb.css"/>
+<style>  #nickname{overflow: hidden;white-space: nowrap;text-overflow: ellipsis;max-width: 90%;  }  ol,ul{    list-style-position:inside;      }
+</style>
+<style>  #activity-detail .page-content .text{font-size:16px;}
+
+.activity-info{ color: #8C8C8C;margin-bottom: 18px;
+line-height: 20px;}
+.dsl_a_link{color: #607FA6; margin-left:20px; text-decoration:none;}
+.dsl_a_link:visited{color: #607FA6;}
+
+.page-content img{ width:auto!important; height:auto!important; max-width:100%!important;}
+.page-content{box-sizing: border-box !important;
+word-wrap: break-word !important;}
+
+#activity-name{padding-bottom: 10px;
+margin-bottom: 14px;
+border-bottom: 1px solid #E7E7EB;line-height: 1.4;
+font-weight: 400;
+font-size: 24px;}
+</style>
+</head>
+<body id="activity-detail">
+<div class="page-bizinfo">
+    <div class="header">
+        <h1 id="activity-name">{$news.title}</h1>
+        <p class="activity-info">
+            <span id="post-date" class="activity-meta no-extra">{$news[datetime]|date='Y-m-d',###}</span>
+        </p>
+    </div>
+</div>
+<div class="page-content">
+    <if condition="$news[thumb]!=''">
+		<div><img src="{$news[thumb]|get_cover='path'}" width="200px"/></div>
+    </if>  
+    <div class="text">{$news.description}</div>
+    <div class="text">{$news.content}</div>
+</div>
+</body>
+</html>

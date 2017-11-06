@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="__CSS__/styles.css" rel="stylesheet" />
+<script type="text/javascript" src="__JS__/jquery.min.js"></script>
+<script src="__JS__/script.js"/></script>
+<title></title>
+</head>
+<body>
+<div id="list">
+		<div class="list1 clear">
+			<a href="{:U('center/disbutlist')}"><div class="listL" style="border-left:none">分销产品</br><span>{$uid|get_goodnum}</span></div></a>
+			<a href="{:U('center/disbutuserlist')}"><div class="listL">分销会员</br><span>{$uid|getcount}</span></div></a>
+			<a href="{:U('center/disbutorderlist')}"><div class="listL">分销订单</br><span>{$uid|disbut_list}</span></div></a>
+			<a href="{:U('center/disbutcashlist')}"><div class="listL list_on on_list">分销佣金</br><span>{$uid|discash}</span></div></a>
+		</div>
+</div>
+<div class="brokerage clear">
+	<div class="brok_l">
+	
+    	<p>账户余额：<span>{$uid|get_account}</span></p>
+        <p>冻结金额：<strong>￥{$uid|freeze}</strong></p>
+    </div>
+	<form action="{:U('center/up_money')}" method="post">
+    <div class="brok_r">
+    	<input type="submit" value="我要提现"/>
+        <p>超过100元才能提现</p>
+    </div>
+</div>
+<div style="height:5.28125rem"></div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       <script type="text/javascript" src="__JS__/jquery.js"></script>
+	<script type="text/javascript" src="__JS__/ew_js.js"></script>
+    <link href="__CSS__/style.css" rel="stylesheet" />
+	<title></title>
+	
+</head>
+<body style=" background:#f6f6f6;">
+	<div class="warp">
+	<section id="bg"class="warp">
+		<div class="dl"><a href="javascript:history.go(-1)"><</a>分校区</div>
+	</section>
+<!------------------------------dl------------------------------------------>  
+ <volist name="list" id="vo">
+  <div class="sy_r">
+    <div class="sy_t"><a href="{:U('Weixin/Institution/institution/id/'.$vo['uid'])}"><img src="{$vo.logo|get_cover='path'}"></a></div>
+    <div class="sy_y">
+      <div class="sy_u"><a href="{:U('Weixin/Institution/institution/id/'.$vo['uid'])}">{$vo.institution_name|msubstr=0,6,'utf-8',true}<img src="__IMG__/q9.jpg"></a></div>
+      <div class="sy_i">
+        <p>咨询：211&nbsp;&nbsp;&nbsp;<em>|</em>&nbsp; &nbsp;&nbsp;评论：{$vo.comment_nums}</p>
+        <p>{$vo.adr}&nbsp;&nbsp;&nbsp;<em>|</em>&nbsp;&nbsp;&nbsp;<em>56km</em></p>
+      </div>
+    </div>
+    <div class="sy_o">
+		<notempty name="vo.tel_banke"><p><a href="tel:{$vo.tel_banke}" onclick="consult_record({$vo.uid},'{$vo.tel_banke}')"><if condition="$vo['tel_banke'] && $vo['tel_yiduiyi']">班课咨询<else />一键咨询</if></a></p></notempty>
+		<notempty name="vo.tel_yiduiyi"><p><a href="tel:{$vo.tel_yiduiyi}" onclick="consult_record({$vo.uid},'{$vo.tel_yiduiyi}')"><if condition="$vo['tel_banke'] && $vo['tel_yiduiyi']">1对1咨询<else />一键咨询</if></a></p></notempty>
+    </div>
+    <div class="cls"></div>
+  </div>  
+  </volist>  
+<!------------------------------bottom-------------------------------------->
+</div>
+</body>
+</html>

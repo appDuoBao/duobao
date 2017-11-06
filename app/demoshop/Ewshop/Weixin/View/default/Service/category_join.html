@@ -1,0 +1,63 @@
+<include file="Public/header"/>
+<!-----------------------------------t------------------------------------>
+<div class="fw_qw">
+<div class="fw_q">
+
+<div class="fw_a">
+<p><a href="{:U('Home/service/page/catid/183')}">联系我们</a></p><span>丨</span><p><a href="{:U('Home/service/category/catid/185')}" class="hover">加入我们</a></p>
+<div class="cls"></div></div>
+<div class="fw_s"><img src="{$joinbanner[0].icon|get_cover='path'}" /></div>
+<!----------------------------y------------------------------>
+<volist name="listinfos" id="vo">
+ <div class="yp_pty">
+          <div class="yp_aty">
+           <div class="fw_d"><p><img src="__IMG__/fw111.png" />{$vo.title}</p><h1><img src="__IMG__/fw222.png" /></h1><div class="cls"></div></div>
+           <div class="fw_f"><a href="javascript:void(0)"></a></div>
+            <div class="cls"></div>
+          </div>
+          <div class="yp_sty">
+            <div class="yp_ity">
+            {$vo.content}
+        </div> 
+      </div>
+    </div>
+</volist>
+<script type="text/javascript">
+$(function(){
+	 
+$('.yp_ity').each(function(){
+ 
+if($(this).height()>'179')
+{
+$(this).parents('.yp_sty').css('height','179px')	
+} 
+
+ 
+ 	})
+	
+	 $(".yp_pty .yp_aty").click(function(){
+		
+		if($(this).siblings(".yp_sty").children('.yp_ity').height()>'179')
+		{
+ 
+		 $(this).toggleClass("hover");
+		 if($(this).siblings(".yp_sty").css('height')=='179px')
+		 {
+		 $(this).siblings(".yp_sty").css('height','auto');
+		 }
+		 else{
+			 $(this).siblings(".yp_sty").css('height','179px');
+			 }
+ }
+		 })
+
+	})
+
+</script> 
+
+
+</div>
+
+</div>
+<!----------------------y-------------------->
+<include file="Public/footer"/>

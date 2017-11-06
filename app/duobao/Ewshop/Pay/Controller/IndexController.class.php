@@ -19,9 +19,11 @@ class IndexController extends ControlController {
      * 后台首页
      * @author ew_xiaoxiao
      */
-    private static  $certFilePath='/home/cert/800000101000025.p12';
-    
-    private static  $merchantCertPass='sJLxvZ'; 
+    private static  $certFilePath='/home/cert/800041100020001.p12';
+   
+    private static  $merchanid='800041100020001';
+   
+    private static  $merchantCertPass='NMJOih'; 
     
     private static  $deskey = 'cputest';  
     
@@ -341,7 +343,7 @@ class IndexController extends ControlController {
     public static function publicParams($param = array()){
 	$params["charset"] = '02';
 	$params["version"] = '1.0';
-	$params["merchantId"] = '800000101000025';
+	$params["merchantId"] = self::$merchanid;
 	$params["requestTime"] = date('YmdHis');
 	$params["requestId"] = time();
 	$params["service"] = $param['service'];

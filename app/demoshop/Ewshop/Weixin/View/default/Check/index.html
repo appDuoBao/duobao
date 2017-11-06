@@ -1,0 +1,129 @@
+<include file="Public/header_user"/>
+<div class="bcy_body">
+  <div class="bcy_grzx_top b_o">
+    <div class="bcy_grzx_top_l">
+	<a href="{:U('center/editface')}">
+        <empty name='faceid'>
+        <img src="/Public/static/images/noface.png" width="106" height="106"/>
+        <else />
+        <img src="{$faceid|get_cover='path'}" width="106" height="106" />
+        </empty>
+		</a>
+    </div>
+    <div class="bcy_grzx_top_r">
+      <div class="bcy_grzx_top_r_t">HI,{$uid|get_nickname}</div>
+      <div class="bcy_grzx_top_r_b">
+        <p>账户余额：<span>￥{$uid|get_account}</span></p>
+        <p>积分：<span>{$uid|get_score}</span></p>
+      </div>
+    </div>
+  </div>
+  <div class="bcy_grzx_middle">
+    <div class="yj_top b_o">
+	
+      <div class="yj_top_o"> <a href="{:U('center/disbutlist')}">
+        <h1>分销产品</h1>
+        <p>{$goodscount}</p>
+        </a> </div>
+      <div class="yj_top_o"> <a href="{:U('center/disbutuserlist')}">
+        <h1>分销会员</h1>
+        <p>{$membercount}</p>
+        </a> </div>
+      <div class="yj_top_o"> <a href="{:U('center/disbutorderlist')}">
+        <h1>分销订单</h1>
+        <p>{$disbutcount}</p>
+        </a> </div>
+      <div class="yj_top_o yj_top_o_last"> <a href="{:U('center/disbutorderlist')}">
+        <h1>我的佣金</h1>
+        <p>{$alldisbutmoney}</p>
+        </a> </div>
+    </div>
+    <div class="bcy_grzx_menu">
+      <div class="bcy_f_1"><a href="{:U("center/allorder")}">
+        <h1></h1>
+        <p>全部订单({$anum})</p>
+        </a> </div>
+      <div class="bcy_f_2"><a href="{:U("center/needpay")}">
+        <h1></h1>
+        <p>待付款({$onum})</p>
+        </a></div>
+      <div class="bcy_f_3"><a href="{:U("center/tobeshipped")}">
+        <h1></h1>
+        <p>待发货({$dnum})</p>
+        </a></div>
+      <div class="bcy_f_4"> <a href="{:U("center/tobeconfirmed")}">
+        <h1></h1>
+        <p>待确认({$cnum})</p>
+        </a> </div>
+      <div class="cls"></div>
+    </div>
+  </div>
+  <div class="bcy_grzx_bot">
+    <div class="bcy_grzx_bot_a"> <a href="{:U('shopcart/index')}">
+      <h1>我的购物车</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>
+ 	<div class="bcy_grzx_bot_a"> <a href="{:U('center/collect')}">
+      <h1>我的收藏</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/comment')}">
+      <h1>我的评价</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>
+  </div>
+  
+  <div class="bcy_grzx_bot">
+  
+  		<if condition="is_dismember()">
+	  <div class="bcy_grzx_bot_a"> <a href="{:U("center/downmemberlist")}">
+      <h1>分销商中心</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>  
+		</if>
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/disbutlist')}">
+      <h1>我要分销</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>  
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/cash')}">
+      <h1>提现</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>  	  
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/disbutuserlist')}">
+      <h1>分销会员</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>  
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/disbutorderlist')}">
+      <h1>分销订单</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>              
+    <div class="bcy_grzx_bot_a"> <a href="{:U('center/address')}">
+      <h1>收货地址管理</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> </div>
+
+    <div class="bcy_grzx_bot_a"> <a href="{:U('/Weixin/service/lists/catid/138')}">
+      <h1>帮助中心</h1>
+      <p>&gt;</p>
+      <div class="cls"></div>
+      </a> 
+    </div>
+  </div>
+
+
+<div class="bcy_grzx_bot_foter_logo" style=" background:none;">
+	
+</div>
+  
+</div>
+<include file="Public/footer"/>
+

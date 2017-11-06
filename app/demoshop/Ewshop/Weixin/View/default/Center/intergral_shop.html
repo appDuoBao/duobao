@@ -1,0 +1,46 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="__CSS__/styles.css" rel="stylesheet" />
+<script src="__JS__/script.js"></script>
+<title></title>
+</head>
+<body>
+<div class="present">
+	<p>当前积分：</p>
+    <strong><span>{$cur_credits}</span> 积分</strong>
+</div>
+
+<div class="minute">
+	<div class="minute_in minute_fen clear">
+    	<div><a href="{:U('center/integral')}">积分明细</a></div>
+        <span></span>
+        <div class="min"><a href="{:U('center/intergral_shop')}">积分商城</a></div>
+    </div>
+</div>
+<div class="wrap">
+	<ul class="shop clear">
+	  <volist name="list" id="list" empty="暂时没有数据">
+        <li>
+        	<a href="{:U('center/intergral_detail?id='.$list['id'])}">
+            	<img src="{$list.thumb|get_cover='path'}"/>
+                <p>{$list.title|msubstr=0,12,'utf-8',true}</p>
+                <span>{$list.points}积分</span>
+            </a>
+        </li>
+	   </volist> 	
+    </ul>
+    
+</div>
+<div class="page">
+{$_page}
+</div>
+
+<div style="height:0.34375rem"></div>
+
+</body>
+</html>

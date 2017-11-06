@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       <script type="text/javascript" src="__JS__/jquery.js"></script>
+	<script type="text/javascript" src="__JS__/ew_js.js"></script>
+    <link href="__CSS__/style.css" rel="stylesheet" />
+	<title></title>
+	
+</head>
+<body>
+	<div class="warp">
+	<section id="bg"class="warp">
+	</section>
+<!------------------------------dl------------------------------------------>
+<div class="zt">
+<div class="zt_q"><p><img src="__IMG__/c5.png"><td>{$teacher.time|date="Y-m-d H:i:s",###}</td></p></div>
+<div class="zt_w"><p><td>金额{$teacher.money}</td><br/>
+					<td>内容{$teacher.content}</td>
+					
+</div>
+<!------------------------------bottom-------------------------------------->
+<div class="ztt">
+<div class="zt_q"><p><img src="__IMG__/c6.png"><td>
+						<if condition="$teacher.status eq 0"> 
+						<else/> {$teacher.reply_time|date="Y-m-d H:i:s",###}
+						</if></td>
+<div class="zt_w"><p>{$teacher.answer}</p></div>
+</div>
+
+
+
+
+
+</div>
+</body>
+</html>

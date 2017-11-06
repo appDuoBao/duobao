@@ -1,0 +1,49 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv=”X-UA-Compatible” content="IE=edge,chrome=1"/>
+<meta name="renderer" content="webkit">
+<link href="__CSS__/styles.css" rel="stylesheet" />
+<script src="__JS__/script.js"></script>
+<script src="__JS__/jquery1.42.min.js"></script>
+<title></title>
+</head>
+<body>
+<div class="wrap">
+<div class="case clear">
+    <img src="__IMG__/img_book.jpg" width="85" height="98"/>
+    <div class="case_r">
+        <a href="#">{$id|get_good_name}</a>
+    </div>
+</div>
+<div class="fill">填写评价</div>
+<div class="pron clear">
+    <span>心得：</span>
+    <div class="fil">
+     <input type="text" placeholder="对此次购买的商品还满意吗？写点心得给其他顾客参考吧" id="myText"/>
+     <p>评价在5~150字之间</p>
+     <input type="submit" value="提交" id="su_b"/>
+    </div>
+      
+</div>
+<div style="height:5.625rem;"></div>
+</body>
+<script>
+	$('#su_b').live('click',function(){
+		var content= document.getElementById("myText").value;
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:'{:U("Center/comment")}', //发送数据的地址
+			data:{id:id,content:content},
+			dataType:"json",
+			success:function(data){
+				alert(data.msg);
+				window.location.reload();
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+		})		
+	})
+</script>
+</html>

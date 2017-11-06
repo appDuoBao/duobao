@@ -1,0 +1,484 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no" />
+<include file="Public/titlejscss"/>
+</head>
+<body>
+<h1 class="jh_title">{$info.title}</h1>
+<div class="bcy_banner">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><a href="#"><img src="{$info.cover_id|get_cover='path'}" /></a></div>
+    <notempty name="pics">
+         <volist name="pics" id="v">
+            <div class="swiper-slide"><a href="#"><img src="{$v|get_cover='path'}" /></a></div>    
+         </volist>    
+	</notempty> 
+    </div>
+    <div class="swiper-paginations banner_list"></div>
+  </div>
+  <script> 
+		var mySwiper = new Swiper('.swiper-container', {
+			autoplay: 5000,//可选选项，自动滑动
+			pagination : '.swiper-paginations',
+			paginationClickable :true,
+			grabCursor : true
+		})
+    </script> 
+</div>
+
+<!-----banner---->
+
+<!-----content---->
+<div class="jh_t"></div>
+<div class="jhq_wrap cottt">
+	<div class="jh_dy ew_cls">
+		<h2>{$info.title}</h2>
+		<div class="bcy_pic_content_jg">￥<em class="price" id="resetprice">
+      <empty name="price">
+       {$info['price']}    
+      </empty>
+  </em></div>
+	  
+	  
+
+	</div>
+	
+<div>
+	<div class="xx_t">	  
+<notempty name="GoodsDataList">
+     <volist name="GoodsDataList" id="v">
+     	<div class="xx_t_li">
+           <h1><span>{$v.name}</span></h1>
+           <p>
+           <volist name="v.value" id="sv">
+                <label class="label_one"><input name="attr_{$v.extend_id}" type="radio" value="{$sv.property}" ><span>{$sv.extend_name}</span></input></label>
+           </volist>
+           </p> 
+           <div class="cls"></div>
+           </div>     
+     </volist>
+</notempty>
+</div>
+	<script>
+
+//首次载入，初始化选中属性、改变价格
+var oldp= {$info['price']};
+var newprice =  0;
+$('.xx_t p').each(function(index, element) {
+	if($(element).find('input:checked').size()==0)
+	{	
+		$(element).find('input').eq(0).attr('checked',true);
+		$(element).find('label').eq(0).addClass('hover');	
+		newprice = parseFloat($(element).find('input').eq(0).val())+newprice;			
+	}else{
+		newprice = parseFloat($(element).find('input:checked').val())+newprice;
+	}
+	$("#resetprice").text(oldp+newprice);
+});
+
+
+$('.label_one input:checked').parent('label').addClass('hover');
+//点击改变价格
+$('.label_one input').click(function(){
+	if($(this).is(":checked"))
+	{
+		var price =  0;
+		$(this).parent('label').addClass('hover').siblings('label').removeClass('hover');	
+		$('.label_one input:checked').each(function(index, element) {
+			price = parseFloat($(element).val())+price;
+        });
+		
+		var allp=oldp+price;		
+		$("#resetprice").text(allp);
+	}
+})
+
+</script>  
+ <form action="{:U("Shopcart/order")}" name="orderform" id="orform" method="post" onsubmit="return trySubmit()">
+     <input type="hidden" name="id[]" value="{$info.id}"/> 
+    <input type="hidden" name="price[]" id="inputprice" value="{$info.price}"/> 
+    <input type="hidden" name="sort[]" id="inputsort" value="{$info.id}"/> 
+	<input type="hidden" name="goodname[]" id="goodname" value="{$info.title}"/> 
+    <input type="hidden" name="parameters[]" id="inputparameters" />   
+		<div class="bcy_pic_content_sl">
+			<strong>数量</strong>
+			      <div class="bcy_pic_content_sl_b">
+      <a href="javascript:void(0)" onclick="add()">+</a>
+      <input value="1" class="goodnum" id="goodnum" name="num[]" type="text" />
+      <a onclick="reduce()" id="oneA" href="javascript:void(0)">-</a>
+      </div>
+      <p style="float:right;" class="jh_buy_a_p"><a class="ckwl" href="javascript:void(0)"  onclick='favor();return false;'><if condition="$isitfav eq '0'"><img src="/Public/Weixin/images/bcy_sc_ico_link.png" /><else /><img src="/Public/Weixin/images/bcy_sc_ico_hover.png" /></if>收藏</a></p>
+      <div class="cls"></div>
+		</div>
+		    </form>
+
+</div>
+	
+	<div class="jh_buy ew_cls">
+		<a style="margin-left:0px;" class="qrsh" href="javascript:void(0)" onclick='buy({$info.id});return false;'>加入购物车</a> 
+		<a class="ckwl" href="javascript:void(0)"  onclick='order({$info.id});return false;'>立即购买</a>
+	</div>
+	
+<!-- 购物车计算浮动层 begin -->
+<div id="showIncludeCart" style="display:none;">
+<a class="buy_pop_close" onclick="jQuery('#showIncludeCart').hide();" title="关闭"></a>
+<div class="buy_icon"></div>
+<div class="buy_pop_top"><div class="title">此商品已成功放入购物车</div>
+<div class="font">购物车共 <font id="totalnum" class="red"></font> 件宝贝<span>合计 <font class="red" id="fee"></font></span></div>
+<div class="btn_continue">
+<div class="pop_btn_r" ><a onclick="jQuery('#showIncludeCart').hide();return false;" href="javascript:vod(0);">继续购物</a></div>
+<div class="btn_cart"><a href="{:U('shopcart/index')}">立即结算</a></div>
+</div>
+</div>
+</div> 
+<!-- 购物车计算浮动层 over --> 	
+	<a name="a_m_1"></a>
+	<div class="jh_pic_content_message_title ew_cls">
+    		<a class="hover" href="#a_m_1">商品介绍</a>
+        	<a href="#a_m_2">规格参数</a>
+        	<a href="#a_m_3" class="user">用户评价</a>
+    </div>
+    <div>
+	{$info.wxcontent}
+    </div>
+    
+  <a name="a_m_2"></a>  
+<!------ standard -------->	
+<div class="jh_pic_content_message_box_pl">
+	<div class="title"></div>
+	{$info.spec}
+</div>
+
+
+
+
+
+
+
+
+
+
+<a name="a_m_3"></a>
+<!------ evaluate -------->
+ <div class="bcy_pic_content_message_box_pl" id="pingjia">
+        	<div class="title">用户评价</div>
+            
+            <div id="productcomment">
+                <volist id='list' name='list'>   <!--内容输出-->
+                        <div class="bcy_pic_content_message_box_pl_o">
+                            <div class="pl_l">
+                            <a href="#" ><img src="{$list.uid|get_faceUrl}" width="76" height="77" /></a>
+                            </div>
+                            <div class="pl_r">
+                                <h1><if condition="$list.uid neq '0'">{$list.uid|get_regname}<else />匿名</if><em>{$list.create_time|date='Y-m-d H:i:s',###}</em></h1>
+                                <p>{$list.content}</p>
+                            </div>
+                            <div class="cls"></div>
+                        </div>
+                </volist> 
+                <div class="page">{$page}</div>
+            </div>            
+            <div class="text_area">
+            <textarea style="border:1px solid #ededed; width:96%; padding:1%; margin:1%;" rows="5" cols="80" name="content" id="content" class="v_q"></textarea>
+            <p style="text-align:center;"><a href="javascript:vod(0);" class="btn_submit" onclick="pcomment();return false;" style="background:#299BE4; color:#fff; margin-top:20px; width:50%; display:inline-block; padding:7px 5%; border-radius:5px; font-size:14px;">提交</a></p>
+            </div>
+
+        </div>
+</div>
+<div class="bcy_fixed_to"></div>
+
+<script type="text/javascript">
+	var gooid="{$info['id']}";
+	function comment(id){ //ajax分页函数
+		var id = id;
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:"{:U('article/comment')}", //发送数据的地址
+			data:{p:id,goodid:gooid},
+			dataType: "html",
+			success:function(data){
+				$("#productcomment").replaceWith('<div id="productcomment">'+data+'</div>');
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+		})
+	}
+
+	function pcomment(){
+		var id="{$info['id']}";
+		var content=$("#content").val();
+		if(content==''){
+			alert('评论内容不能为空！');
+			return false;
+		}
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:"{:U('article/addcomment')}", //发送数据的地址
+			data:{content:content,goodid:id},
+			dataType: "json",
+			success:function(data){
+				var html='<div class="bcy_pic_content_message_box_pl_o"><div class="pl_l"><a href="#"><img src="'+data.face+'" width="76" height="77" /></a></div><div class="pl_r"><h1>'+data.name+'<em>'+data.time+'</em></h1><p>'+content+'</p></div><div class="cls"></div></div>';
+				$("#productcomment").prepend(html);
+				$("#content").val('');
+				$(".btn_submit").text("提交成功");	
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+		})	
+		
+	}
+</script>
+
+
+<SCRIPT src="__STATIC__/js/base.js" type=text/javascript></SCRIPT>
+
+<SCRIPT type=text/javascript>
+
+$(function(){
+
+   $(".jqzoom").jqueryzoom({
+	xzoom:400,
+	yzoom:400,
+	offset:10,
+	position:"right",
+	preload:1,
+	lens:1
+
+});
+
+$("#spec-list").jdMarquee({
+
+	deriction:"left",
+
+	width:371,
+
+	height:56,
+
+	step:2,
+
+	speed:4,
+
+	delay:10,
+
+	control:true,
+
+	_front:"#spec-right",
+
+	_back:"#spec-left"
+
+});
+
+	$("#spec-list img").bind("mouseover",function(){
+
+	var src=$(this).attr("src");
+
+	$("#spec-n1 img").eq(0).attr({
+
+		src:src.replace("\/n5\/","\/n1\/"),
+
+		jqimg:src.replace("\/n5\/","\/n0\/")
+
+	});
+
+	$(this).css({
+
+		"border":"2px solid #ff6600",
+
+		"padding":"1px"
+
+	});
+
+}).bind("mouseout",function(){
+
+	$(this).css({
+
+		"border":"1px solid #ccc",
+
+	"padding":"2px"
+
+	});
+
+});
+
+})
+
+</SCRIPT>
+
+<SCRIPT src="__STATIC__/js/jqueryzoom-jcarousel.js" type="text/javascript"></SCRIPT>
+
+
+<script type="text/javascript">
+//显示灰色 jQuery 遮罩层
+function showBg() { 
+
+	$("#dialog").fadeIn();
+
+    var bh = $("body").height();
+
+    var bw = $("body").width();
+
+    $("#fullbg").css({
+
+        height:bh,
+
+        width:bw,
+
+        display:"block"
+
+    });
+}
+
+//关闭灰色 jQuery 遮罩
+function closeBg() {
+    $("#fullbg,#dialog").hide();
+}
+</script>
+<!--[if lte IE 6]>
+<script type="text/javascript">
+// 浮动对话框
+$(document).ready(function() {
+    var domThis = $('#dialog')[0];
+    var wh = $(window).height() / 2;
+    $("body").css({
+        "background-image": "url(about:blank)",
+        "background-attachment": "fixed"
+    });
+    domThis.style.setExpression('top', 'eval((document.documentElement).scrollTop + ' + wh + ') + "px"');
+});
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    function trySubmit() {
+        if (this.submitFlag == 1) {
+            alert('数据已经提交，请勿再次提交。');
+            return false;
+        }else {
+            this.submitFlag = 1;               
+            return true;
+        }
+    }
+</script>
+<script type="text/javascript">
+//立即购买
+function order(gid){
+	var uexist="{:get_username()}";
+	if(uexist){
+		var gprice=$("em.price").eq(0).text();//价格
+		var parameters=$("a.cur").text();//参数
+		if($(".weight").length>0){
+			var s=$(".weight .cur").index()+1;
+			var string=String(gid)+String(s);
+		}else{
+			var string=String(gid);   
+		}
+		$("#inputprice").val(gprice);
+		$("#inputsort").val(string);
+		$("#inputparameters").val(parameters);
+		document.orderform.submit();
+	}else{
+		howBg();
+	}
+}
+
+//收藏
+function favor() { 
+	var uexist="{:get_username()}";
+	if(uexist){
+		var favorid='{$info.id}';
+		$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("User/favor")}', //发送数据的地址
+		data:{id:favorid},
+		dataType: "json",
+		success:function(data){
+			alert(data.msg)
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+			alert(XMLHttpRequest+thrownError); 
+		}
+		})	
+	}else{
+		showBg();
+	}
+}
+
+//加入购物车
+function buy(i){
+	var gid=i;
+	var url='{:U("Shopcart/addItem")}';//地址
+	var gnum=$("#goodnum").val();//数量
+	var gprice=$("#resetprice").text();//价格
+	var parameters = "";//参数
+	$('.label_one input:checked').each(function(index, element) {
+		if(parameters==""){
+			parameters = String($(element).next().text());
+		}else{
+			parameters = String($(element).next().text())+";"+parameters;	
+		}	
+	});
+	var string=String(gid);
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("Shopcart/addItem")}', //发送数据的地址
+		data:{
+			id:gid,num:gnum,price:gprice,i:parameters,sort:string
+		},
+		dataType: "json",
+		success:function(data)
+		{
+		$('#totalnum').text(data.sum);
+		$('#fee').text(data.fee);
+		$('#showIncludeCart').fadeIn();
+		},
+		error:function (XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+	})		
+		
+		
+}
+
+ //增加数量
+function add() {
+ var num = $(".goodnum").val();     
+num++;  
+     $(".goodnum").val(num); 
+}
+
+//减少数量
+function reduce() {
+ var num = $(".goodnum").val();     
+if(num>1){ 
+	num--; 
+    $(".goodnum").val(num);
+}else{
+	$("#oneA").addClass("important");alert("数量最少为1") }
+}  
+
+//登录后刷新页面，载入数据
+
+$("#login_btn").click(function(){
+
+var yourname=$('#inputusername').val();
+var yourword=$('#inputpassword').val();
+
+	$.ajax({
+	type:'post', //传送的方式,get/post
+	url:'{:U("User/loginfromdialog")}', //发送数据的地址
+	data:{username:yourname,password:yourword},
+	dataType: "json",
+	success:function(data){
+	if(data.status=="1"){
+		$(".tips").html(data.info);
+		document.orderform.submit();
+	}else{
+		$(".tips").html(data.info);
+	}
+},
+
+error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+alert(XMLHttpRequest+thrownError); }
+});});
+
+</script>
+<include file="Public/footer"/>

@@ -1,0 +1,20 @@
+<include file="Public/header"/>
+<!-----------------------------------t------------------------------------>
+<div class="fw_qw">
+<div class="fw_q"  style="margin-top:0px;">
+<!--
+<div class="fw_a">
+
+<volist name="category2" id="vo">
+<php>$mm=explode('/',$vo['url']);$mm=end($mm);</php>
+<p><a href="{:U($vo['url'])}" <if condition="$mm eq I('catid')">class="hover"</if> >{$vo.title}</a></p>
+<if condition="$i neq count($category2)"><span>丨</span></if> 
+</volist>
+<div class="cls"></div></div>
+-->
+{$category['content']}
+</div>
+
+</div>
+<!----------------------y-------------------->
+<include file="Public/footer"/>

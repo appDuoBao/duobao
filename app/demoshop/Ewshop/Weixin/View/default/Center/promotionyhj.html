@@ -1,0 +1,26 @@
+<include file="Public/uheader"/>
+<body>
+<empty name='list'>
+        <div class="personal_info_none_goods bcy_dpl_top_nomessage">
+            <p>没有优惠券信息！<a href='{:U("index/index")}' class="red">去首页</a></p>
+        </div>
+	<else />
+ <volist name="list" id="vo"> 	
+	<div class="you-wrap">
+		<div class="you-left keyong">
+			￥<span>{$vo.price}</span>
+			<img class="jt-bot" src="images/jt.png"/>
+		</div>
+		<div class="you-right">
+			<p>{$vo.name}</p>
+			<span>有效期：{$vo.start_time} ～{$vo.end_time}</span>
+			 <if condition="$vo['isguoqi'] neq ''">
+			 <img src="__IMG__/gq.png"/>
+			 <else/>
+			<img src="__IMG__/ky.png"/>
+			</if>
+		</div>
+	</div>
+	 </volist>	
+		</empty>   
+<include file="Public/footer"/>

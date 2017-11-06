@@ -1,0 +1,66 @@
+<extend name="Public/base"/>
+<block name="body">
+
+	<div class="main-title">
+		<h2>{$dzpinfo.name}-奖品列表</h2>
+	</div>
+	<div class="cf">
+    	<a class="btn" href="{:U('prize_add?pid='.$dzpinfo['id'])}">新 增</a>
+		  <button class="btn ajax-post confirm" url="{:U('prize_del')}" target-form="ids">删 除</button>
+	</div>
+	<div class="data-table table-striped">
+
+		 <table>
+			<thead>
+				<tr>
+					<th class="row-selected">
+					 <input class="checkbox check-all" type="checkbox">
+					</th>
+                    <th>奖品等级</th>
+                    <th>奖品类型</th>
+					<th>奖品名称</th>
+                    <th>奖品数量</th>
+                    <th>中奖率</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<notempty name="list">
+				<volist name="list" id="vo">
+					<tr>
+
+					<td><input class="ids row-selected" type="checkbox" name="id[]" value="{$vo.id}"></td>
+						<td>{$vo.level_text}</td>
+						<td>{$vo.type_text}</td>
+                        <td>{$vo.name}</td>
+						<td>{$vo.num}</td>
+                        <td>{$vo.bilv}%</td>
+						<td>
+                        	<a title="编辑" href="{:U('prize_edit?id='.$vo['id'])}">编辑</a>
+                            <a class="confirm ajax-get" title="删除" href="{:U('prize_del?id='.$vo['id'])}">删除</a>
+                        </td>
+					</tr>
+				</volist>
+				<else/>
+				<td colspan="7" class="text-center"> aOh! 暂时还没有内容! </td>
+				</notempty>
+			</tbody>
+		</table>
+
+        <!-- 分页 -->
+
+        <div class="page">
+			{$_page}
+        </div>
+
+	</div>
+
+</block>
+
+<block name="script">
+<script type="text/javascript">
+	//导航高亮
+	highlight_subnav('{:U('PromotionDzp/index')}');
+</script>
+</block>

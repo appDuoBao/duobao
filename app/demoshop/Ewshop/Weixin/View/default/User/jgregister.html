@@ -1,0 +1,333 @@
+<include file="Public/header"/>
+
+<body style=" background:#f6f6f6;">
+	<div class="warp">
+	<section id="bg"class="warp">
+		<div class="dl"><a href="javascript:history.go(-1)"><</a>机构注册</div>
+	</section>
+<!------------------------------dl------------------------------------------>
+  <div class="dl_q">
+	<form class="form-horizontal" role="form" id="zzptj" action="{:U('User/jgregister')}" method="post" name="formUser" onsubmit="return submitPwdInfo();">
+		
+		<p><input type="text" name="mobile_phone" id="mobile_phone" placeholder="手机号" onBlur="ismobile_registered();">
+		<span class="check_tips error_tip" id="dmobile_phone"></span></p>     
+		<h3><input type="text" name="miss" id="miss"  onkeyup="checkphone();" placeholder="请输入验证码" /> <a id="sendma" name="sendma" onClick="sendphone();">获取验证码</a><span class="check_tips error_tip" id="dmiss"></span></h3>
+		
+		<h2><input type="text" placeholder="机构名" onblur="isname_jgregistered();" name="jgusername" id="jgusername"><span class="check_tips error_tip" id="djgusername"></span></h2>
+		<h2><input type="text" placeholder="用户名" onblur="isname_registered();" name="username" id="username"/><span class="check_tips error_tip" id="dusername"></span></h2>
+		<h4><input type="password" placeholder="密码" id="password1" onblur="check_password(this.value);" onkeyup="checkIntensity(this.value)" name="password"/><span class="check_tips error_tip" id="dpassword1"></span></h4>
+		<h4><input type="password" placeholder="确认密码" id="conform_password" onblur="check_conform_password(this.value);" onkeyup="checkIntensity(this.value)" name="repassword"/><span class="check_tips error_tip" id="dconform_password"></span></h4>
+
+		<h4><input type="text" placeholder="上级机构" name="pid" id="pid" onblur="checkupjg();"/></h4>
+		<span class="check_tips error_tip" id="dpid"></span></h4>
+		<h5>注：若没有上级机构可不填写；若有上级机构，请填写上级机构名称</h5>
+	</form>
+  </div>
+ <div class="dl_w"><p><input type="checkbox" id="jgmrxz"/>我已阅读并同意《找好课协议》</p><span class="check_tips error_tip" id="dmrxz"></span></div>
+ <div class="dl_e"><p><a onclick='jgregister();'>注册</a></p><p><a href="{:U('User/login')}">已有账号? 去登录</a></p></div>
+<!------------------------------bottom-------------------------------------->
+<script language=javascript>
+	
+	$('#jgmrxz').attr("checked",'checked');
+	var secs = 60;
+	function backcount(){
+		$("#sendma").attr("onClick",'');
+		for(i=1;i<=secs;i++) {
+			window.setTimeout("update1(" + i + ")", i * 1000);
+		}
+	}
+	function update1(num) {
+		if(num == secs) {
+			 $("#sendma").html('获取短信验证码');
+			 $("#sendma").attr("onClick",'sendphone();');
+		}else {
+			 printnr = secs-num;
+			 $("#sendma").html("(" + printnr +")秒后重发");
+		}
+	}
+
+	function err_msg(str, id) {
+	  document.getElementById('d'+id).innerHTML=str;
+	}	  
+	
+	function sendphone(){
+		if(document.getElementById('dmobile_phone').innerHTML!="" && document.getElementById('dmobile_phone').innerHTML!="短信已发送到您的手机，请查看") {
+			$("#mobile_phone").focus();
+			return;
+		}	
+		var phone=$("#mobile_phone").val();
+		if(phone.length!=11||isNaN(phone)){
+			err_msg('这个不是个正确的手机号码', 'mobile_phone');
+			$("#mobile_phone").focus();
+	  	}else{
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("User/sendphone")}', //发送数据的地址
+				data:{phone:phone,send_code:<php> if($_SESSION['send_code']){echo $_SESSION['send_code'];}else{echo '8888';}</php>},
+				dataType: "json",
+				success:function(data)
+				{
+					err_msg(data.info, 'mobile_phone');
+				},
+				error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+			})
+			backcount();
+		}
+	}
+	
+	function ismobile_registered(){
+		var mobile_phone=$("#mobile_phone").val();		
+		if(mobile_phone ==''){
+			err_msg('请填写手机号码', 'mobile_phone');
+		}else{
+			if(mobile_phone.length!=11||isNaN(mobile_phone)){
+				err_msg('这个不是个正确的手机号码', 'mobile_phone');
+				$("#mobile_phone").focus();
+		    }else{		
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("User/ismobile_registered")}', //发送数据的地址
+					data:{mobile_phone:mobile_phone},
+					dataType: "json",
+					success:function(data)
+					{
+						err_msg(data.info, 'mobile_phone');
+					},
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+				})	
+		    }
+		}			
+	}
+	function getStrLength(str) {  
+	    var cArr = str.match(/[^\x00-\xff]/ig);  
+	    return str.length + (cArr == null ? 0 : cArr.length);  
+	}  
+	function isname_registered(){
+		var username=$("#username").val();		
+		if(username ==''){
+			err_msg('请填写用户名', 'username');
+		}else{
+			if(getStrLength(username) < 4 ){
+				err_msg('用户名不能小于4个字符', 'username');
+				$("#username").focus();
+		    }else{		
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("User/isname_registered")}', //发送数据的地址
+					data:{username:username},
+					dataType: "json",
+					success:function(data)
+					{
+						err_msg(data.info, 'username');
+					},
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+				})	
+		    }
+		}			
+	}
+		
+		function isname_jgregistered(){
+		var jgusername=$("#jgusername").val();		
+		if(jgusername ==''){
+			err_msg('请填写机构名', 'jgusername');
+		}else{
+			if(getStrLength(jgusername) < 4 ){
+				err_msg('机构名不能小于4个字符', 'jgusername');
+				$("#jgusername").focus();
+		    }else{		
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("User/isname_jgregistered")}', //发送数据的地址
+					data:{jgusername:jgusername},
+					dataType: "json",
+					success:function(data)
+					{
+						err_msg(data.info, 'jgusername');
+					},
+					error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+				})	
+		    }
+		}			
+	}
+		
+	function checkphone(){
+		var miss=$("#miss").val();
+		if(miss ==''){
+			err_msg('请填写短信验证码', 'miss');
+		}else{
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("User/checkphone")}', //发送数据的地址
+				data:{miss:miss},
+				dataType: "json",
+				success:function(data)
+				{
+					//err_msg(data.info, 'miss');
+				},
+				error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+			})			  
+		  
+		}			
+	}
+		
+	function check_password( password)
+	{
+		if(password.length < 6 ){
+			err_msg('密码不能小于6位', 'password1');
+			return false;
+		}else{
+			err_msg('', 'password1');
+		}
+		conform_password = document.getElementById('conform_password').value;
+		if(conform_password!=''){
+			
+			if ( conform_password != password )
+			{
+				err_msg('两次密码不一致', 'conform_password');
+				$("#conform_password").focus();
+			}
+			else
+			{
+				err_msg('', 'password1');
+				err_msg('', 'conform_password');
+			}			
+		}
+		
+	}
+	
+	
+	function submitPwdInfo(){
+	var mobile_phone=$("#mobile_phone").val();
+	if(mobile_phone ==''){
+		err_msg('请填写手机号码', 'mobile_phone');
+		$("#mobile_phone").focus();
+		return false;
+	}
+	var miss=$("#miss").val();
+	if(miss ==''){
+		err_msg('请填写短信验证码', 'miss');
+		$("#miss").focus();
+		return false;
+	}	
+	if(document.getElementById('dmiss').innerHTML!="") {
+		$("#miss").focus();
+		return false;
+	}			
+}
+	
+	
+	function check_conform_password( conform_password )
+	{	
+		password = document.getElementById('password1').value;		
+		if (conform_password.length < 6 )
+		{
+			err_msg('密码不能小于6位', 'conform_password');
+			$("#conform_password").focus();
+			return false;
+		}
+		if ( conform_password != password )
+		{
+			err_msg('两次密码不一致', 'conform_password');
+			$("#conform_password").focus();
+		}
+		else
+		{
+			err_msg('', 'password1');
+			err_msg('', 'conform_password');
+		}
+	}
+	
+	function jgregister(){
+	
+	
+		var jgusername=$("#jgusername").val();		
+		if(jgusername ==''){
+			err_msg('请填写用户名', 'jgusername');
+		}else{
+			if(getStrLength(jgusername) < 4 ){
+				err_msg('用户名不能小于4个字符', 'jgusername');
+				$("#jgusername").focus();
+				return false;
+				}
+		}
+	
+		var username=$("#username").val();		
+		if(username ==''){
+			err_msg('请填写用户名', 'username');
+		}else{
+			if(getStrLength(username) < 4 ){
+				err_msg('用户名不能小于4个字符', 'username');
+				$("#username").focus();
+				return false;
+				}
+		}
+		var mobile_phone=$("#mobile_phone").val();
+		if(mobile_phone ==''){
+			err_msg('请填写手机号码', 'mobile_phone');
+			$("#mobile_phone").focus();
+			return false;
+		}
+		
+		if(document.getElementById('dmobile_phone').innerHTML!="" && document.getElementById('dmobile_phone').innerHTML!="短信已发送到您的手机，请查看") {
+			$("#mobile_phone").focus();
+			return false;
+		}		
+		var miss=$("#miss").val();
+		if(miss ==''){
+			err_msg('请填写短信验证码', 'miss');
+			$("#miss").focus();
+			return false;
+		}
+		if(document.getElementById('dmiss').innerHTML!="") {
+			$("#miss").focus();
+			return false;
+		}	
+
+		var password=$("#password1").val();
+		if(password ==''){
+			err_msg('请填写设置密码', 'password1');
+			$("#password").focus();
+			return false;
+		}	else{
+		  err_msg('', 'password1');
+	  	}
+		var conform_password=$("#conform_password").val();
+		if(conform_password ==''){
+			err_msg('请填写确认密码', 'conform_password');
+			$("#conform_password").focus();
+			return false;
+		}	else{
+		  err_msg('', 'conform_password');
+	  	}	
+	  //return true;
+	  $("#zzptj").submit();
+	}
+	
+	  //协议的链接
+	  function xieyi(){
+			window.location.href='http://www.baidu.com';
+		
+		}
+		
+		//上级机构
+	function checkupjg(){
+		var pid = $("#pid").val();
+		if(pid){
+			$.ajax({
+				type:'post', //传送的方式,get/post
+				url:'{:U("User/checkupjg")}', //发送数据的地址
+				data:{pid:pid},
+				dataType: "json",
+				success:function(data)
+				{
+					if(data.msg=='no'){
+						err_msg('上级机构名称不正确', 'pid');
+					}				
+				}
+			})  
+		}
+	}
+</script>
+</div>
+</body>
+</html>

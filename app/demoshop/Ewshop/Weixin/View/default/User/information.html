@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       <script type="text/javascript" src="__JS__/jquery.js"></script>
+	<script type="text/javascript" src="__JS__/ew_js.js"></script>
+    <link href="__CSS__/style.css" rel="stylesheet" />
+	<title></title>
+	
+</head>
+<body style=" background:#f6f6f6;">
+	<div class="warp">
+	<section id="bg"class="warp">
+		<div class="dl"><a href="javascript:history.go(-1)"><</a>个人资料</div>
+	</section>
+<!------------------------------dl------------------------------------------>
+<form method="post" class="person-info" name="form" action="{:U('center/update')}">
+<volist name="information" id="po">
+<!--<div class="gr"><p>昵称:<span>{$po.nickname}</span></p></div>-->
+<div class="gr"><p>用户名:<span>{:get_username()}</span></p></div>
+<div class="gr_q"><p>头像<span><empty name='faceid'><img src="__IMG__/a5.png"><else /><a href="{:U('center/editface?id='.$po['uid'])}" class="red"><img src="{$faceid|get_cover='path'}"  /></a></empty></span></p></div>
+<div class="gr_w">
+<table width="100%">
+<tr>
+<td width="100">手机号码</td>
+<td>{$mobile}</td>
+</tr>
+<tr>
+<td width="100">真实姓名</td>
+<td><div class="gr_ee"><p id="firstname">{$po.realname}<span><a href="#"><img src="__IMG__/y5.png"></a></span></p></div></td>
+</tr>
+<tr>
+<td width="100">性别</td>
+<td><div class="gr_e"><p id="gr_e"><if condition="$po['sex'] eq 1">男<elseif condition="$po['sex'] eq 0"/>保密<else/>女</if><span><a href="#"><img src="__IMG__/y5.png"></a></span></p></div></td>
+</tr>
+<tr>
+<td width="100">孩子年级</td>
+<td><div class="gr_er"><p id="gread">{$po.gread}<span><a href="#"><img src="__IMG__/y5.png"></a></span></p></div></td>
+</tr>
+<tr>
+<td width="100">家庭住址</td>
+<td><div class="gr_e"><p id="home">{$po.address}<span><a href="#"><img src="__IMG__/y5.png"></a></span></p></div></td>
+</tr>
+<input type="hidden" name="hy_id" id="hy_id" value="{$po.uid}" />
+
+</table>
+</div>
+<!---------------------------ewm--------------------------------------------->
+<div class="em_e" id="em_a"></div>
+<div class="gr_r" id="gr_r" style="display:none;">
+<div class="gr_t">真实姓名</div>
+<div class="gr_y"><input type="search" id="zsxm" placeholder="{$po.realname}" ></div>
+<div class="gr_u"><a onclick="qr();">确认</a><a href="#">取消</a></div>
+</div>
+<!------------------------------------------------nj--------------------------------->
+<div class="em_e" id="em_b"></div>
+<div class="gr_r" id="gr_address" style="display:none;">
+<div class="gr_t">地址信息</div>
+<div class="gr_y"><input type="search" id="dizhi" placeholder="{$po.address}" ></div>
+<div class="gr_u" id="gr_ul"><a onclick="tianjia();">确认</a><a href="#">取消</a></div>
+</div>
+<!------------------------------------------------nj--------------------------------->
+<div class="gr_i" id="gr_i" style=" display:none">
+<div class="em_q"><a href="javascript:void(0)"><img src="__IMG__/k4.png"></a></div><div class="cls"></div>
+<div class="gr_o">
+<div class="gr_p"><a onclick="xz(1);">男</a><a  onclick="xz(2);">女</a></div>
+<div class="gr_p"><a  onclick="xz(0);">保密</a></div>
+</div>
+</div>
+<!------------------------------------------------nj--------------------------------->
+<div class="gr_i" id="gr_ii" style=" display:none">
+<div class="em_q"><a href="javascript:void(0)"><img src="__IMG__/k4.png"></a></div><div class="cls"></div>
+<div class="gr_o">
+<h1>小学</h1>
+<div class="gr_p"><a onclick="tj(1);">一年级</a><a  onclick="tj(2);">二年级</a><a  onclick="tj(3);">三年级</a></div>
+<div class="gr_p"><a  onclick="tj(4);">四年级</a><a onclick="tj(5);">五年级</a></div>
+</div>
+<div class="gr_o">
+<h1>初中</h1>
+<div class="gr_p"><a onclick="tj(6);">初一</a><a onclick="tj(7);">初二</a><a  onclick="tj(8);">初三</a><a  onclick="tj(9);">初四</a>
+</div>
+<div class="gr_o">
+<h1>高中</h1>
+<div class="gr_p"><a  onclick="tj(10);">高一</a><a  onclick="tj(11);">高二</a><a  onclick="tj(12);">高三</a></div>
+</div>
+
+</div>
+</volist>
+</form>
+<script>
+			jQuery('.gr_ee').click(function(){
+				jQuery('#gr_r').show();jQuery('#em_a').show();	
+			})
+			jQuery('.gr_u a').click(function(){
+				jQuery(this).parents('#gr_r').hide();	jQuery('#em_a').hide();
+			})         
+				
+			jQuery('#gr_ul a').click(function(){
+				jQuery(this).parents('.gr_r').hide();	jQuery('#em_b').hide();
+			})         
+			
+			jQuery('.gr_er').click(function(){
+				jQuery('#gr_ii').show();jQuery('.em_e').show();	
+			})
+
+			jQuery('.em_q a').click(function(){
+				jQuery(this).parents('.gr_i').hide();	jQuery('.em_e').hide();
+			}) 
+
+
+			jQuery('#gr_e').click(function(){
+				jQuery('#gr_i').show();jQuery('.em_e').show();	
+			})
+			
+			jQuery('#home').click(function(){
+				jQuery('#gr_address').show();jQuery('.em_b').show();	
+			})
+</script>
+<!------------------------------bottom-------------------------------------->
+<script type="text/javascript">_init_area();</script>
+<script>
+	function tj(id){
+		val = $("#hy_id").attr("value"); 
+		$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("center/gread_id")}', //发送数据的地址
+		data:{gread:id,uid:val},
+		dataType: "json",
+		success:function(data)
+		{
+			if(data.status==1){
+			
+			$("#gread").text(data.gread);
+			jQuery('#gr_ii').hide();jQuery('.em_e').hide();	
+
+			}else{
+			alert(data.gread);
+			}
+			
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+		alert(XMLHttpRequest+thrownError); }
+		})        
+		
+}
+
+		function xz(id){
+		valid = $("#hy_id").attr("value"); 
+		$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("center/sex_xz")}', //发送数据的地址
+		data:{sex:id,uid:valid},
+		dataType: "json",
+		success:function(data)
+		{
+			if(data.types==1){
+			$("#gr_e").text(data.sex);
+			jQuery('#gr_i').hide();jQuery('.em_e').hide();
+
+			}else{
+			alert(data.sex);
+			}
+			
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+		alert(XMLHttpRequest+thrownError); }
+		})        
+		
+}
+
+	function qr(){
+		valname = $("#zsxm").val();
+		oldname = $("#firstname").text();
+		if(valname==""){
+			alert('用户名不能为空');
+			return;
+		}
+		if(valname==oldname){
+			alert('与原姓名相同');
+			return;
+		}
+		qrval = $("#hy_id").attr("value"); 
+		$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("center/zhen_name")}', //发送数据的地址
+		data:{zsname:valname,uid:qrval},
+		dataType: "json",
+		success:function(data)
+		{
+			if(data.statusqr==1){
+			
+			$("#firstname").text(data.realname);
+			}else{
+			alert(data.realname);
+			}
+			
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+		alert(XMLHttpRequest+thrownError); }
+		})        
+		
+}
+
+	function tianjia(){
+			
+		valaddress = $("#dizhi").val();
+		oldddress = $("#home").text();
+		alert(oldddress);
+		if(valaddress==""){
+			alert('地址不能为空');
+			return;
+		}
+		if(valaddress==oldddress){
+			alert('与原地址相同');
+			return;
+		}
+		tianjiaval = $("#hy_id").attr("value"); 
+		$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("center/tianjia")}', //发送数据的地址
+		data:{address:valaddress,uid:tianjiaval},
+		dataType: "json",
+		success:function(data)
+		{
+			if(data.typeone==1){
+			
+			$("#home").text(data.address);
+			}else{
+			alert(data.address);
+			}
+			
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+		alert(XMLHttpRequest+thrownError); }
+		})        
+		
+}
+</script>
+</div>
+</body>
+</html>

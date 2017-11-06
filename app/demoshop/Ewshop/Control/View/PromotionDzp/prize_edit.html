@@ -1,0 +1,263 @@
+<extend name="Public/base"/>
+
+<block name="body">
+
+	<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+
+	<div class="main-title">
+
+		<h2>{:isset($info['id'])?'编辑':'新增'}奖品</h2>
+
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+				<div id="tab1" class="tab-pane in tab1">
+				
+ 					<div class="form-item">
+						<label class="item-label">
+							奖品等级<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="level" id="level">
+                                <option value="1" <if condition="$info['level']==1">selected</if> >一等奖</option>
+                                <option value="2" <if condition="$info['level']==2">selected</if> >二等奖</option>
+                                <option value="3" <if condition="$info['level']==3">selected</if> >三等奖</option>
+                                <option value="4" <if condition="$info['level']==4">selected</if> >四等奖</option>
+                                <option value="5" <if condition="$info['level']==5">selected</if> >五等奖</option>
+                                <option value="6" <if condition="$info['level']==6">selected</if> >六等奖</option> 
+                            </select>                          
+                        </div>
+					</div>
+ 					<div class="form-item">
+						<label class="item-label">
+							奖品类型<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="type" id="type"  onchange="changeRange(this.value)">
+                                <option value="1" <if condition="$info['type']==1">selected</if> >优惠券</option>
+								<option value="2" <if condition="$info['type']==2">selected</if> >实物商品</option>
+                            </select>
+                            <span id="range_search">
+                                <span align="right">搜索并设置奖品</span>
+                                <span><input name="keyword" type="text" id="keyword">
+                                  <input name="search" type="button" id="search" value="搜索" class="button" onclick="searchItem()" />
+                                  <select name="result" id="result"></select>
+                                  <input type="button" name="add_range" value="+" class="button" onclick="addRange()" />
+                                </span>
+                            </span>                            
+                        </div>
+					</div>  
+                    
+ 					<div class="form-item" id="range-div">
+                    <if condition="$info['prize_id'] && $info['name']">
+						<label class="item-label">奖品信息</label>
+						<div class="controls">
+                            <input type="hidden" name="prize_id" value="{$info.prize_id|default=''}">
+                            <input type="hidden" name="name" value="{$info.name|default=''}">
+                            {$info.name|default=''}
+						</div>
+                    </if>
+					</div>                                                          
+<script>
+/**
+ * 改变优惠范围
+ * @param int rangeId
+ */
+function changeRange(rangeId)
+{
+  document.getElementById('range-div').innerHTML = '';
+  document.getElementById('result').length = 0;
+}
+
+function searchItem()
+{
+	var keyword  = $("#keyword").val();
+	var ptype = $("#type").val();
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("PromotionDzp/ajaxsearch")}', //发送数据的地址
+		data:{keyword:keyword,ptype:ptype},
+		dataType: "json",
+		success:function(data){
+			if (data.status == 1) {
+				var sel = document.getElementById('result');
+ 				sel.length = 0;
+				/* 创建 options */
+				var ids = data.result;
+				if (ids)
+				{
+					
+					for (i = 0; i < ids.length; i++)
+					{
+					  var opt = document.createElement("OPTION");
+					  opt.value = ids[i].id;
+					  opt.text  = ids[i].title;
+					  sel.options.add(opt);
+					}
+				}				
+			}else if(data.status == 0){
+				alert(data.result);
+			}else{
+				aleert('出错了！');
+			}
+			
+		},error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+			alert("表单错误，"+XMLHttpRequest+thrownError); 
+		}
+	})  
+}
+
+function addRange()
+{
+  var selRange = $("#type");
+  var selResult = document.getElementById('result');
+  if (selResult.value == 0)
+  {
+    alert("请先搜索");
+    return;
+  }
+  var id = selResult.options[selResult.selectedIndex].value;
+  var name = selResult.options[selResult.selectedIndex].text;
+
+  // 检查是否已经存在
+  var exists = false;
+  if(document.getElementById('range-div').innerHTML!=''){
+	  var eles = $('#range-div input[type="checkbox"]');
+	  for (var i = 0; i < eles.length; i++)
+	  {
+		  if (eles[i].value == id)
+		  {
+			exists = true;
+			alert("该选项已经存在");
+			break;
+		  }
+	  }
+  }
+
+  // 创建checkbox
+  if (!exists)
+  {
+    var html = '<label class="item-label">奖品信息</label><div class="controls"><input type="hidden" name="prize_id" value="'+id+'"> <input type="hidden" name="name" value="'+name+'"> '+name+'</div>';
+    document.getElementById('range-div').innerHTML = html;
+  }
+}
+
+function getbilv()
+{
+	var pid  = $("#pid").val();
+	var num = $("#num").val();
+	var id = $("#id").val();//添加类型
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("PromotionDzp/ajaxgetbilv")}', //发送数据的地址
+		data:{pid:pid,num:num,id:id},
+		dataType: "json",
+		success:function(data){
+			if (data.status == 1) {
+				$("#bilv").val(data.result);
+				$("#bilvstr").html(data.result+"%");
+			}else if(data.status == 0){
+				alert(data.result);
+			}else{
+				aleert('出错了！');
+			}
+			
+		},error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+			alert("表单错误，"+XMLHttpRequest+thrownError); 
+		}
+	})  
+}
+</script>                     
+                                      
+ 					<div class="form-item">
+						<label class="item-label">
+							奖品数量<span class="check-tips">（数量直接影响奖品中奖率）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="num" id="num" class="text input-large" value="{$info.num|default='1'}" onblur="getbilv()">
+						</div>
+					</div>  
+ 					<div class="form-item">
+						<label class="item-label">
+							中奖比率<span class="check-tips">（数量直接影响奖品中奖率）</span>
+						</label>
+						<div class="controls">
+                            <input type="hidden" name="bilv" id="bilv" class="text input-large" value="">
+                            <span id="bilvstr">{$info.bilv}%</span>
+						</div>
+					</div>  
+                    <div class="form-item">
+						<label class="item-label">奖品描述</label>
+						<div class="controls">
+                            <label class="textarea input-large">
+                                <textarea name="content">{$info.content|default=''}</textarea>
+                            </label>
+						</div>
+					</div>                                        
+				</div>
+
+				<div class="form-item">
+                    <input type="hidden" name="pid" id="pid" value="{$pid}">
+                    <input type="hidden" name="id" id="id" value="{$info.id}">
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+$(function(){
+
+    $('.date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language:"zh-CN",
+        minView:0,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+});	
+
+		//导航高亮
+
+		highlight_subnav('{:U('PromotionDzp/index')}');
+
+	</script>
+
+</block>
+

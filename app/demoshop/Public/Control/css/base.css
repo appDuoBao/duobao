@@ -1,0 +1,292 @@
+/** 
+ * 描述：重置页面元素并基础样式
+ * 作用范围： 全局
+ */
+
+html,body {
+	font: 14px/1.5 "幼圆","微软雅黑","microsoft yahei", Helvetica, Tahoma, Arial, sans-serif;
+color: #404040;
+}
+body,p,pre,blockquote,
+h1,h2,h3,h4,h5,h6,			
+dl,dt,dd,ul,ol,li,			
+form,select,input,textarea,button,		
+table,caption,tr,th,td {
+	margin:0;
+	padding:0;
+}
+ol,ul {
+	list-style:none;
+}
+.sys-info th,.sys-info td{font-size:14px;}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+img {
+	max-width: 100%;
+	border:0 none;
+}
+a {
+	color: #2d7200;
+	text-decoration:none;
+}
+a:hover{
+	color: #4bbd00;
+	border-bottom: 1px solid;
+}
+input,button,textarea,select,option {
+	font-family:inherit;
+	font-size:100%;	
+	outline: 0;
+}
+textarea {
+	overflow: auto;
+	resize: none;
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/* 布局样式 */
+.cf,.nav,.container-span {
+	*zoom: 1;
+}
+.cf:before, .cf:after,
+.nav:before, .nav:after,
+.container-span:before,
+.container-span:after {
+	display: table;
+	content: "";
+}
+.cf:after,.nav:after,
+.container-span:after {
+	clear: both;
+}
+.fl{
+	float: left!important;
+}
+.fr{
+	float: right!important;
+}
+.wrapper {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1000px;
+}
+.hidden {
+	display: none;
+}
+.block {
+	display: block!important;
+}
+.fixed{
+    position: fixed!important;
+}
+.container-span [class^="span"] {
+	margin: 0 1% 20px;
+}
+.container-span .span1,
+.container-span .span2,
+.container-span .span3,
+.container-span .span4 {
+    float: left;
+}
+.container-span .span1 {
+    width: 23%;
+}
+.container-span .span2 {
+    width: 100%;
+}
+.container-span .span4 {
+    width: 98%;
+}
+
+/* 排版样式 */
+.text-center{
+	text-align: center!important;
+}
+
+.text-right{
+	text-align: right!important;
+}
+
+.text-left{
+	text-align: left!important;
+}
+
+/* 导航列表 */
+.nav li {
+	float: left;
+}
+.nav li a,
+.nav li a:hover,
+.nav-list li a,
+.nav-list li a:hover {
+	display: block;
+	text-decoration: none;
+	outline: none;
+	border-bottom: 0 none;
+}
+.btn{position: relative;overflow: hidden;margin-right: 4px;display:inline-block; 
+*display:inline;padding:4px 10px 4px;font-size:14px;line-height:18px; 
+*line-height:20px;color:#fff; 
+text-align:center;vertical-align:middle;cursor:pointer;background:#5bb75b; 
+border:1px solid #cccccc;border-color:#e6e6e6 #e6e6e6 #bfbfbf; 
+border-bottom-color:#b3b3b3;-webkit-border-radius:4px; 
+-moz-border-radius:4px;border-radius:4px;} 
+.btn input{position: absolute;top: 0; right: 0;margin: 0;border:solid transparent; 
+opacity: 0;filter:alpha(opacity=0); cursor: pointer;} 
+.progress{position:relative; margin-left:100px; margin-top:-24px;  
+width:200px;padding: 1px; border-radius:3px; display:none} 
+.bar {background-color: green; display:block; width:0%; height:20px;  
+border-radius:3px; } 
+.percent{position:absolute; height:20px; display:inline-block;  
+top:3px; left:2%; color:#fff } 
+.files{height:22px; line-height:22px; margin:10px 0} 
+.delimg{margin-left:20px; color:#090; cursor:pointer} 
+.x-zj{
+	margin: 0 auto;
+}
+.x-zj th{
+	width: 20%;
+	height: 50px;
+	line-height: 50px;
+	border: 1px solid #ccc;
+	background: #e7e7e7;
+}
+.x-zj{
+	box-sizing: border-box;
+	background: #fff;
+	width: 80%;
+}
+.x-zj tr{
+	height: 30px;
+	border: 1px solid #ccc;
+}
+.x-zj td{
+	border: 1px solid #ccc;
+	text-align: center;
+}
+.tex-box{
+	width: 80%;
+	margin: 0 auto;
+}
+.tex{
+	width: 16%;
+	margin-left: 2%;
+}
+.zj-box{
+	width: 80%;
+	margin-left: 80px;
+	height: auto;
+	overflow: hidden;
+}
+.zj-box span{
+	box-sizing: border-box;
+	display: block;
+	float: left;
+	width: 100px;
+	-webkit-user-select: none; /* Chrome all / Safari all */
+-moz-user-select: none; /* Firefox all */
+-ms-user-select: none; /* IE 10+ */</p> <p> /* No support for these yet, use at own risk */
+-o-user-select: none;
+user-select: none; 
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	border: 1px solid #e7e7e7;
+	background: #fff;
+	margin-left: 10px;
+	cursor: pointer;
+}
+.zj-box .x-span{
+	color: red;
+	border-color: red;
+}
+.tj{
+	overflow: hidden;
+}
+.tj>div{
+	margin-top: 20px;
+	display: block;
+	float: left;
+	height: 40px;
+	line-height: 40px;
+	border: 1px solid #e7e7e7;
+	background: #fff;
+	margin-left: 10px;
+	overflow: hidden;
+	padding: 0 10px;
+}
+.tj div input,
+.tj div select{
+	border: 1px solid #e7e7e7;
+	display: block;
+	margin: 0;
+	width: auto;
+	float: left;
+	border-radius: 5px;
+	width: 100px;
+	margin-left: 5px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 5px;
+	box-sizing: border-box;
+	margin-top: 5px;
+}
+
+.tj div span{
+	display: block;
+	color: #333;
+	font-size: 14px;
+	float: left;
+}
+.x-a{
+	font-size: 20px;
+	display: block;
+	width: 80px;
+	height: 40px;
+	background: #fff;
+	line-height: 40px;
+	position: absolute;
+	top: 60px;
+	left: 0;
+	text-align: center;
+}
+.x-a:hover{
+	border: none;
+}
+#extend_list{
+	position: relative;
+}
+.tj>.input1,.x-a{
+	display: none;
+}
+.tj{
+	margin-left: 80px;	
+}
+
+
+/*减少按钮*/
+.x-r{
+	text-decoration: none;
+	font-size: 20px;
+	display: block; 
+	width: 80px;
+	height: 40px;
+	background: #fff;
+	line-height: 40px;
+	text-align: center;
+	margin-top: 20px;
+    float: left;
+    border: 1px solid #e7e7e7;
+    margin-left: 10px;
+    overflow: hidden;
+    padding: 0 10px;
+}
+.x-r:hover{
+	text-decoration: none;
+}

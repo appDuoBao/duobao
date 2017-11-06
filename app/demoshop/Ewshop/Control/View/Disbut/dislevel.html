@@ -1,0 +1,138 @@
+<extend name="Public/base"/>
+
+
+
+<block name="body">
+
+	<div class="main-title">
+		<h2>分销数量管理</h2>
+	</div>
+
+	<div class="cf">
+
+		<a class="btn" href="{:U('leveladd')}">新 增</a>
+
+		  <button class="btn ajax-post confirm" url="{:U('leveldel')}" target-form="ids">删 除</button>
+
+
+	</div>
+
+
+
+	<div class="data-table table-striped">
+
+		 <table>
+
+			<thead>
+
+				<tr>
+					<th class="row-selected">
+					 <input class="checkbox check-all" type="checkbox">
+					</th>
+					<th>ID</th>
+					<th>分销达到数量</th>
+                    <th>获取分销百分比</th>
+					<th>操作</th>
+				</tr>
+
+			</thead>
+
+			<tbody>
+
+				<notempty name="list">
+
+				<volist name="list" id="adp">
+
+					<tr>
+
+					<td><input class="ids row-selected" type="checkbox" name="id[]" value="{$adp.id}"></td>
+
+						<td>{$adp.id}</td>
+
+						<td>{$adp.num}</td>
+
+                        <td>{$adp.disnum}</td>
+
+						<td>
+                            <a title="编辑" href="{:U('leveledit?id='.$adp['id'])}">编辑</a>
+                            <a class="confirm ajax-get" title="删除" href="{:U('leveldel?id='.$adp['id'])}">删除</a>
+                        </td>
+
+					</tr>
+
+				</volist>
+
+				<else/>
+
+				<td colspan="6" class="text-center"> aOh! 暂时还没有内容! </td>
+
+				</notempty>
+
+			</tbody>
+
+		</table>
+
+        <!-- 分页 -->
+
+        <div class="page">
+			{$_page}
+        </div>
+
+	</div>
+
+</block>
+<block name="script">
+
+ <script type="text/javascript">
+
+        $(function() {
+
+            //搜索功能
+
+            $("#search").click(function() {
+
+                //var url = $(this).attr('url');
+				var url = "{:U()}";
+
+                var query = $('.search-form').find('input').serialize();
+
+                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+
+                query = query.replace(/^&/g, '');
+
+                if (url.indexOf('?') > 0) {
+
+                    url += '&' + query;
+
+                } else {
+
+                    url += '?' + query;
+
+                }
+
+                window.location.href = url;
+
+            });
+
+            //回车搜索
+
+            $(".search-input").keyup(function(e) {
+
+                if (e.keyCode === 13) {
+
+                    $("#search").click();
+
+                    return false;
+
+                }
+
+            });
+			
+			//导航高亮
+
+            highlight_subnav('{:U('dislevel')}');
+        });
+
+    </script>
+
+</block>

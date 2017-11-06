@@ -1,0 +1,164 @@
+<include file="Public/header"/>
+<div id="w_banner">
+	<div class="swiper-container">
+		<div class="swiper-wrapper">
+		 <volist name="slide" id="vo">
+			<div class="swiper-slide">
+				<a href="{$vo.url|get_nav_url}"><img src="{$vo.icon|get_cover='path'}"></a>
+			</div>
+		  </volist>
+		</div>
+		<!-- Add Pagination -->
+	</div>
+	<div class="swiper-pagination"></div>
+</div>
+<style type="text/css">
+	.swiper-pagination{
+		bottom: 0px !important;
+		text-align: center;
+		display: block;
+		width: 100%;
+	}
+	.swiper-pagination span{
+		margin-right: 5px;
+	}
+	.swiper-container{
+		/*height: 100%;*/
+	}
+</style>
+<script>
+	window.onload = function(){
+		var swiper = new Swiper('.swiper-container', {
+		pagination: '.swiper-pagination',
+		paginationClickable: true,
+		autoplay:2000
+		});
+	}
+</script>
+<nav id="w_homeNav">
+	<ul class="w_homeNav_1">
+	  <volist name="catlist" id="vo" key="k">
+		<if condition="$k lt 5">
+		<li>
+			<a href="{:U('Goods/lists?category='.$vo['name'])}">
+				<div>
+					<img src="{$vo.icon|get_cover='path'}">
+				</div>
+				<p>{$vo.title}</p>
+			</a>
+		</li>
+		</if>
+	  </volist>
+	</ul>
+	<ul class="w_homeNav_2">
+	  <volist name="catlist" id="vo" key="k">
+		<if condition="$k gt 4">
+		<li>
+			<a href="{:U('Goods/lists?category='.$vo['name'])}">
+				<div>
+					<img src="{$vo.icon|get_cover='path'}">
+				</div>
+				<p>{$vo.title}</p>
+			</a>
+		</li>
+		</if>
+	  </volist>
+	</ul>
+</nav>
+<div class="w_homeNews">
+	<div class="w_homeNewsTitle">
+		<h5>动态资讯</h5>
+		<p id="indexList">
+		  <volist name="newslist" id="vo">
+			 <a href="{:U('service/shows?id='.$vo['id'])}"><span>{$vo.title}</span></a>
+		  </volist>
+		</p>
+	</div>
+	<script>
+		var timer1 = setInterval(function(){
+			var index = $("#indexList").attr("index"),
+				h = parseInt($("#indexList").parent().css("height")),
+				len = $("#indexList span").length;
+			index = !index ? 1 : (index >= len ? 0 : index);
+			$("#indexList").animate({"margin-top":"-"+(index * h)+"px"},500).attr("index",parseInt(index)+1);
+		},3000);
+	</script>
+	<div class="w_homeNewsMain">
+	 <volist name="jinpin1" id="vo">
+		<div class="w_homeNewsMainLeft">
+			<a href="{$vo.url|get_nav_url}">
+			<!--<p>￥98</p>-->
+			<p>{$vo.title}</p>
+			<p>{$vo.description}</p>
+			<div class="w_homeNewsMainLeftImg">
+				<img src="{$vo.icon|get_cover='path'}" />
+			</div>
+			</a>
+		</div>
+		 </volist>
+		<div class="w_homeNewsMainRight">
+		 <volist name="jinpin2" id="vo">
+			<div class="w_homeNewsMainRightTop">
+				<a href="{$vo.url|get_nav_url}">
+				<div>
+					<!--<p>￥98</p>-->
+					<p>{$vo.title}</p>
+					<p>{$vo.description}</p>
+				</div>
+				<div>
+					<img src="{$vo.icon|get_cover='path'}" />
+				</div>
+				</a>
+			</div>
+			 </volist>
+			<div class="w_homeNewsMainRightBottom">
+			 <volist name="jinpin3" id="vo">
+				<div>
+					<a href="{$vo.url|get_nav_url}">
+					<p>{$vo.title}</p>
+					<p>{$vo.description}</p>
+					<div>
+						<img src="{$vo.icon|get_cover='path'}" />
+					</div>
+					</a>
+				</div>
+				 </volist>
+				 <volist name="jinpin4" id="vo">
+				<div>
+					<a href="{$vo.url|get_nav_url}">
+					<p>{$vo.title}</p>
+					<p>{$vo.description}</p>
+					<div>
+						<img src="{$vo.icon|get_cover='path'}" />
+					</div>
+					</a>
+				</div>
+				 </volist>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 动态资讯部分 -->
+<div class="w_goodsList">
+	<div class="w_goodsListTitle">
+		<h5>热销推荐</h5>
+		<a href="#">更多 > </a>
+	</div>
+	<ul class="w_goodsListMain">
+		 <volist name="remailist" id="vo" key="k">
+			 <li class="w_goodsListShow">
+				<a href="{:U('Goods/detail?id='.$vo['id'])}">
+				<div>
+					<img src="{$vo.cover_id|get_cover='path'}" />
+				</div>
+				<p>{$vo.title}</p>
+				<p>￥ {$vo.price}</p>
+				</a>
+			</li>
+		 </volist>
+		<div style="clear: both;"></div>
+	</ul>
+</div>
+<!-- 热销推荐部分 -->
+<include file="Public/footer"/>
+

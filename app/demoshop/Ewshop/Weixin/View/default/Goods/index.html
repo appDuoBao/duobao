@@ -1,0 +1,22 @@
+<include file="Public/header"/>
+	<ul id="w_caseClass">
+		 <volist name="catlist" id="vo" key="k">
+			<li class="w_caseClass_list">
+				<div class="w_caseClassImg">
+					<a href="{:U('Goods/lists?category='.$vo['name'])}"><img src="{$vo.icon|get_cover='path'}" /></a>
+					<a href="{:U('Goods/lists?category='.$vo['name'])}"><h5>{$vo.title}</h5></a>
+				</div>
+				 <if condition="$vo.child">
+					<ul class="w_caseClassList">
+					 <volist name="vo.child" id="vo1" key="j">
+						<li><a href="{:U('Goods/lists?category='.$vo1['name'])}">{$vo1.title}</a></li>
+						</volist>
+						<div style="clear: both;"></div>
+					</ul>
+				</if>
+				<div style="clear: both;"></div>
+			</li>
+		 </volist>
+	</ul>
+<include file="Public/footer"/>
+

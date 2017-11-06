@@ -1,0 +1,74 @@
+<extend name="Public/base"/>
+#tab1 table{border-right:1px solid #F00;border-bottom:1px solid #F00}
+#tab1 table td{border-left:1px solid #F00;border-top:1px solid #F00}
+<block name="body">
+	<div class="main-title">
+		<h2>
+			{$info['id']?'编辑':'新增'}订单
+		
+		</h2>
+	</div>
+	<ul class="tab-nav nav">
+	<li data-tab="tab1" class="current"><a href="javascript:void(0);">填写退货地址</a></li>
+	</li></ul>
+<div class="tab-content">						
+
+	<div id="tab1" class="tab-pane in tab1">
+	<form action="{:U('change/add')}" method="post" class="form-horizontal">
+<div class="form-item">
+			<label class="item-label">退货联系人<span class="check-tips">（返回信息说明）</span></label>
+			<div class="controls">
+				<input type="text" class="text input-large" name="backname" value="{:C('SHOPNAME')}    ">
+			</div>
+		</div>	
+<div class="form-item">
+			<label class="item-label">退货地址<span class="check-tips">（返回信息说明）</span></label>
+			<div class="controls">
+				<input type="text" class="text input-large" name="address" value="{:C('SHOPNAME')}  {:C('ADDRESS')} ">
+			</div>
+		</div>
+	<div class="form-item">
+			<label class="item-label">联系方式<span class="check-tips">（返回信息说明）</span></label>
+			<div class="controls">
+				<input type="text" class="text input-large" name="contact" value=" {:C('CONTACT')}">
+			</div>
+		</div>	
+
+<div class="form-item">
+			<label class="item-label">备注信息<span class="check-tips">（返回信息说明）</span></label>
+			<div class="controls">
+				<input type="text" class="text input-large" name="backinfo" value="">
+			</div>
+		</div>
+
+      <div class="form-item">
+			<label class="item-label">状态<span class="check-tips">（系统生成，不可更改）</span></label>
+			<div class="controls">
+				<input type="hidden" class="text input-large" name="status" value="5" >
+			</div>
+		</div>
+		<div class="form-item">
+			<input type="hidden" name="tool" value="{$info.tool}">
+			<input type="hidden" name="id" value="{$info.id}">
+			<input type="submit" value="提交"/> 
+			<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+		</div>
+	</form></div>
+		  </div>
+	</div>
+</block>
+<block name="script">
+<script type="text/javascript" charset="utf-8">
+	//导航高亮
+	highlight_subnav('{:U('index')}');
+	if($('ul.tab-nav').length){
+		//当有tab时，返回按钮不显示
+		$('.btn-return').hide();
+	}
+	$(function(){
+		//支持tab
+		showTab();
+	})
+
+</script>
+</block>

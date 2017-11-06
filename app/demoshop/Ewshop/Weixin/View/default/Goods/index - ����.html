@@ -1,0 +1,70 @@
+<include file="Public/header"/>
+<div class="wrap">
+	<section id="shangping" class="clear">
+	   <!-- 输入框 -->
+		<div class="text">
+			<input type="text" value="请输入商品关键字"/>
+            <input type="submit">
+		</div>
+		<!-- 输入框结束 -->
+		<!-- 内容 -->
+		
+		<div class="ShangPingT">
+		<!-- 左内容 -->
+		
+			<div class="leftT clear">
+			<volist name="class" id="vo">
+				<a href="{:U('Article/index?category='.$vo['name'])}" class="active">{$vo.title}</a>
+				</volist>
+			</div>
+			
+			<!-- 右内容 -->
+			<div class="rightT clear">
+		
+				<div>
+				<volist name="childlist" id="subcate" key="k">
+				        <if condition="$k%3 eq 0">
+					<a href="{:U('Article/lists/?category='.$subcate['name'])}" class="active">{$subcate.title}</a>
+					</div>
+					<div>
+					<else/>
+					<a href="{:U('Article/lists/?category='.$subcate['name'])}" class="active">{$subcate.title}</a>
+					
+					</if>
+						</volist>
+					<div>
+			</div>
+		</div>
+		<!-- 内容结束 -->
+	</section>
+</div>
+<div style="height:1.703125rem;"></div>
+
+<ul class="gou_bot clear">
+	<li>
+    	<a href="{:U('Index/index')}">
+        	<img src="__IMG__/pic_home.png"/></br>
+            <span>首页</span>
+        </a>
+    </li>
+    <li>
+    	<a href="{:U('Article/index?category=kecheng')}">
+        	<img src="__IMG__/pic_type.png"/></br>
+            <span>分类</span>
+        </a>
+    </li>
+    <li>
+    	<a href="{:U('shopcart/index')}">
+        	<img src="__IMG__/pic_cars.png"/></br>
+            <span>购物车</span>
+        </a>
+    </li>
+    <li>
+    	<a href="{:U('center/index')}">
+        	<img src="__IMG__/pic_me.png"/></br>
+            <span>我的</span>
+        </a>
+    </li>
+</ul>
+</body>
+</html>

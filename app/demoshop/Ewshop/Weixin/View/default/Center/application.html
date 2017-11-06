@@ -1,0 +1,61 @@
+﻿<include file="Public/header_user"/>
+<div class="bcy_body">
+ 
+<span  style="display: block;padding:15px;font-size:0.8rem;text-align:center;color:red;margin:20px 0;">{$msg} &nbsp;&nbsp;{$id}</span>
+   <form action="{:U('center/sqth')}" method="post" name="myform" id="myform" enctype="multipart/form-data" onsubmit="return doCheck()">
+	   <input type="hidden" id="goodname" name="goodname" value="{$info.goodname}" />
+	   <input type="hidden" id="uid" name="uid" value="{$info.uid}" />
+	   <input type="hidden" id="num" name="num" value="{$info.num}" />
+	   <input type="hidden" id="total" name="total" value="{$info.total}"/>
+	   <input type="hidden" id="status" name="status" value="0" />
+	   <input type="hidden" id="goodid" name="goodid" value="{$info.goodid}" />
+	   <input type="hidden" id="toolid" name="toolid" value="{$info.orderid}"/>
+	   <input type="hidden" id="tool" name="tool" value="{$info.tag}" />
+
+    <div id="write">
+    <ul> <li><div class="form-item">
+    <!--<label class="item-label">提示:<span class="red">{$tip}</span> </label>-->
+    </div></li>
+    <li>
+    <div class="form-item">
+    <label class="item-label"><span class="check-tips"></span> </label>
+    <div class="controls">
+    	<input type="text" class="text input-large" placeholder="说明" id="ewshop_center_input" name="info" >				
+    </div>
+    </div></li>
+    <li>
+    <div class="form-item">
+    <label class="item-label"><span class="check-tips"></span> </label>
+    <div class="controls">
+    <textarea  placeholder="描述"  rows="9" cols="60" name="reason" id="reason"></textarea>				
+    </div>
+    </div></li>
+    <li>
+    	<div class="submit">
+    		<input type="submit" name="dosubmit" class="btn_submit_pay" value="提交" />
+    	</div>
+    </li>
+    </ul> 
+    </div>
+</form>
+
+ 
+</div>
+<script type="text/javascript">
+	function doCheck(){
+		var info = $('#info').val();
+		var reason = $('#reason').val();
+		if(info == ''){
+			alert("标题不能为空！");
+			$('#info').focus();
+			return false;
+		}else if(reason == '') {
+			alert("描述不能为空！");
+			$('#reason').focus();
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+<include file="Public/footer"/>

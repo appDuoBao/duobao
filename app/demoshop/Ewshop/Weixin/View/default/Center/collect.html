@@ -1,0 +1,44 @@
+<include file="Public/uheader"/>
+<body>
+	<div class="sc-wrap">
+	
+	<volist name="favorlist" id="fo"> 
+	<div class="sc-wrap">
+		<div class="sc-top">
+			<img src="{$fo.goodid|get_cover_id|get_cover='path'}"/>
+			<div>
+				<a href="{:U('Goods/detail?id='.$fo['goodid'])}"><p>{$fo.goodid|get_good_name}</p></a>
+				<span>￥{$fo.goodid|get_good_price}</span>
+			</div>
+		</div>
+		<div class="sc-bottom">
+			<!--<div>
+				<a href="#">加入购物车</a>
+			</div>-->
+			<div class="delete">
+				<a href="javascript:void(0)" onclick="deletefavor({$fo.id});"><button>删除</button></a>
+			</div>
+		</div>
+	</div>
+	
+	</div>
+	 </volist>
+	</empty>  
+	
+<script type="text/javascript">
+//删除收藏
+function deletefavor(str) { 
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("center/deletefavor")}', //发送数据的地址
+		data:{id:str},
+		dataType: "json",
+		success:function(data){
+			alert(data.msg);
+			window.location.reload();
+		},
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+	  })        
+}
+</script>
+<include file="Public/footer"/>

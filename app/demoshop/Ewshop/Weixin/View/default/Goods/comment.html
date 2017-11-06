@@ -1,0 +1,33 @@
+<!-- ajax分页商品评论区模板 -->
+<volist id='list' name='list'>   <!--内容输出-->
+    <div class="bcy_pic_content_message_box_pl_o">
+        <div class="pl_l">
+        <a href="#" ><img src="{$list.uid|get_faceUrl}" width="76" height="77" /></a>
+        </div>
+        <div class="pl_r">
+            <h1><if condition="$$list.uid neq '0'">{$list.uid|get_regname}<else />匿名</if><em>{$list.create_time|date='Y-m-d H:i',###}</em></h1>
+            <p>{$list.content}</p>
+        </div>
+        <div class="cls"></div>
+    </div>
+</volist> 
+<div class="page">{$page}</div> <!--分页输出-->
+
+
+<script type="text/javascript">
+	var gooid="<php>echo session('goodid') ;</php>";
+	function comment(id){    //user函数名 一定要和action中的第三个参数一致上面有
+		var id = id;
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:"{:U('article/comment')}", //发送数据的地址
+			data:{p:id,goodid:gooid},
+			dataType: "html",
+			success:function(data){
+				$("#productcomment").replaceWith('<div id="productcomment">'+data+'</div>');
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+		})
+	}
+</script>
+<!-- ajax分页商品评论区模板 -->

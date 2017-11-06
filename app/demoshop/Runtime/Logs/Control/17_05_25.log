@@ -1,0 +1,617 @@
+[ 2017-05-25T16:46:24+08:00 ] 219.143.131.41 /index.php?s=/Control/Public/login.html
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000118s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000223s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.048006s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.048668s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.001492s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001590s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.001742s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001860s ]
+
+[ 2017-05-25T16:46:30+08:00 ] 219.143.131.41 /index.php?s=/Control/Public/login.html
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000529s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001067s ]
+NOTIC: [8] Use of undefined constant UC_AUTH_KEY - assumed 'UC_AUTH_KEY' /home/DemoRoot/ewshop/ThinkPHP/Common/functions.php 第 530 行.
+SQL: SHOW COLUMNS FROM `ewshop_admin` [ RunTime:0.1102s ]
+SQL: SELECT * FROM `ewshop_admin` WHERE `username` = 'admin' LIMIT 1   [ RunTime:0.0007s ]
+NOTIC: [8] Use of undefined constant UC_AUTH_KEY - assumed 'UC_AUTH_KEY' /home/DemoRoot/ewshop/Ewshop/Control/Model/AdminModel.class.php 第 86 行.
+SQL: UPDATE `ewshop_admin` SET `login`=`login`+1,`last_login_time`='1495701989',`last_login_ip`='3683615529' WHERE `uid` = 1 [ RunTime:0.4269s ]
+SQL: SHOW COLUMNS FROM `ewshop_action` [ RunTime:0.0556s ]
+SQL: SELECT * FROM `ewshop_action` WHERE `name` = 'user_login' LIMIT 1   [ RunTime:0.0102s ]
+NOTIC: [8] Undefined index: admin /home/DemoRoot/ewshop/Ewshop/Common/Common/function.php 第 1088 行.
+SQL: SHOW COLUMNS FROM `ewshop_action_log` [ RunTime:0.0501s ]
+SQL: INSERT INTO `ewshop_action_log` (`action_id`,`user_id`,`action_ip`,`model`,`record_id`,`create_time`,`remark`) VALUES ('1','1','3683615529','admin','1','1495701989','小管理员在2017-05-25 16:46登录了后台') [ RunTime:0.0406s ]
+
+[ 2017-05-25T16:46:30+08:00 ] 219.143.131.41 /index.php?s=/Control/Index/index.html
+SQL: SHOW COLUMNS FROM `ewshop_menu` [ RunTime:0.0213s ]
+SQL: SELECT `id`,`title`,`url` FROM `ewshop_menu` WHERE `pid` = 0 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0029s ]
+SQL: SELECT `pid` FROM `ewshop_menu` WHERE ( pid !=0 AND url like '%Index/index%' ) LIMIT 1   [ RunTime:0.0011s ]
+SQL: SELECT * FROM `ewshop_menu` WHERE `id` = 68 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT DISTINCT  `group` FROM `ewshop_menu` WHERE `group` <> '' AND `pid` = 68  [ RunTime:0.0005s ]
+SQL: SELECT `id`,`url` FROM `ewshop_menu` WHERE `pid` = 68 AND `hide` = 0 AND `is_dev` = 0  [ RunTime:0.0004s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '管理员' AND `pid` = 68 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0004s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '默认' AND `pid` = 68 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0004s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '内容管理' AND `pid` = 68 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0004s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '数据备份' AND `pid` = 68 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0003s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '系统设置' AND `pid` = 68 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0004s ]
+SQL: SHOW COLUMNS FROM `ewshop_config` [ RunTime:0.0034s ]
+SQL: UPDATE `ewshop_config` SET `value`='http://newewshop.akng.net' WHERE ( name='DOMAIN' ) [ RunTime:0.0049s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000213s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000329s ]
+INFO: [ AdminIndex ] --START--
+SQL: SHOW COLUMNS FROM `ewshop_addons` [ RunTime:0.1304s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'SiteStat' AND `status` = 1 LIMIT 1   [ RunTime:0.0085s ]
+SQL: SHOW COLUMNS FROM `ewshop_member` [ RunTime:0.0045s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_member` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_action_log` [ RunTime:0.0013s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_action_log` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_document` [ RunTime:0.0182s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_document` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_category` [ RunTime:0.0043s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_category` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_model` [ RunTime:0.0135s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_model` LIMIT 1   [ RunTime:0.0004s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000068s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.269136s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.003634s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.003729s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000247s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000313s ]
+INFO: Run Addons\SiteStat\SiteStatAddon [ RunTime:0.235313s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'SystemInfo' AND `status` = 1 LIMIT 1   [ RunTime:0.0006s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000098s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.302796s ]
+SQL: select version() as v; [ RunTime:0.0003s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.007821s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.027711s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000026s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.035323s ]
+INFO: Run Addons\SystemInfo\SystemInfoAddon [ RunTime:0.035326s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'DevTeam' AND `status` = 1 LIMIT 1   [ RunTime:0.0006s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000085s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.314195s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004084s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.040974s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000020s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.044827s ]
+INFO: Run Addons\DevTeam\DevTeamAddon [ RunTime:0.009468s ]
+INFO: [ AdminIndex ] --END-- [ RunTime:0.280273s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004643s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.040974s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000018s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.045397s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.001919s ]
+INFO: [ app_end ] --END-- [ RunTime:0.002109s ]
+
+[ 2017-05-25T16:46:32+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html
+SQL: SHOW COLUMNS FROM `ewshop_menu` [ RunTime:0.0007s ]
+SQL: SELECT `id`,`title`,`url` FROM `ewshop_menu` WHERE `pid` = 0 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0006s ]
+SQL: SELECT `pid` FROM `ewshop_menu` WHERE ( pid !=0 AND url like '%Order/index%' ) LIMIT 1   [ RunTime:0.0007s ]
+SQL: SELECT * FROM `ewshop_menu` WHERE `id` = 131 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT DISTINCT  `group` FROM `ewshop_menu` WHERE `group` <> '' AND `pid` = 131  [ RunTime:0.0003s ]
+SQL: SELECT `id`,`url` FROM `ewshop_menu` WHERE `pid` = 131 AND `hide` = 0 AND `is_dev` = 0  [ RunTime:0.0002s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '订单管理' AND `pid` = 131 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0003s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '换货管理' AND `pid` = 131 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0002s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '退货管理' AND `pid` = 131 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0003s ]
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.1324s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%%' LIMIT 1   [ RunTime:0.0207s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0026s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000260s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000399s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.073510s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.073757s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000426s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000511s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000694s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000783s ]
+
+[ 2017-05-25T16:46:38+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0016s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%4%' LIMIT 1   [ RunTime:0.0012s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%4%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0006s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000178s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000312s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.031974s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.032045s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000294s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000348s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000956s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001132s ]
+
+[ 2017-05-25T16:46:44+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0012s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%4%' LIMIT 1   [ RunTime:0.0011s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%4%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0005s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000175s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000255s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.027403s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.027471s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000281s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000334s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000806s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000921s ]
+
+[ 2017-05-25T16:46:52+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0016s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42811%' LIMIT 1   [ RunTime:0.0017s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42811%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0018s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000260s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000390s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.043863s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.043949s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000228s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000281s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000747s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000821s ]
+
+[ 2017-05-25T16:46:56+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0019s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42811%' LIMIT 1   [ RunTime:0.0018s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42811%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0017s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000197s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000292s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.031321s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.031401s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000345s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000418s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000907s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001009s ]
+
+[ 2017-05-25T16:46:58+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811&orderid=C428
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0012s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C428%' LIMIT 1   [ RunTime:0.0012s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C428%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0013s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000334s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000474s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.032605s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.032773s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000327s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000415s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000968s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001089s ]
+
+[ 2017-05-25T16:47:01+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811&orderid=C428&orderid=C42
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0018s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42%' LIMIT 1   [ RunTime:0.0017s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C42%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0019s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000256s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000409s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.089170s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.089280s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000650s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000741s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000601s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000683s ]
+
+[ 2017-05-25T16:47:03+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811&orderid=C428&orderid=C42&orderid=C4
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0020s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C4%' LIMIT 1   [ RunTime:0.0021s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C4%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0022s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000185s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000326s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.028820s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.028911s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000226s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000279s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000634s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000699s ]
+
+[ 2017-05-25T16:47:13+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811&orderid=C428&orderid=C42&orderid=C4&orderid=C3
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0017s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C3%' LIMIT 1   [ RunTime:0.0015s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C3%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0015s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000297s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000414s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.030555s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.030707s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000178s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000229s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000906s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001003s ]
+
+[ 2017-05-25T16:47:16+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index.html&orderid=4&&orderid=%09C42811&orderid=C42811&orderid=C428&orderid=C42&orderid=C4&orderid=C3&orderid=C
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0014s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' LIMIT 1   [ RunTime:0.0011s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0007s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000262s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000375s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.034921s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.034992s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000313s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000367s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000752s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000949s ]
+
+[ 2017-05-25T16:47:25+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index/orderid/C/p/2.html
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0014s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' LIMIT 1   [ RunTime:0.0012s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' ORDER BY id desc LIMIT 20,20   [ RunTime:0.0013s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000254s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000372s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.024982s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.025042s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000164s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000214s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000604s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000673s ]
+
+[ 2017-05-25T16:47:32+08:00 ] 219.143.131.41 /index.php?s=/Control/Order/index/orderid/C/p/1.html
+SQL: SHOW COLUMNS FROM `ewshop_order` [ RunTime:0.0013s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' LIMIT 1   [ RunTime:0.0015s ]
+SQL: SELECT `id`,`orderid`,`tag`,`pricetotal`,`create_time`,`status`,`assistant`,`update_time`,`uid`,`shipprice`,`display`,`isover`,`ispay`,`total`,`tool`,`addressid`,`toolid`,`isdefault`,`info`,`shipway`,`invoice`,`taitou_type`,`fapiao_content`,`message`,`backinfo`,`score`,`codeid`,`codemoney`,`send_name`,`send_contact`,`send_address`,`province`,`city`,`area`,`address`,`youbian`,`phone`,`realname`,`disbutmoney`,`goodsnum`,`iscomment`,`mjprice`,`tuihuoyuanyin` FROM `ewshop_order` WHERE `id` > 0 AND `orderid` LIKE '%C%' ORDER BY id desc LIMIT 0,20   [ RunTime:0.0007s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000237s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000329s ]
+NOTIC: [8] Undefined variable: status /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 131 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/3182e0c2fae1ed52a8e968129848e204.php 第 173 行.
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.034040s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.034162s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000265s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000336s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.001222s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001720s ]
+
+[ 2017-05-25T17:48:10+08:00 ] 219.143.131.41 /control
+SQL: SHOW COLUMNS FROM `ewshop_config` [ RunTime:0.0011s ]
+SQL: UPDATE `ewshop_config` SET `value`='http://newewshop.akng.net' WHERE ( name='DOMAIN' ) [ RunTime:0.0007s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000204s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000347s ]
+INFO: [ AdminIndex ] --START--
+SQL: SHOW COLUMNS FROM `ewshop_addons` [ RunTime:0.0020s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'SiteStat' AND `status` = 1 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_member` [ RunTime:0.0014s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_member` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_action_log` [ RunTime:0.0010s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_action_log` LIMIT 1   [ RunTime:0.0001s ]
+SQL: SHOW COLUMNS FROM `ewshop_document` [ RunTime:0.0017s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_document` LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `ewshop_category` [ RunTime:0.0021s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_category` LIMIT 1   [ RunTime:0.0001s ]
+SQL: SHOW COLUMNS FROM `ewshop_model` [ RunTime:0.0009s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_model` LIMIT 1   [ RunTime:0.0001s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000046s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.022767s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.002495s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.002567s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000214s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000371s ]
+INFO: Run Addons\SiteStat\SiteStatAddon [ RunTime:0.018522s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'SystemInfo' AND `status` = 1 LIMIT 1   [ RunTime:0.0003s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000082s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.027926s ]
+SQL: select version() as v; [ RunTime:0.0001s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.003822s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.001768s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000014s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.005261s ]
+INFO: Run Addons\SystemInfo\SystemInfoAddon [ RunTime:0.005272s ]
+SQL: SELECT `config` FROM `ewshop_addons` WHERE `name` = 'DevTeam' AND `status` = 1 LIMIT 1   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000059s ]
+INFO: [ template_filter ] --END-- [ RunTime:-0.033548s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.003910s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.006671s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000015s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.010251s ]
+INFO: Run Addons\DevTeam\DevTeamAddon [ RunTime:0.004929s ]
+INFO: [ AdminIndex ] --END-- [ RunTime:0.028872s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.004217s ]
+INFO: [ view_parse ] --END-- [ RunTime:-0.006671s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000012s ]
+INFO: [ view_filter ] --END-- [ RunTime:-0.010572s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000924s ]
+INFO: [ app_end ] --END-- [ RunTime:0.001028s ]
+
+[ 2017-05-25T17:48:12+08:00 ] 219.143.131.41 /index.php?s=/Control/Ad/index.html
+SQL: SHOW COLUMNS FROM `ewshop_menu` [ RunTime:0.0014s ]
+SQL: SELECT `id`,`title`,`url` FROM `ewshop_menu` WHERE `pid` = 0 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0069s ]
+SQL: SELECT `pid` FROM `ewshop_menu` WHERE ( pid !=0 AND url like '%Ad/index%' ) LIMIT 1   [ RunTime:0.0015s ]
+SQL: SELECT * FROM `ewshop_menu` WHERE `id` = 158 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT DISTINCT  `group` FROM `ewshop_menu` WHERE `group` <> '' AND `pid` = 158  [ RunTime:0.0005s ]
+SQL: SELECT `id`,`url` FROM `ewshop_menu` WHERE `pid` = 158 AND `hide` = 0 AND `is_dev` = 0  [ RunTime:0.0003s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '促销管理' AND `pid` = 158 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0003s ]
+SQL: SELECT `id`,`pid`,`title`,`url`,`tip` FROM `ewshop_menu` WHERE `group` = '广告管理' AND `pid` = 158 AND `hide` = 0 AND `is_dev` = 0 ORDER BY sort asc  [ RunTime:0.0003s ]
+NOTIC: [8] Undefined variable: map /home/DemoRoot/ewshop/Ewshop/Control/Controller/AdController.class.php 第 34 行.
+SQL: SHOW COLUMNS FROM `ewshop_ad` [ RunTime:0.0197s ]
+SQL: SELECT COUNT(*) AS tp_count FROM `ewshop_ad` WHERE `status` >= 0 LIMIT 1   [ RunTime:0.0069s ]
+SQL: SELECT `id`,`name`,`title`,`url`,`description`,`meta_title`,`place`,`create_time`,`update_time`,`status`,`icon`,`px` FROM `ewshop_ad` WHERE `status` >= 0 ORDER BY px ASC ,id desc LIMIT 0,20   [ RunTime:0.0006s ]
+SQL: SHOW COLUMNS FROM `ewshop_adposition` [ RunTime:0.0187s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 18 LIMIT 1   [ RunTime:0.0012s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 17 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 16 LIMIT 1   [ RunTime:0.0001s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 15 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 14 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 14 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 14 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 13 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 13 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 13 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 13 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 1 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 1 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 12 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 11 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 10 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 9 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 8 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 7 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT `id`,`name`,`note`,`create_time` FROM `ewshop_adposition` WHERE `id` = 6 LIMIT 1   [ RunTime:0.0002s ]
+INFO: [ view_parse ] --START--
+INFO: [ template_filter ] --START--
+INFO: Run Behavior\ContentReplaceBehavior [ RunTime:0.000308s ]
+INFO: [ template_filter ] --END-- [ RunTime:0.000441s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SHOW COLUMNS FROM `ewshop_picture` [ RunTime:0.0322s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0079s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0017s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0005s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 920 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 912 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 912 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 911 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 911 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 910 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 910 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 905 LIMIT 1   [ RunTime:0.0040s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 905 LIMIT 1   [ RunTime:0.0008s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 907 LIMIT 1   [ RunTime:0.0004s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 907 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 906 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 906 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 905 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 905 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 840 LIMIT 1   [ RunTime:0.0023s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 840 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 837 LIMIT 1   [ RunTime:0.0011s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 837 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 27 LIMIT 1   [ RunTime:0.0238s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 27 LIMIT 1   [ RunTime:0.0003s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 843 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 843 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 25 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 25 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 24 LIMIT 1   [ RunTime:0.0003s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 24 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 844 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 844 LIMIT 1   [ RunTime:0.0002s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 848 LIMIT 1   [ RunTime:0.0196s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 848 LIMIT 1   [ RunTime:0.0003s ]
+NOTIC: [8] Undefined variable: pid /home/DemoRoot/ewshop/Runtime/Cache/Control/7a73a39e7d1f368efcf24c3a1334d3d8.php 第 187 行.
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 21 LIMIT 1   [ RunTime:0.0002s ]
+SQL: SELECT * FROM `ewshop_picture` WHERE `status` = 1 AND `id` = 21 LIMIT 1   [ RunTime:0.0002s ]
+INFO: Run Behavior\ParseTemplateBehavior [ RunTime:0.170713s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.170880s ]
+INFO: [ view_filter ] --START--
+INFO: Run Behavior\WriteHtmlCacheBehavior [ RunTime:0.000427s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000503s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000699s ]
+INFO: [ app_end ] --END-- [ RunTime:0.000881s ]
+

@@ -1,0 +1,258 @@
+<extend name="Public/base"/>
+
+
+
+<block name="body">
+
+	<script type="text/javascript" src="__STATIC__/uploadify/jquery.uploadify.min.js"></script>
+
+	<div class="main-title">
+
+		<h2>{:isset($info['id'])?'编辑':'新增'}项目信息</h2>
+
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+
+				<div id="tab1" class="tab-pane in tab1">
+
+
+
+					<div class="form-item">
+
+						<label class="item-label">
+
+							项目名称<span class="check-tips">（名称不能为空）</span>
+
+						</label>
+
+						<div class="controls">
+
+							<input type="text" name="name" class="text input-large" value="{$info.name|default=''}">
+
+						</div>
+
+					</div>
+					
+					<div class="form-item">
+
+						<label class="item-label">所属城市<span class="check-tips"></span></label>
+
+						<div class="controls">
+							<select name="city"><volist id="vo" name="list">
+								<option value="{$vo.id}">{$vo.title}</option>
+							</volist></select>
+
+						</div>
+
+					</div>	
+                     
+                    					<div class="form-item">
+
+						<label class="item-label">所属机构<span class="check-tips"></span></label>
+
+						<div class="controls">
+							<select name="spere"><volist id="vo" name="spherelist">
+								<option value="{$vo.name}">{$vo.name}</option>
+							</volist></select>
+
+						</div>
+
+					</div>							 
+
+				<div class="form-item">
+
+						<label class="item-label">所属领域<span class="check-tips"></span></label>
+
+						<div class="controls">
+						
+						<volist id="vo" name="lingyulist">
+
+						<label class="checkbox">
+
+						<input type="checkbox" value="{$vo.id}" name="sphere[]">{$vo.title}
+
+						</label>
+</volist>
+
+
+						</div>
+
+					</div>				
+
+					<div class="controls">
+
+						<label class="item-label">照片</label>
+
+						<input type="file" id="upload_picture">
+
+						<input type="hidden" name="pics" id="pics" value="{$info['pics']|default=''}"/>
+
+						<div class="upload-img-box">
+
+						<notempty name="info['pics']">
+
+							<div class="upload-pre-item"><img src="{$info.pics|get_cover='path'}"/></div>
+
+						</notempty>
+
+						</div>
+                        
+ 					<script type="text/javascript">
+
+					//上传图片
+
+				    /* 初始化上传插件 */
+
+					$("#upload_picture").uploadify({
+
+				        "height"          : 30,
+
+				        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+
+				        "fileObjName"     : "download",
+
+				        "buttonText"      : "上传图片",
+
+				        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+
+				        "width"           : 120,
+
+				        'removeTimeout'	  : 1,
+
+				        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+
+				        "onUploadSuccess" : uploadPicture,
+
+				        'onFallback' : function() {
+
+				            alert('未检测到兼容版本的Flash.');
+
+				        }
+
+				    });
+
+					function uploadPicture(file, data){
+
+				    	var data = $.parseJSON(data);
+
+				    	var src = '';
+
+				        if(data.status){
+
+				        	$("#pics").val(data.id);
+
+				        	src = data.url || '__ROOT__' + data.path;
+
+				        	$("#pics").parent().find('.upload-img-box').html(
+
+				        		'<div class="upload-pre-item"><img src="' + src + '"/></div>'
+
+				        	);
+
+				        } else {
+
+				        	updateAlert(data.info);
+
+				        	setTimeout(function(){
+
+				                $('#top-alert').find('button').click();
+
+				                $(that).removeClass('disabled').prop('disabled',false);
+
+				            },1500);
+
+				        }
+
+				    }
+
+					</script>                       
+
+					</div>
+
+
+                    <div class="form-item">
+
+						<label class="item-label">所属机构</label>
+
+						<div class="controls">
+
+							<input type="text" name="shortnote" class="text input-large" value="{$info.shortnote|default=''}">
+
+						</div>
+
+					</div>
+
+					<!--<div class="form-item">
+
+						<label class="item-label">培训风格</label>
+
+						<div class="controls">
+
+                                <label class="textarea input-large">
+                                <textarea name="fengge">{$info.fengge|default=''}</textarea>
+                                </label>
+
+						</div>
+
+					</div>		-->					
+					
+<div class="form-item">
+
+						<label class="item-label">项目介绍</label>
+
+						<div class="controls">
+
+							    <label class="textarea">
+                                <textarea name="content">{$info.content|default=''}</textarea>
+                                {:hook('adminArticleEdit', array('name'=>'content','value'=>$info.content))}
+                                </label>
+
+						</div>
+
+					</div>				
+					
+
+                    
+
+
+				</div>
+
+				<div class="form-item">
+
+					<input type="hidden" name="id" value="{$info.id|default=''}">
+
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+
+				</div>
+
+</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+	<script type="text/javascript">
+
+		//导航高亮
+
+		highlight_subnav('{:U('project')}');
+
+	</script>
+
+</block>
+

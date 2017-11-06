@@ -1,0 +1,32 @@
+<?php if (!defined('THINK_PATH')) exit();?><div class="span<?php echo ($addons_config["width"]); ?>">
+	<div class="columns-mod">
+		<div class="hd cf">
+			<h5>开发团队</h5>
+			<div class="title-opt">
+			</div>
+		</div>
+		<div class="bd">
+			<div class="sys-info">
+				<table>
+					<tr>
+						<th>系统名称</th>
+						<td>一网电商系统</td>
+					</tr>
+					<tr>
+						<th>程序设计</th>
+						<td>刘頔、葛玉川、鲁健</td>
+					</tr>
+					<tr>
+						<th>官方网址</th>
+						<td><a href="http://www.ewangtx.com" target="_blank">www.ewangtx.com</a></td>
+					</tr>
+					<tr>
+						<th>核心框架</th>
+						<td>ThinkPHP 3.2</td>
+					</tr>
+
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

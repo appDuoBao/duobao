@@ -1,0 +1,136 @@
+<include file="Public/uheader"/>
+	<body style="padding-bottom: 2rem;">
+		<div class="xd-Navigation">
+			<ul>
+				<li class="hover"><a href="{:U("center/allorder")}">全部</a></li>
+				<li><a href="{:U("center/needpay")}">待付款</a></li>
+				<li><a href="{:U("center/tobeshipped")}">待发货</a></li>
+				<li><a href="{:U("center/tobeconfirmed")}">待确认</a></li>
+				<li><a href="{:U("center/valuator")}">待评价</a></li>
+				
+			</ul>
+		</div>
+<empty name='allorder'>
+		 <div class="xd-There">
+			<img src="__IMG__/xd/xd-2.png"/>
+		</div>
+ <else />
+      <volist name="allorder" id="po">
+		<div class="xd-content" data-tag="{$po.tag}">
+			<h3>订单号：<meta name="format-detection"content="telphone=no"/> {$po.tag} </meta><span>
+			 <php>
+                   $status=$po['status'];
+                   if($status==-1){ echo "待支付";};
+                   if($status==1){ echo "待发货";}; 
+                   if($status==2){ echo "已发货";};
+                   if($status==3){ echo "交易成功";};
+                   if($status==4){ echo "申请取消订单";};
+                   if($status==5){ echo "取消订单被拒绝";};
+                   if($status==6){ echo "订单已取消";};
+			  </php>       
+			</span></h3>
+			    <volist name="po['id']" id="vo"> 
+			<div class="xd-list">
+				<img src="{$vo.goodid|get_cover_id|get_cover='path'}" alt="" />
+				<ul>
+					<li><a href="{:U('Goods/detail?id='.$vo['goodid'])}">{$vo.goodid|get_good_name}</a></li>
+					<li>数量  {$vo.num}</li>
+					<li>¥ {$vo.price}</li>
+					
+					
+				</ul>
+				
+			</div>
+			 </volist>
+			<div class="payment">
+			  <form method="post" name="payform" id="payform" action="{:U('Shopcart/topay')}" >
+            	<input type="hidden" name="orderid" value="{$po.orderid}" />
+            </form>        
+				<span>{$po.create_time|date='Y-m-d H:i:s',###}</span> 
+				<if condition="$vo['status'] eq '3'  && $vo['child'] neq '0' && $vo['child'] neq '2' && $vo['child'] neq '3' && $vo['child'] neq '5'">
+					<a href="{:U('center/application?cpid='.$vo['goodid'].'&orderid='.$vo['orderid'])}">申请退货</a>
+					 </if>
+					 <if condition="$vo['child'] eq '0'">
+					<a href="javascript:void(0);">已申请退货</a>
+				 </if>
+				<if condition="$vo['child'] eq '2'">
+					<a href="javascript:void(0);">退货中</a>
+				 </if>
+				 <if condition="$vo['child'] eq '3'">
+					<a href="javascript:void(0);">拒绝退货</a>
+				 </if>
+				 <if condition="$vo['child'] eq '5'">
+					 <a href="javascript:void(0);">已退货</a>
+				 </if>
+				<!--<a href="{:U('order/detail?id='.$po['orderid'])}" >订单详情</a>-->
+				<!--<if condition="$po['status'] eq '2'">-->
+			<!---->
+				<!--<a href="{:U('order/wuliu?id='.$po['orderid'])}">查看物流</a>-->
+				<!--</if>-->
+				<if condition="$po['status'] eq '2'">
+					<a href="{:U('order/complete?id='.$po['orderid'])}">确认收货</a>
+				</if>
+				<if condition="($po['ispay'] eq '1') AND ($po['status'] eq '-1')">  
+				<!--<a href="{:U('order/cancel?id='.$po['orderid'])}">取消订单1</a>-->
+				<span class="x-d-span">取消订单
+					<select id="xdxdxdxd">
+						<option value="0">点错了，不取消</option>
+						<option value="1">不想买了</option>
+						<option value="2">买错了</option>
+						<option value="3">太贵了</option>
+						<option value="4">看中别的了</option>
+				 	</select>
+				</span>
+				<a href='javascript:void(0);' onclick="document.getElementById('payform').submit();" class="hover">立即付款</a>
+				</if>
+				<if condition="($po['ispay'] eq '-1') AND ($po['status'] eq '1')">
+					<span class="x-d-span">取消订单
+					<select  id="xdxdxdxd">
+						<option value="0">点错了，不取消</option>
+						<option value="1">不想买了</option>
+						<option value="2">买错了</option>
+						<option value="3">太贵了</option>
+						<option value="4">看中别的了</option>
+					</select>
+				</span>
+				<!--<a href="{:U('order/cancel?id='.$po['orderid'])}">取消订单</a>-->
+				</if>
+			</div>
+			
+		</div>
+	</volist>
+	<div class="xd-order">
+		没有更多订单了
+	</div>
+</empty>
+<script>
+			$("#xdxdxdxd").change(function(){
+//				alert("你选择了"+this.value);
+				var val = $(this).val();
+				var thate = $(this);
+				var idd = thate.parent().parent().parent().attr('data-tag');
+
+
+				$.ajax({
+					type:'post', //传送的方式,get/post
+					url:'{:U("Order/quxiaodingdan")}', //发送数据的地址
+					data:{
+						tag:idd,val:val
+					},
+					dataType: "json",
+					success:function(data)
+					{
+						console.log(data);
+						if(data.status==1){
+							thate.parent().parent().parent().remove();
+						}else{
+							alert(data.msg);
+						}
+
+					},
+					error:function (XMLHttpRequest, ajaxOptions, thrownError) {alert(XMLHttpRequest+thrownError); }
+				})
+				
+			})
+		</script>
+<include file="Public/footer"/>

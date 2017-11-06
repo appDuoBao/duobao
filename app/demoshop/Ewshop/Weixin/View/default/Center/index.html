@@ -1,0 +1,109 @@
+<include file="Public/uheader"/>
+<body>
+	<header class="user-wrap">
+		<div class="user">
+			<div class="user-img">
+				<empty name='faceid'><img src="/Public/static/images/noface.jpg" width="120" height="120"/><else /><img src="{$faceid|get_cover='path'}"/></empty>
+			</div>
+			<div class="user-info">
+				<p>{$uid|get_nickname}</p>
+				<!--<span>非会员</span>-->
+			</div>
+			<div class="user-btn">
+				<a href="{:U("center/information")}" class="iconfont">&#xe662;</a>
+			</div>
+		</div>
+	</header>
+	<div class="user-1">
+		<div class="user-1-wrap">
+			<div>
+				<a href="{:U("center/needpay")}">
+					<p class="iconfont">&#xe621;</p>
+					<span>待支付</span>
+				</a>
+			</div>
+			<div>
+				<a href="{:U("center/tobeshipped")}">
+					<p class="iconfont">&#xe61e;</p>
+					<span>待发货</span>
+				</a>
+			</div>
+			<div>
+				<a href="{:U("center/tobeconfirmed")}">
+					<p class="iconfont">&#xe60e;</p>
+					<span>待确定</span>
+				</a>
+			</div>
+			<div>
+				<a href="{:U("center/valuator")}">
+					<p class="iconfont">&#xe676;</p>
+					<span>待评价</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="user-2 mrt-20">
+		<a href="{:U("center/allorder")}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe617;</span>
+				<i>全部订单</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+		<a href="{:U('center/promotionyhj')}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe703;</span>
+				<i>我的优惠券</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+		<a href="{:U('center/collect')}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe616;</span>
+				<i>我的收藏</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+		
+		<!--<a href="{:U('center/collect')}">
+			<div class="user-2-wrap">
+				<span class="iconfont"><img src="/Public/static/images/qian.png"/></span>
+				<i>我的钱包</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+		
+		<a href="{:U('center/collect')}">
+			<div class="user-2-wrap">
+				<span class="iconfont"><img src="/Public/static/images/fx-a.png"/></span>
+				<i>分享他人</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+	</div>-->
+	<div class="user-2 mrt-20">
+		<a href="{:U('shopcart/index')}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe614;</span>
+				<i>购物车</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+		<a href="{:U('center/address')}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe674;</span>
+				<i>管理地址</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+	</div>
+	<div class="user-2 mrt-20" style="margin-bottom: 3rem;">
+		<a href="{:U('User/logout')}">
+			<div class="user-2-wrap">
+				<span class="iconfont">&#xe674;</span>
+				<i>退出</i>
+				<em class="iconfont">&#xe662;</em>
+			</div>
+		</a>
+	</div>
+<include file="Public/footer"/>

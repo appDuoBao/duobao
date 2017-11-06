@@ -1,0 +1,127 @@
+<extend name="Public/base"/>
+<block name="body">
+
+	<div class="main-title">
+		<h2>{:isset($info['id'])?'编辑':'新增'}优惠券</h2>
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+				<div id="tab1" class="tab-pane in tab1">
+					<div class="form-item">
+						<label class="item-label">
+							优惠券名称<span class="check-tips">（名称不能为空）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="name" class="text input-large" value="">
+						</div>
+					</div>
+
+ 					<!--<div class="form-item">
+						<label class="item-label">
+							发放类型<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="type" id="type">
+                                <option value="1" selected >按用户发放</option>
+								<option value="2" >线下发放</option>
+                            </select>                          
+                        </div>
+					</div> -->
+					<input type="hidden" name="type" value="1">
+    
+ 					<div class="form-item">
+						<label class="item-label">
+							优惠券金额<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+							<input type="text" name="price" class="text input-large" value="">
+						</div>
+					</div>  
+					<div class="form-item">
+						<label class="item-label">
+							最小订单金额<span class="check-tips">（只有商品总金额达到这个数的订单才能使用这种优惠券）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="min_price" class="text input-large" value="">
+						</div>
+					</div>                                   
+					<div class="form-item">
+						<label class="item-label">
+							使用起始时间<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+							<input type="text" name="start_time" class="text time" value="">
+						</div>
+					</div>
+					<div class="form-item">
+						<label class="item-label">
+							使用结束时间<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+							<input type="text" name="end_time" class="text time" value="">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-item">
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+<link href="__STATIC__/datetimepicker/css/datetimepicker.css" rel="stylesheet" type="text/css">
+
+<php>if(C('COLOR_STYLE')=='blue_color') echo '<link href="__STATIC__/datetimepicker/css/datetimepicker_blue.css" rel="stylesheet" type="text/css">';</php>
+
+<link href="__STATIC__/datetimepicker/css/dropdown.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript" src="__STATIC__/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+$(function(){
+
+    $('.date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language:"zh-CN",
+        minView:2,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+
+    $('.time').datetimepicker({
+        format: 'yyyy-mm-dd hh:ii:ss',
+        language:"zh-CN",
+        minView:0,
+        autoclose:true,
+		todayBtn:true,
+		todayHighlight:true
+    });
+});	
+</script>
+<script type="text/javascript">
+	//导航高亮
+	highlight_subnav('{:U('PromotionYhj/index')}');
+</script>
+
+</block>
+

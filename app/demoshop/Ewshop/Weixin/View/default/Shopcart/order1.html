@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<if condition="$meta_title eq '首页'">
+		<title>{:C('WEB_SITE_TITLE')}</title>
+	<else />
+		<title>{$meta_title}_{:C('WEB_SITE_TITLE')}</title>
+	</if>
+	<meta name="keywords" content="{:C('WEB_SITE_KEYWORD')}"/>
+	<meta name="description" content="{:C('WEB_SITE_DESCRIPTION')}" />
+	<link rel="stylesheet" href="__CSS__/font/iconfont.css" />
+	<link rel="stylesheet" href="__CSS__/font1/iconfont.css" />
+	<link rel="stylesheet" href="__CSS__/style.css" />
+	<script type="text/javascript" src="__JS__/jquery.min.js" ></script>
+	<script type="text/javascript" src="__JS__/common.js" ></script>
+</head>
+<body>
+
+<!--地址添加层-->
+
+<div id = "newDz" style="position: fixed;width: 100%;top: 100%;height: 100%;background: #FBF9FE;z-index: 999;display: none;transition: top 1s;">
+<input type="hidden" id="addressid">
+		<div class="dz-input-wrap">
+		 
+			<input type="text" placeholder="请填写姓名" id="realname"/>
+		</div>
+		<div class="dz-input-wrap">
+			<input type="text" placeholder="请填写联系电话" id="phone"/>
+		</div>
+		<div class="dz-input-wrap" id = "xuandizhi">
+			<span>请选择省、市、区</span>
+			            <input type="hidden" name="areaid"  id="areaid" value="">
+			<div class="iconfont">&#xe662;</div>
+		</div>
+		
+		
+		<div class="dz-input-wrap">
+			<input  type="text" placeholder="详细地址" name="address"  id="address"/>
+		</div>
+		<!--<div class="dz-input-wrap">
+			<input type="text" placeholder="邮政编码(选填)"/>
+		</div>-->
+		<div class="dz-input-wrap mrt-20 border-top">
+			<span>设为默认收货地址</span>
+			<div>
+				<label>
+					<input id="isdefault" checked="checked"  name="default" type="checkbox"><input type="checkbox"/>
+					<i class="icon">&#xe61e;</i>
+				</label>
+			</div>
+		</div>
+		<button type="button" class="max-btn mrt-40 dz-btn" onClick="savemsg();">保存</button>
+		<button type="button" id = "closeAdd" class="max-btn mrt-40 btn-red">返回</button>
+	<div class="alert-bg" style="display: none;"></div>
+	<div class="select" id="alert_dizhi" style="display: none;">
+			<div class="title"><i>配送至</i><span class="icon" id = "close">&#xe652;</span></div>
+			<div class="content">
+				<div class="select-dz">
+					<div class="dizhi-zizhi">
+						<div oid = "0" class="hover">省份</div>
+						<div oid = "1">市</div>
+						<div oid = "2">区</div>
+					</div>
+					<div class="select-dz-wrap">
+						
+						<ul oid = "0">
+							 <volist id="vo" name="arealist">
+								<li ovalue="{$vo.id}">{$vo.name}</li>
+			                </volist>
+						</ul>
+						<ul oid = "1"></ul>
+						<ul oid = "2"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	  <script type="text/javascript">
+	 
+function savemsg() { 
+
+		
+
+		//判断是否是默认地址
+
+		if (document.getElementById("isdefault").checked==true) {
+
+		   var info="yes";
+
+		} else {
+
+		   var info="no";
+
+		}
+
+		var addressid=$("#addressid").val();
+
+		var realname=$("#realname").val();
+
+		var areaid=$("#areaid").val();//地区id
+
+		var address=$("#address").val();
+
+		var phone=$("#phone").val();
+
+		if(realname==''){
+
+			alert("收货人不能为空");
+
+			return false;
+
+		}
+
+		$.ajax({
+
+			type:'post', //传送的方式,get/post
+
+			url:'{:U("Shopcart/saveaddress")}', //发送数据的地址
+
+			data:{addressid:addressid,areaid:areaid,address:address,phone:phone,realname:realname,msg:info},
+
+			dataType: "json",
+
+			success:function(data,$addresslist){
+
+				
+				var str = '';
+
+				var num = 0;
+
+				$.each(data,function(i,result){
+
+					num++;
+
+					str = str+'<div class="addresslist"><div  id="addresslist"><div class="sur su_r clear"><label class="button-label"><p><input type="checkbox"  class="fa"/></p></label><p class="default">';
+
+					if(result.status==1){
+
+					str = str+'<strong>【默认】</strong>';
+
+					}
+
+					
+
+					str = str + result.address+'<br>';
+
+					str = str + result.realname+' '+result.cellphone+'</p>';
+
+					str = str +'<div class="dizhi-bottom"><a href="javascript:void(0);" rel="'+result.id+'"><div class="su_b"><em></em><p>编辑</p></div></a><a href="/Weixin/center/delAddress/id='+result.id+'.html"><div class="su_p"><em></em><p>删除</p></div></a></div></div></div></div>';
+
+					 
+
+				}); 
+
+				if(num<5){
+
+					str = str +'<div class="sure clear"><a href="javascript:void(0);" id="show"><p>新增收货地址</p><span></span></a></div>';
+
+				}
+					alert(444);
+
+				$("#addresslist").html(str);
+
+				$('#formsender').hide();
+
+				$('.addresslist').show();	
+
+			},
+
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError)
+			{alert("表单错误，"+XMLHttpRequest+thrownError); }})
+
+			
+
+	}		 
+	  
+	  
+			$("#closeAdd").click(function(){
+				var top = $("#newDz")[0].offsetHeight;
+				$("#newDz").css("top",top + "px");
+				var timer = setTimeout(function(){
+					$("#newDz").hide();
+				},1100);
+			});
+                	$(function(){
+
+						if($('.ico_check input').is(":checked"))
+
+						{
+
+							$(this).parent('label').addClass('hover');	
+
+						}
+
+						else
+
+						{
+
+							$(this).parent('label').removeClass('hover');	
+
+						}
+
+						
+
+						$('.ico_check input').on("click",function(){
+
+							
+
+							if($(this).parent('label').hasClass('hover'))
+
+							{
+
+								$(this).parent('label').removeClass('hover');
+
+							}
+
+							else
+
+							{
+
+								$(this).parent('label').addClass('hover');	
+
+							}							
+
+						})
+
+													
+
+					})
+
+                </script>
+	<script>
+		
+		
+		$("label").change(function(){
+			if($(this).find("input").is(":checked")){
+				$(".icon",this).html("&#x3551;");
+				$(".icon",this).addClass("color-che");
+			}else{
+				$(".icon",this).html("&#xe61e;");
+				$(".icon",this).removeClass("color-che");
+			}
+		})
+		$(function(){
+		
+			$(".dizhi-zizhi div").click(function(){
+				var oid = $(this).attr("oid");
+				showUl(oid);
+			})
+			
+			$("#xuandizhi").click(function(){
+				alert(132)
+				$(".alert-bg").eq(0).show();
+				$("#alert_dizhi").show();
+				showUl(0);
+			})
+			
+			
+			$(".select-dz-wrap ul").eq(0).find("li").click(function(){
+				$(".select-dz-wrap ul").eq(0).find("li").removeClass("hover");
+				$(this).addClass("hover");
+				
+				var oid = $(this).attr("ovalue");
+				
+				if(oid <= 5){
+					var li = document.createElement("li");
+					li.ovalue = oid;
+					li.innerHTML = this.innerHTML;
+					li.onclick = function(){
+						$(this).parent().find("li").removeClass("hover");
+						$(this).addClass("hover");
+						changearea(this.ovalue , 2);
+					}
+					$(".select-dz-wrap ul").eq(1).html("").append(li);
+					showUl(1);
+				}else{
+					changearea(oid , 1);
+				}
+				
+				
+			})
+			
+			$("#close").click(function(){
+				close();
+			})
+			
+		
+			//..............
+			
+			
+		})
+		function close(){
+			var txt = "" , num = 0;
+			var citys = [];
+			$(".select-dz-wrap ul").each(function(){
+				$(this).find("li").each(function(){
+					if($(this).attr("class") == "hover"){
+						num++;
+						citys.push(this.getAttribute("ovalue") || this.ovalue);
+						txt += $(this).html() + " ";
+					}
+				})
+			})
+			
+			
+			
+			if(num < 3){
+				alert("请完整的选择配送地址!")
+				return false;
+			}else{
+				$(".alert-bg").hide();
+				$("#alert_dizhi").hide();
+			}
+			// 请选择省、市、区
+			if(txt){
+				$("#pro").val(citys[0]);
+				$("#city").val(citys[1]);
+				$("#area").val(citys[2]);
+				$("#areaid").val(citys[2]);
+				$("#xuandizhi span").html(txt);
+			}else{
+				$("#xuandizhi span").html("请选择省、市、区");
+			}
+		}
+		function showUl(oid,cityid,fn){
+			$(".select-dz-wrap ul").hide();
+			$(".dizhi-zizhi div").removeClass("hover").eq(oid).addClass("hover");
+			$(".select-dz-wrap ul").each(function(){
+				if($(this).attr("oid") == oid){
+					$(this).show();
+				}
+			})
+		}
+	</script>
+
+<!--地址添加层-->
+<form action='{:U("Shopcart/createorder")}' method="post" name="myform" id="myform">
+	<div class="tj-header">
+		
+		<input type="hidden" name="sender" id = "senderid"/>
+		<div>
+		<volist name="addresslist" id="vo">
+		<if condition="$vo.status eq 1">
+		<p>{$vo.realname}<span>{$vo.cellphone}</span></p>
+						<i><volist name="vo.areas" id="v">
+
+					<notempty name="v">
+
+						{$v}&nbsp;&nbsp;
+
+					</notempty>
+
+				</volist> {$vo.address}</i>
+			</if>
+			</volist>
+		</div>
+		<button type="button" class="iconfont">&#xe662;</button>
+	</div>
+	<div class="tj-title">
+		<span class="icon">&#xe615;</span>购物清单
+	</div>
+	<div class="tj-wrap">
+		<volist name="shoplist" id="vo">
+			<div class="tj-cp">
+				<div class="img">
+					<a href="{:U('Goods/detail?id='.$vo['goodid'])}"><img src="{$vo.goodid|get_cover_id|get_cover='path'}"/></a>
+				</div>
+				<div class="txt">
+					<a href="{:U('Goods/detail?id='.$vo['goodid'])}"><p>{$vo.goodname}</p></a>
+					<i>数量 {$vo.num}</i>
+					<span>￥{$vo.price}</span>
+				</div>
+			</div>
+		</volist>
+
+		<div class="tj-txt-box border-bot">
+			<div class="tj-txt1">
+				<span>运送方式</span>
+				trans
+				<if condition="$trans eq 0">
+				<div>包邮  免运费</div>
+				<else />
+				<div>邮费  {$trans}</div>
+				</if>
+			</div>
+			<div class="tj-txt1">
+				<span class="color-hui">给卖家留言：</span>
+				<div>
+					<input type="text"/>
+				</div>
+			</div>
+			<div class="tj-txt1">
+				<span></span>
+				<div><i>共{$num}件商品</i>合计：<em class="color-red">¥ {$total}</em></div>
+			</div>
+		</div>
+		<div class="tj-txt-box border-tb">
+			<div class="tj-txt1">
+				<span>支付方式</span>
+				<div id="zhifuxingshi"><span>在线支付</span><em class="iconfont">&#xe662;</em></div>
+			</div>
+		</div>
+		<div class="tj-txt-box border-tb">
+			<div class="tj-txt1">
+				<span>优惠券</span>
+				<div id="youhuijuan"><i class="color-hui">无可用</i><span class="color-red">已优惠用¥20.00</span><em class="iconfont">&#xe662;</em></div>
+			</div>
+		</div>
+		<div class="tj-txt-box border-tb">
+			<div class="tj-txt2">
+				<span>商品金额</span>
+				<div>¥{$total}</div>
+			</div>
+			<div class="tj-txt2">
+				<span>运费</span>
+				<div>＋¥{$trans}</div>
+			</div>
+			<div class="tj-txt2">
+				<span>优惠券</span>
+				<div>－¥20.00</div>
+			</div>
+		</div>
+	</div>
+	<div class="tj-footer border-top">
+		<span>实付：<i>¥ {$all}</i></span>
+		<button class="max-btn btn-red" type="submit"  onclick="makeorder();return false">提交订单</button>
+	</div>
+	</form>
+	<div class="alert-bg" style="display: none;"></div>
+	<div class="select" id="alert_zhifu" style="display: none;">
+		<div class="title"><i>支付方式</i><span class="icon" id = "close">&#xe652;</span></div>
+		<div class="content">
+			<div class="tj-zhifu tj-box" name = "支付方式">
+				<div class="zhifu-wrap zhifufangshi">
+					<img class="logo" src="__IMG__/zfb.png"/>
+					<span>支付宝支付</span>
+					<button class="iconfont">&#xe662;</button>
+				</div>
+				<div class="zhifu-wrap zhifufangshi">
+					<img class="logo" src="__IMG__/wx.png"/>
+					<span>微信支付</span>
+					<button class="iconfont">&#xe662;</button>
+				</div>
+				<div class="zhifu-wrap zhifufangshi">
+					<img class="logo" src="__IMG__/yl.png"/>
+					<span>银联支付</span>
+					<button class="iconfont">&#xe662;</button>
+				</div>
+			</div>
+		
+			<div class="tj-dizhi tj-box" name = "选择收货地址">
+				<div class="dizhi-wrap">
+				<volist name="addresslist" id="vo">
+					<div class="dizhi-top" oid = "{$vo.id}">
+						<p>{$vo.realname}<span>{$vo.cellphone}</span><em>点击选择</em></p>
+						<i><volist name="vo.areas" id="v">
+
+					<notempty name="v">
+
+						{$v}&nbsp;&nbsp;
+
+					</notempty>
+
+				</volist> {$vo.address}</i>
+					</div>
+					<div class="dizhi-bottom">
+						<div class="dizhi-bianji">
+							<a href="javascript:void(0);" rel="{$vo.id}"><span class="iconfont">&#xe645;</span> 编辑</a>
+						</div>
+						<div class="delete">
+							<a href="{:U('center/delAddress',array('id'=>$vo['id']),'')} "><span class="iconfont">&#xe6a5;</span> 删除</a>
+						</div>
+					</div>
+				</volist>
+
+				</div>
+				<if condition="$addnum LT 5">
+				<div class="dizhi-wrap-btn">
+					 <a href="javascript:void(0);" id="show"><button class="max-btn btn-red">新增收货地址</button></a>
+				</div>
+				</if>
+			</div>
+			
+			<div class="tj-youhui tj-box" name = "优惠卷">
+				<div class="zhifu-wrap">
+					<span>不使用优惠券</span>
+					<label>
+						<input type="radio" name="yhj"/>
+						<i class="icon">&#xe61e;</i>
+					</label>
+				</div>
+				<div class="zhifu-wrap">
+					<span>满200减20元： 优惠20.00元</span>
+					<label>
+						<input type="radio" name="yhj"/>
+						<i class="icon">&#xe61e;</i>
+					</label>
+				</div>
+			</div>
+			
+			<div class="tj-zhifu1 tj-box" name = "支付形式">
+				<div class="zhifu-wrap" id = "zaixianzhifu">
+					<span>在线支付</span>
+					<label oid = "zaixianzhifu">
+						<input type="radio" name="yhj"/>
+						<i class="icon">&#xe61e;</i>
+					</label>
+				</div>
+				<div class="zhifu-wrap" id = "huodaofukuan">
+					<span>货到付款</span>
+					<label>
+						<input type="radio" name="yhj"/>
+						<i class="icon">&#xe61e;</i>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<script>
+	
+	
+	function AJAX(){
+		return new XMLHttpRequest;
+	}
+	
+	$('.dizhi-bianji').on('click',function(){
+
+		var addressid = $(this).find('a').attr("rel");
+		
+		
+		$("#newDz").show();
+		var time = setTimeout(function(){
+			$("#newDz").css("top","0px");
+			clearTimeout(time);
+		},16);
+		
+
+
+
+		var ajax = AJAX();
+		ajax.onload = function(){
+			console.log(ajax.responseText);
+		}
+		ajax.open("get",'{:U("Shopcart/getaddress")}?addressid='+addressid,true);
+		ajax.send();
+
+//		$.ajax({
+//
+//			type:"post", //传送的方式,get/post
+//
+//			url:'{:U("Shopcart/getaddress")}', //发送数据的地址
+//
+//			data:{addressid:addressid},
+//
+//			dataType:"json",
+//
+//			success:function(data){
+//				
+//				var data = JSON.stringify(data);
+				
+//				console.log(data)
+				
+//				$("#realname").val(data.realname);
+//
+//				$("#phone").val(data.cellphone);
+//
+//				$("#address").val(data.address);
+//
+//				$("#addressid").val(addressid);
+//
+//				$("#areaid").val(data.area);
+//
+//				$("#areaids").nextAll().remove();//地区下拉框置空
+//
+//				$('.addresslist').hide();
+//
+//				$('#formsender').show();	
+//
+//				$.each(data.areas,function(i,result){
+//
+//					if(i==0){
+//
+//						var obj = $("#areaids");
+//
+//						obj.find("option[value='"+result+"']").attr("selected",true);						
+//
+//					}
+//
+//					//地区赋值
+//
+//					setTimeout(function(){
+//
+//					   changeareabyid(result,data.areas[i+1]);
+//
+//					},500);	
+//
+//					
+//
+//				});				
+
+				
+
+//			},
+
+//			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+//				alert("表单错误，"+XMLHttpRequest+thrownError); 
+//			}
+
+//		})		
+
+	})
+	
+		$(function(){
+			$("label").change(function(){
+				$("label .icon").html("&#xe61e;").removeClass("color-che");
+				$(".icon",this).html("&#x3551;").addClass("color-che");
+			})
+			$("#zaixianzhifu").click(function(){
+					$(".tj-box").hide();
+					$(".tj-zhifu").show();
+					$("#alert_zhifu .title i").html($(".tj-zhifu").attr("name"))
+			})
+			
+			$(".tj-header").click(function(){
+				$(".alert-bg").show();
+				$(".select").show();
+				$(".select .title i").html($(".tj-dizhi").attr("name"))
+				
+				$(".tj-box").hide();
+				$(".tj-dizhi").show();
+			})
+			
+			$(".zhifufangshi,#huodaofukuan").click(function(){
+				$("#zhifuxingshi span").html($(this).find("span").html());
+				close()
+			})
+			
+			$("#zhifuxingshi").click(function(){
+				$(".alert-bg").show();
+				$(".select").show();
+				$(".select .title i").html($(".tj-zhifu1").attr("name"))
+				
+				$(".tj-box").hide();
+				$(".tj-zhifu1").show();
+			})
+			
+			/*$("#close").click(function(){
+				close();
+			})*/
+			
+			function close(){
+				$(".alert-bg").hide();
+				$(".select").hide();
+			}
+			
+			$("#youhuijuan").click(function(){
+				$(".alert-bg").show();
+				$(".select").show();
+				$(".select .title i").html($(".tj-youhui").attr("name"))
+				
+				$(".tj-box").hide();
+				$(".tj-youhui").show();
+			})
+			
+			$(".dizhi-top").click(function(){
+				var txt = $(this).html();
+				txt = txt.replace(/<em>.*<\/em>/,"");
+				txt = txt.replace(/<p>/,"<p>收件人: ");
+				$(".tj-header div").html(txt);
+				$("#senderid").val($(this).attr("oid"))
+				$(".alert-bg").hide();
+				$(".select").hide();
+			})
+
+			
+		})
+		
+			//点击列表，显示修改层
+	$('#show').on('click',function(){
+		$("#newDz").show();
+		$(".alert-bg").hide();
+		$(".select").hide();
+		var time = setTimeout(function(){
+			$("#newDz").css("top","0px");
+			clearTimeout(time);
+		},16);
+			
+	})//点击添加地址。弹出添加层
+	</script>
+
+<script type="text/javascript">
+	function checktcode()  //检查优惠券是否可以
+	{
+		var sn = $("#tyhqid").val();
+		var orderprice = {$all};
+		if(sn!==""){
+			$.ajax({
+				type:'post',
+				url:'{:U("User/checkcode")}', //发送数据的地址//
+				data:{couponid:sn,orderprice:orderprice},
+				dataType: "json",
+				success:function(data){
+					if(data.msg=="yes"){
+						$("#yhqid").val(sn);
+						$("#cyhqid").val("");//清除选中优惠券信息
+						$("#yhqprice").html(data.yhqprice);//优惠券金额
+						$("#TotalNeedPay").html(data.nowprice);//最总价格
+						$("#TotalNeedPayp").html(data.nowprice);//最总价格
+					}else{
+						alert(data.info);
+						$("#yhqid").val('');
+						$("#yhqprice").empty();
+						$("#TotalNeedPay").html(orderprice);//最总价格
+					}
+				}
+			});//ajax结束
+		}//if结束
+
+	}
+
+	function checkcode(sn)  //检查优惠券是否可以
+	{
+		var orderprice = {$all};
+		if(sn!==""){
+			$.ajax({
+				type:'post',
+				url:'{:U("User/checkcode")}', //发送数据的地址//
+				data:{couponid:sn,orderprice:orderprice},
+				dataType: "json",
+				success:function(data){
+					if(data.msg=="yes"){
+						$("#yhqid").val(sn);
+						$("#tyhqid").val('');//清除填写的优惠券信息
+						$("#yhqprice").html(data.yhqprice);//优惠券金额
+						$("#TotalNeedPay").html(data.nowprice);//最总价格
+						$("#TotalNeedPayp").html(data.nowprice);//最总价格
+					}else{
+						alert(data.info);
+						$("#yhqid").val('');
+						$("#yhqprice").empty();
+						$("#TotalNeedPay").html(orderprice);//最总价格
+					}
+				}
+			});//ajax结束
+		}//if结束
+	}
+	//城市联动菜单选择
+
+function changearea(oid , indexx){
+
+
+
+	$.ajax({
+
+		type:'post', //传送的方式,get/post
+
+		url:'{:U("Shopcart/changearea")}', //发送数据的地址
+
+		data:{pid:oid},
+
+		dataType: "json",
+
+		success:function(data){
+			
+			var citys = data.list;
+			
+			if(data.msg == "yes"){
+				
+				var ul = document.querySelectorAll(".select-dz-wrap ul")[indexx];
+				ul.innerHTML = "";
+				var doms = document.createDocumentFragment();
+				for(var i = 0 , len = citys.length ; i < len; i++){
+					
+					var li = document.createElement("li");
+					li.onclick = function(){
+						
+						$(this).parent().find("li").removeClass("hover");
+						$(this).addClass("hover");
+						if($(this).parent().attr("oid") < 2){
+							changearea(this.ovalue , 2);
+						}else{
+							close();
+						}
+						
+					}
+					li.ovalue = citys[i]["id"];
+					li.innerHTML = citys[i]["name"];
+					li.pid = citys[i]["pid"];
+					doms.appendChild(li);
+				}
+				ul.appendChild(doms);
+				showUl(indexx);
+				
+			}
+			
+
+		},
+
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表1单错误，"+XMLHttpRequest+thrownError); }
+
+	})
+
+}		
+
+//城市联动菜单选择 thisvalue选择的地区，curid下一级地区id
+
+function changeareabyid(thisvalue,curid){
+
+	$.ajax({
+
+		type:'post', //传送的方式,get/post
+
+		url:'{:U("Shopcart/changearea")}', //发送数据的地址
+
+		data:{pid:thisvalue},
+
+		dataType: "json",
+
+		success:function(data){
+
+			var str = '';
+
+			if(data.msg=='yes'){
+
+				str = str + '<select name="areaids[]" onchange="changearea(this);" ><option value="0">请选择地区</option>';
+
+				$.each(data.list,function(index,v){
+
+					if(curid == v.id){
+
+						str = str + '<option value="'+v.id+'" selected>'+v.name+'</option>';
+
+					}else{
+
+						str = str + '<option value="'+v.id+'">'+v.name+'</option>';
+
+					}
+
+				})	
+
+				str = str + '</select>';			
+
+			}else if(data.msg=='no'){
+
+				$("#areaid").val(thisvalue);
+
+			}
+
+			$("#arealists").append(str);
+
+		},
+
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+
+	})
+
+}
+</script>
+<script type="text/javascript">
+
+function checkSubmitMobil() {
+		if ($("#mobile").val() == "") {
+			alert("手机号码不能为空！");
+			$("#mobile").focus();
+			return false;
+		}
+		if (!$("#mobile").val().match(/^(((13[0-9]{1})|159|153)+\d{8})$/)) {
+			alert("手机号码格式不正确！");
+			$("#mobile").focus();
+			return false;
+		}
+		return true;
+	}
+	function makeorder() {
+		//判断默认地址是否选中,获取地址id
+		/*  if (document.getElementById("default").checked==true) {
+		 document.getElementById("senderid").value=document.getElementById("default").value;
+		 document.myform.submit();
+		 }
+		 */
+		var val=$('input:radio[name="sender"]:checked').val();
+		//判断新地址是否选中,获取地址id
+		if(val==null){
+			alert("请选择一个地址!");return false;
+		}else{
+			document.getElementById("senderid").value=val;
+			document.myform.submit();
+		}
+	}
+
+</script>
+</body>
+</html>

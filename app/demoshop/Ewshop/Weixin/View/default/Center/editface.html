@@ -1,0 +1,85 @@
+<html>
+<header></header>
+<body>
+
+<style>
+body{ background:#E7E8EB;}
+</style>
+<div class="bcy_body" style="margin-top:0px;">
+  <form method="post" class="person-info" name="form" action="{:U('Center/changeface')}" enctype="multipart/form-data">
+  <table width="100%">
+    <tr>
+      <td align="right" width="30%" align="center">上传头像：</td>
+      <td>
+    <!--  <input type="file" id="upload_picture" class="uploadify-button">-->
+        <if condition="$info.face neq 0">
+            <img src="{$info.face|get_cover='path'}" id="pic-info" width="200px" height="200px"/>
+        <else />
+            <img src="/Public/static/images/noface.jpg" id="pic-info" width="200px" height="200px"/>
+        </if>        
+      </td>
+    </tr>
+    <tr>
+  
+    <td> <td><input type="file" name="face" class="uploadify-button"></td></tr>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input type="hidden" id="pic" name="pic" />
+           <!-- <input type="hidden" name="face"  id="face" value="{$info.face|default=''}"/>-->
+            <input type="submit" class="btn_submit" class="submit" value="保存">
+            <a href="/Weixin/center/index.html" class="y_fh">返回</a>
+        </td>
+    </tr>
+  </table>   
+  </form> 
+  </div>
+ <style type="text/css">
+.bcy_body{ margin-top:80px; padding-top:30px}
+.bcy_body tr td {
+    color: #666;
+    font-size: 14px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+}
+.uploadify-button {
+    background-color: #505050;
+    background-image: -moz-linear-gradient(center bottom , #505050 0%, #707070 100%);
+    background-position: center top;
+    background-repeat: no-repeat;
+    color: #FFF;
+    font: bold 12px Arial,Helvetica,sans-serif;
+    text-align: center;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+    width:200px;
+}
+.submit a, .btn_submit {
+    color: #FFF;
+    text-align: center;
+    width:80px;
+    height:30px;
+    line-height:30px;
+    background: #0095DA none repeat scroll 0% 0%;
+    display: inline-block;
+    font-size: 14px;
+    border: medium none; float:left; margin-right:40px;}
+ 
+a.y_fh{
+    color: #FFF;
+    text-align: center;
+    width:80px;
+    height:30px;
+    line-height:30px;
+    background: #0095DA none repeat scroll 0% 0%;
+    display: inline-block;
+    font-size: 14px;
+    border: medium none;} 
+ </style>
+
+<div class="bcy_grzx_bot_foter_logo" style=" background:none;">
+	
+</div>
+  
+</div>
+</html>

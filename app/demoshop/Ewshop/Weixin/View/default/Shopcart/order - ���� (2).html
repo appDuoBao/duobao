@@ -1,0 +1,331 @@
+<include file="Public/header"/>
+
+<script  type="text/javascript" src="__IMG__/bcy_jquery.js"></script>
+<div class="bcy_body">
+
+<!--地址添加层-->
+<div id="senderdetail"></div>
+<div class="bcy_body_cen bcy_body_cen_add"  id="formsender" style="margin-bottom:30px; display:none; border-bottom:1px solid #CCC;">
+    <div class="bcy_txdz">
+    <input type="hidden" id="addressid">
+        <table>
+            <tr>
+                <td width="150" align="right" style="vertical-align:middle;">收货人：</td>
+                <td><input type="text" placeholder="请输入姓名" id="realname"></td>
+            </tr>
+            <tr>
+                <td align="right" style="vertical-align:middle;">手机号：</td>
+                <td><input type="text" placeholder="手机号码" id="phone" maxlength="11"></td>
+            </tr>
+
+            <tr>
+                <td align="right" style="vertical-align:middle;">详细地址：</td>
+                <td>
+                    <input type="text" placeholder="请输入详细地址" id="address">
+                </td>
+            </tr>
+            <tr>
+                <td align="right" style="vertical-align:middle;">设为默认：</td>
+                <td>
+                <input id="isdefault" checked="checked"  name="default" type="checkbox">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><a href="javascript:void(0)" class="bcy_txdz_submit" onclick="savemsg();">保存</a>
+                <a href="javascript:void(0)" class="bcy_txdz_submit" onclick="quxiao();">取消</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!--地址添加层-->
+
+
+
+
+<!--地址选择列表层-->
+
+<div class="bcy_txdz bcy_txdz_list" id="addresslist">
+
+    <volist name="addresslist" id="vo">  
+    <div class="bcy_qrsh_o bcy_qrsh_o_select">
+    	<label>
+    	<input class="bcy_qrsh_o_radio" type="radio" checked="checked" value="{$vo.id}" rel="{$vo.id}"/>
+        <div class="bcy_qrsh_o_top">
+            
+            <h1>{$vo.realname}</h1>
+            <p>{$vo.cellphone}</p>
+            <div class="cls"></div>
+            
+        </div>
+        <div class="bcy_qrsh_o_bot">
+            <p>{$vo.address}</p>
+            <a class="pen_a" href="javascript:void(0);" rel="{$vo.id}"><img class="pen" src="__IMG__/pen.png" /></a>
+            <div class="cls"></div>
+        </div>
+        </label>
+    </div>
+    </volist>
+
+    <div class="bcy_qrsh_o">
+    <a href="javascript:vod(0);" id="show">
+                <div class="bcy_qrsh_o_top bcy_qrsh_o_top_xz">
+                    <h1>新增收货地址</h1><p><img src="__IMG__/more_jia.png"></p>
+                    <div class="cls"></div>
+                </div>
+    </a>
+    </div>
+</div>
+
+
+
+<!--地址选择列表层-->
+
+
+    <div class="bcy_qrsh" id="addressdiv">
+   
+        <empty name="address"> 
+        <!---这里做自动触发地址添加层-->
+ 			<script type="text/javascript">
+            	$('.bcy_body_cen_add').show();
+            </script>
+        <else/>
+        <!---这里做点击触发地址列表选择层-->
+        
+            <div class="senderdetail_o">
+                <div class="bcy_qrsh_o">
+                      <div class="bcy_qrsh_o_top">
+                      <label>
+                      <input type="radio" style="opacity:0" name="sender_addr" checked="checked" value="{$uid|get_addressid}" />
+                        <h1><strong>收件人：</strong>{$uid|get_realname}</h1>
+                        <p><strong>电话：</strong>{$uid|get_cellphone}</p>
+                        <div class="cls"></div>
+                      </label>
+                      </div>
+                      <div class="bcy_qrsh_o_bot">
+                        <p><strong>地址：</strong>{$uid|get_address}</p>
+                        <a class="pen_a_click" href="javascript:void(0)"><span><img class="pen" src="__IMG__/pen.png" /></span></a>
+                        <div class="cls"></div>
+                      </div>
+				</div>
+            </div>           
+        </empty>   
+
+ 
+    
+    </div>
+
+ 
+ 
+<div class="ff_bottom">      
+    <form action='{:U("Shopcart/createorder")}' method="post" name="myform" id="myform">    
+        <input type="hidden" name="tag"  id="orderid" value="{$tag}">  
+        <input type="hidden" name="sender"  id="senderid" value="{$uid|get_addressid}">    
+        <div class="bcy_qrdd">
+            <table width="100%">
+            <volist name="shoplist" id="vo">  
+                  <tr>
+                    <td width="20%"><A href="{:U('Article/detail?id='.$vo['goodid'])}" ><img src="{$vo.goodid|get_cover_id|get_cover='path'}" alt=""  width="106px"  height="106px"/></A></td>
+                    <td><h1><A href="{:U('Article/detail?id='.$vo['goodid'])}" > {$vo.goodid|get_good_name}</A></h1>
+                      <if condition="$vo.parameters neq ''"><p>属性：{$vo.parameters}</p> </if>
+                      <p>价格：<span>￥{$vo.price}</span></p>
+                      <p>数量：{$vo.num}</p></td>
+                  </tr>
+            </volist>    
+            </table>
+            <!--
+            <div class="bcy_xx">
+              <p class="p1">配送方式：圆通</p>
+              <p class="p2">快递：免运费</p>
+              <div class="cls"></div>
+            </div>
+            -->
+            
+            <div class="bcy_xx">            
+            <!--订单支付 开始-->   
+            <input type="radio" name="PayType" id="huo"  value="1">货到付款               
+            <input type="radio" name="PayType" id="pay" checked="checked" value="2">在线支付
+            <!--订单支付 结束-->  
+            </div>         
+        </div>
+        <!--
+        <div class="bcy_yh">
+            <div class="bcy_yh_o">
+              <h1>优惠：</h1>
+              <p>已优惠￥0.00</p>
+              <div class="cls"></div>
+            </div>
+            <div class="bcy_yh_o"> 
+              <a href="#">
+              <h1>发票信息：</h1>
+              <p>不需要发票<span>&gt;</span></p>
+              </a>
+              <div class="cls"></div>
+            </div>
+        </div>     
+    	-->
+        <div class="bcy_qrdd_zj">
+            <div class="bcy_grdd_zj_title" >商品金额<b>{$total}</b>元，运费<b >{$trans}</b>元，总价：<strong id="TotalNeedPay">￥{$all}</strong> </div>
+            <div class="bcy_grdd_zf"> <a href="javascript:void(0)" class="wzf wzf1" onclick="makeorder();return false">提交</a> </div>
+            <!--
+            <div class="bcy_grdd_zf"> <a href="javascript:void(0)" class="wzf wzf1" onClick="callpay()">微信支付</a> </div>
+            <div class="bcy_grdd_zf"> <a href="#" class="wzf wzf2">支付宝支付</a> </div>
+            -->
+        </div>
+    </form>
+</div>    
+    
+    
+       
+</div>
+
+<script type="text/javascript">
+	$('.pen_a_click').live('click',function(){
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:'{:U("Shopcart/getaddresslist")}', //发送数据的地址
+			data:{},
+			dataType:"json",
+			success:function(data){
+				var str = '';
+				var num = 0;
+				$.each(data,function(i,result){
+					num++;
+					str = str + '<div class="bcy_qrsh_o bcy_qrsh_o_select"><label><input  class="bcy_qrsh_o_radio" type="radio" value="'+result.id+'" rel="'+result.id+'"/><div class="bcy_qrsh_o_top"><h1>'+result.realname+'</h1><p>'+result.cellphone+'</p><div class="cls"></div></div><div class="bcy_qrsh_o_bot"><p><strong></strong>'+result.address+'</p><a class="pen_a" href="javascript:void(0);" rel="'+result.id+'"><img class="pen" src="__IMG__/pen.png" /></a><div class="cls"></div></div></label></div>';
+				}); 
+				if(num<5){
+					str = str +'<div class="bcy_qrsh_o"><a href="javascript:vod(0);" id="show"><div class="bcy_qrsh_o_top bcy_qrsh_o_top_xz"><h1>新增收货地址</h1><p><img src="__IMG__/more_jia.png"></p><div class="cls"></div></div></a></div>';
+				}
+				$("#addresslist").html(str);
+				$('.senderdetail_o,.bcy_body_cen_add,.ff_bottom').hide();
+				$('.bcy_txdz_list').show();		
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+		})
+
+	})//点击默认地址 弹出地址列表
+	
+	$('.bcy_qrsh_o_select input').live('click',function(){
+		var addressid = $(this).attr("rel");
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:'{:U("Shopcart/getaddress")}', //发送数据的地址
+			data:{addressid:addressid},
+			dataType:"json",
+			success:function(data){
+				var str='<div class="senderdetail_o"><div class="bcy_qrsh_o"><div class="bcy_qrsh_o_top"><label><input type="radio" style="opacity:0"  name="sender_addr" checked="checked" value="'+data.id+'" /><h1>'+data.realname+'</h1><p>'+data.cellphone+'</p><div class="cls"></div></label></div><div class="bcy_qrsh_o_bot"><p><strong></strong>'+data.address+'</p><a class="pen_a_click" href="javascript:void(0)"><span><img class="pen" src="__IMG__/pen.png" /></span></a><div class="cls"></div></div></div></div>';	
+				$("#addressdiv").html(str);
+				$("#senderid").val(data.id);//给选中地址赋值。传入订单
+				$('.bcy_body_cen_add,.bcy_txdz_list').hide();
+				$('.senderdetail_o,.ff_bottom').show();	
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+		})
+	})//点击列表，选择地址，返回订单页面
+	
+	$('.bcy_qrsh_o_select .pen_a').live('click',function(){
+		var addressid = $(this).attr("rel");
+		$.ajax({
+			type:"post", //传送的方式,get/post
+			url:'{:U("Shopcart/getaddress")}', //发送数据的地址
+			data:{addressid:addressid},
+			dataType:"json",
+			success:function(data){
+				$("#realname").val(data.realname);
+				$("#phone").val(data.cellphone);
+				$("#address").val(data.address);
+				$("#addressid").val(addressid);
+				$('.senderdetail_o,.bcy_txdz_list,.ff_bottom').hide();
+				$('.bcy_body_cen_add').show();	
+			},
+			error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }
+		})		
+	})//点击列表，显示修改层
+	 
+	$('#show').live('click',function(){
+		$("#realname").val('');
+		$("#phone").val('');
+		$("#address").val('');
+		$("#addressid").val('');		
+		$('.senderdetail_o,.bcy_txdz_list,.ff_bottom').hide();
+		$('#bcy_body_cen_add').show();	
+	})//点击添加地址。弹出添加层
+	
+	function quxiao() { 	
+		$('.senderdetail_o,.bcy_body_cen_add,.ff_bottom').hide();
+		$('.bcy_txdz_list').show();		
+	}//取消添加地址，返回列表
+	
+
+function savemsg() { 
+//判断是否是默认地址
+if (document.getElementById("isdefault").checked==true) {
+       var info="yes";
+    } else {
+       var info="no";
+    }
+	var addressid=$("#addressid").val();
+	var realname=$("#realname").val();
+	var address=$("#address").val();
+	var orderid=$("#orderid").val();
+	var phone=$("#phone").val();
+	if(realname==''){
+		alert("收货人不能为空");
+		return false;
+	}
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("Shopcart/savemsg")}', //发送数据的地址
+		data:{addressid:addressid,address:address,phone:phone,realname:realname,orderid:orderid,msg:info},
+		dataType: "json",
+		success:function(data){
+			var str='<div class="senderdetail_o"><div class="bcy_qrsh_o"><div class="bcy_qrsh_o_top"><label><input type="radio" style="opacity:0"  name="sender_addr" checked="checked" value="'+data.addressid+'" /><h1>'+data.realname+'</h1><p>'+data.cellphone+'</p><div class="cls"></div></label></div><div class="bcy_qrsh_o_bot"><p><strong></strong>'+data.address+'</p><a class="pen_a_click" href="javascript:void(0)"><span><img class="pen" src="__IMG__/pen.png" /></span></a><div class="cls"></div></div></div></div>';	
+			$("#addressdiv").html(str);
+			$("#senderid").val(data.addressid);//给选中地址赋值。传入订单
+			$('.bcy_body_cen_add,.bcy_txdz_list').hide();
+			$('.senderdetail_o,.ff_bottom').show();	
+		},
+		
+		error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {alert("表单错误，"+XMLHttpRequest+thrownError); }})
+}
+	
+</script> 
+<script type="text/javascript">
+
+function makeorder() {
+    var senderid = $("#senderid").val();
+
+	//判断新地址是否选中,获取地址id
+	if(senderid==''){
+	 	alert("请选择一个地址!");
+		return false;
+	}
+
+	document.myform.submit();     
+}
+</script>
+
+<script type="text/javascript">  
+function checkcode()  //检查优惠券是否可以
+{
+	var str=$("input#code").val();
+	if(str!==""){
+		$.ajax({
+			type:'post',
+			url:'{:U("User/checkcode")}', //发送数据的地址//
+			data:{couponid:str},
+			dataType: "json",
+			success:function(data){
+				if(data.msg=="yes"){
+					$("span.tips").html(data.info);
+				}else{$("span.tips").empty();
+					document.getElementById("code").value="";
+					$("span.tips").html(data.info);
+				}
+			} 
+		});//ajax结束
+	}//if结束
+}
+
+</script>  
+<include file="Public/footer"/>

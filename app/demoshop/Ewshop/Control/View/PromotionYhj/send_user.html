@@ -1,0 +1,202 @@
+<extend name="Public/base"/>
+<block name="body">
+
+	<div class="main-title">
+		<h2>发放优惠券</h2>
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+				<div id="tab1" class="tab-pane in tab1">
+ 					<div class="form-item">
+						<label class="item-label">
+							优惠券类型<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="yhj_type" id="yhj_type">
+                            	<volist name="typelist" id="list">
+                                <option value="{$list.id}" <if condition="$list['id']==$id">selected</if> >{$list.name}-[{$list.price}]</option>
+                                </volist>
+                            </select>                          
+                        </div>
+					</div>                          
+                        
+ 					<div class="form-item">
+						<label class="item-label">
+							发放会员<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+                            <select name="fftype" id="fftype"  onchange="changeRange(this.value)">
+                                <option value="1">全部会员</option>
+                                <option value="2">指定会员</option>
+                            </select>
+                            <span id="range_search" style="display:none">
+                                <span align="right">搜索并添加会员</span>
+                                <span>
+                                	<input name="keyword" type="text" id="keyword">
+                                    <input name="search" type="button" id="search" value="搜索" class="button" onclick="searchUser()" />
+                                </span>                                
+                            </span>  
+						</div>                                              
+					</div>  
+
+                    <table cellspacing='1' cellpadding='3' style="display:none" id="user_search_list">
+                      <tr>
+                        <th>会员列表</th>
+                        <th>操作</th>
+                        <th>给下列用户发放红包</th>
+                      </tr>
+                      <tr>
+                        <td width="45%" align="center">
+                          <select name="user_search[]" id="user_search" size="15" style="width:260px" ondblclick="addUser()" multiple="true">
+                          </select>
+                        </td>
+                        <td align="center">
+                          <p><input type="button" value="&gt;" onclick="addUser()" class="button" /></p>
+                          <p><input type="button" value="&lt;" onclick="delUser()" class="button" /></p>
+                        </td>
+                        <td width="45%" align="center">
+                          <select name="user[]" id="user" multiple="true" size="15" style="width:260px" ondblclick="delUser()" onblur="validate()" >
+                          </select>
+                        </td>
+                      </tr>
+                    </table>  
+                                      
+<script>
+/**
+ * 改变发放会员范围
+ * @param int rangeId
+ */
+function changeRange(rangeId)
+{
+  document.getElementById('user').length = 0;
+  document.getElementById('user_search').length = 0;
+  var row = $("#range_search");
+  if (rangeId == 1){
+	row.hide();
+	$("#user_search_list").hide();	
+  }else{
+	row.show();
+  }
+}
+
+function searchUser()
+{
+	var keyword  = $("#keyword").val();
+	$.ajax({
+		type:'post', //传送的方式,get/post
+		url:'{:U("PromotionYhj/ajaxsearchuser")}', //发送数据的地址
+		data:{keyword:keyword},
+		dataType: "json",
+		success:function(data){
+			if (data.status == 1) {
+				$("#user_search_list").show();
+				var sel = document.getElementById('user_search');
+ 				sel.length = 0;		
+				/* 创建 options */
+				var users = data.result;
+				if (users)
+				{
+					for (i = 0; i < users.length; i++)
+					{
+					  var opt = document.createElement("OPTION");
+					  opt.value = users[i].id;
+					  opt.text  = users[i].username;
+					  sel.options.add(opt);
+					}			
+				}				
+			}else if(data.status == 0){
+				alert(data.result);
+			}else{
+				aleert('出错了！');
+			}
+			
+		},error:function (event, XMLHttpRequest, ajaxOptions, thrownError) {
+			alert("表单错误，"+XMLHttpRequest+thrownError); 
+		}
+	})  
+}
+function addUser()
+{
+  var src = document.getElementById('user_search');
+  var dest = document.getElementById('user');
+  for (var i = 0; i < src.options.length; i++){
+	  if (src.options[i].selected){
+		  var exist = false;
+		  for (var j = 0; j < dest.options.length; j++){
+			  if (dest.options[j].value == src.options[i].value){
+				  exist = true;
+				  break;
+			  }
+		  }
+		  if (!exist) {
+			  var opt = document.createElement('OPTION');
+			  opt.value = src.options[i].value;
+			  opt.text = src.options[i].text;
+			  opt.selected = "true";//设置选中状态，未选中状态数据无法提交
+			  dest.options.add(opt);
+		  }
+	  }
+  }
+}
+
+function delUser(){
+  var dest = document.getElementById('user');
+  for (var i = dest.options.length - 1; i >= 0 ; i--) {
+	  if (dest.options[i].selected) {
+		  dest.options[i] = null;
+	  }
+  }
+}
+function validate()
+{
+    var idArr = new Array();
+    var dest = document.getElementById('user');
+	if(dest.options){
+		for (var i = 0; i < dest.options.length; i++)
+		{
+			dest.options[i].selected = "true";
+			idArr.push(dest.options[i].value);
+		}		
+	}
+}
+</script> 
+
+ 					<div class="form-item">
+						<label class="item-label">
+							优惠券序列号标识<span class="check-tips">（提示:优惠券序列号由”标识“加上十位”时间戳“加上四位随机数字组成）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="yhj_no" class="text input-large" value="">
+						</div>
+					</div>                        
+				</div>
+
+				<div class="form-item">
+                	<input type="hidden" name="type" value="{$info.type|default=''}">
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal" >确 定</button>
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+<script type="text/javascript">
+	//导航高亮
+	highlight_subnav('{:U('PromotionYhj/index')}');
+</script>
+</block>
+

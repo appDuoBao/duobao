@@ -1,0 +1,91 @@
+<extend name="Public/base"/>
+
+<block name="body">
+
+	<script src="__STATIC__/tagsinput/jquery.tagsinput.js"></script>
+    <link href="__STATIC__/tagsinput/jquery.tagsinput.css" rel="stylesheet" />
+    
+    
+	<div class="main-title">
+
+		<h2>{:isset($info['type_id'])?'编辑':'新增'}商品属性</h2>
+
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+
+				<div id="tab1" class="tab-pane in tab1">
+
+				<div class="form-item">
+						<label class="item-label">所属商品类型<span class="check-tips"></span></label>
+						<div class="controls">
+							{$info.type_name}
+								<input type="hidden" value="{$info['type_id']}" name="type_id">
+
+						</div>
+					</div>
+					<div class="form-item">
+						<label class="item-label">
+							属性名称<span class="check-tips">（名称不能为空）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="extend_name" class="text input-large" value="{$info.extend_name|default=''}">
+						</div>
+					</div>
+
+					<div class="form-item">
+						<script type="text/javascript">
+                            function onAddTag(tag) {
+                                alert("请添加属性值：" + tag);
+                            }
+                            function onRemoveTag(tag) {
+                                alert("请添加属性值： " + tag);
+                            }
+                            function onChangeTag(input, tag) {
+                                alert("请添加属性值： " + tag);
+                            }
+                        
+                            $(function () {
+                                $('#extend_value').tagsInput({ width: 'auto' });
+                            });
+                        </script>  
+						<label class="item-label">属性值<span class="check-tips" style="color:red">(可写多个，用逗号隔开如：红色,黄色,紫色,白色)</span></label>
+						<div class="controls">
+							<input id='extend_value' type='text' class='tags' name="extend_value" value="{$info.extend_value|default=''}">
+						</div>
+					</div>                    
+				</div>
+
+				<div class="form-item">
+					<input type="hidden" name="extend_id" value="{$info[extend_id]|default=''}">
+
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+
+					<button class="btn btn-return" onClick="javascript:history.back(-1);return false;">返 回</button>
+
+				</div>
+
+				</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+<block name="script">
+
+	<script type="text/javascript">
+		//导航高亮
+		highlight_subnav("{:U('Ad/index')}");
+	</script>
+
+</block>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="format-detection" content="telephone=no, address=no, email=no">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+       <script type="text/javascript" src="__JS__/jquery.js"></script>
+	<script type="text/javascript" src="__JS__/ew_js.js"></script>
+    <link href="__CSS__/style.css" rel="stylesheet" />
+	<title></title>
+	
+</head>
+<body>
+	<div class="warp">
+	<section id="bg"class="warp">
+		
+	</section>
+<!------------------------------dl------------------------------------------>
+<div class="jj_q">
+<form action="" method="post" id="myform" name="myform"  onSubmit="return  yanzheng();">
+<p>姓名<input  name="info[name]" id="name" type="text"></p>
+<p>电话<input  name="info[tel]" id="tel" type="text"></p>
+<p>公司<input  name="info[company]" id="company" type="text"></p>
+<div class="jj_w"><input name="dosubmit" type="submit" value="提交"><input type="reset" value="重置"></div>
+</form>
+</div>
+<script type="text/javascript">
+        	function yanzheng(){
+				
+				var isPhone = /^([0-9]{3,4}-)?[0-9]{7,8}$/;
+				var isMob=/^((\+?86)|(\(\+86\)))?(13[012356789][0-9]{8}|15[012356789][0-9]{8}|18[02356789][0-9]{8}|147[0-9]{8}|1349[0-9]{7})$/;
+	
+				if($('#name').val()=='')
+				{
+					alert('姓名不能为空');
+					return false;
+				}
+				else if($('#tel').val()=='')
+				{
+					alert('电话不能为空');
+					return false;
+				}
+				else if(!isPhone.test($('#tel').val())&&!isMob.test($('#tel').val()))
+				{
+					alert('电话格式不正确');
+					return false;
+				}
+				else if($('#company').val()=='')
+				{
+					alert('公司不能为空');
+					return false;
+				}else{
+					
+					return true;
+				}
+			}
+        </script>
+
+
+<!------------------------------bottom-------------------------------------->
+
+
+
+
+</div>
+</body>
+</html>

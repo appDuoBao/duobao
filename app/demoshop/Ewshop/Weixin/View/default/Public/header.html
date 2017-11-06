@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>{$meta_title}_{:C('WEB_SITE_TITLE')}</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="__CSS__/font/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="__CSS__/font2/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="__CSS__/swiper.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__CSS__/style.css"/>
+		<script type="text/javascript" src="__JS__/jquery.min.js" ></script>
+		<script type="text/javascript" src="__JS__/common.js" ></script>
+		<script type="text/javascript" src="__JS__/swiper.min.js" ></script>
+	</head>
+	<body>
+		<div style="background-color: #fbf9fe;">
+			<header id="w_caseTitle">
+				<form action="{:U('Search/index')}" name="Searchform" method="post" onsubmit="return doSearch();">
+					<input type="text" id="words" name="words" value="{$keyword}" placeholder="搜索一网全部商品" />
+					<i class="iconfont2">&#x343b;</i>
+					<input type="submit" value="搜索" />
+				</form>
+				<script>
+					function doSearch(){
+						var words =  $('#words').val();
+						if(words == ''){
+							alert('请输入关键词！');
+							return false;
+							$('#words').focus();
+						}else{
+							return true;
+						}
+					}
+				</script>
+			</header>

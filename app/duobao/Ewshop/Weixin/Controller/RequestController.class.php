@@ -108,18 +108,18 @@ Class RequestController extends HomeController{
         //$openid = 'oPlawwN7QTh_2Nqt8Gl7UmedjXaM';
          $ptype = I("ptype");
         
-        if($ptype==1){
+        if($ptype==2){
             if($openid){
             $uid = M('Member')->where(array('openid'=>$openid))->getField('uid');
             $data['paytype'] = '微信';
            //商户订单号
             }else{
-                 die('openid不能为空!');
+               //  die('openid不能为空!');
             }
         }else{
               $data['paytype'] = '支付宝';   
         }
-        $out_trade_no = 'FD-'.date('YmjHis').sprintf("%07d", $uid).$type.rand(1000,9999);
+        $out_trade_no = 'FD'.date('YmjHis').sprintf("%07d", $uid).$type.rand(1000,9999);
         //创建订单
         $data['uid'] = D('Member')->uid();
         $data['goods_id'] = $goods_id;
@@ -152,29 +152,28 @@ Class RequestController extends HomeController{
                 $data['number_section'] = '56-110';
             }
         }
-
         if($orderid = M('WinOrder')->add($data)){
             $arr['method'] = 'submitOrderInfo';
             $arr['out_trade_no'] = $out_trade_no;
             $arr['sub_openid'] = $openid;
             $arr['body'] = $out_trade_no;
-			$arr['total_fee'] = $data['money']*100;//正式购买金额
+	    $arr['total_fee'] = $data['money']*100;//正式购买金额
             //$arr['total_fee'] = 0.01*100;
             $arr['mch_create_ip'] = get_client_ip();
         }
         $ptype = I("ptype");
-        if($ptype == 1){
-            $this->paybyweixin($arr,$orderid);
-        }else{
+        //if($ptype == 1){
+        //    $this->paybyweixin($arr,$orderid);
+        //}else{
             $arrali['method'] = 'submitOrderInfo';
             $arrali['out_trade_no'] = $out_trade_no;
             $arrali['body'] = $out_trade_no;
-			$arrali['total_fee'] = $data['money']*100;//正式购买金额
+	    $arrali['total_fee'] = $data['money']*100;//正式购买金额
             $arrali['buyer_logon_id'] =I("buyer_logon_id");
             $arrali['mch_create_ip'] = get_client_ip();
             $arrali['buyer_id'] = I("buyer_id");
-            $this->submitOrderInfobyali($arrali,$orderid);
-        }
+            $this->submitOrderInfobyali($arrali,$out_trade_no,$type);
+       // }
         
     }
     
@@ -185,7 +184,7 @@ Class RequestController extends HomeController{
         require_once ('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/class/PayHttpClient.class.php');
         require_once ('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/Utils.class.php');
         require_once ('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/config/config.php');
-        
+        $this->cfg = new \Config();
         $this->resHandler = new \ClientResponseHandler();
         $this->reqHandler = new \RequestHandler();
         $this->pay = new \PayHttpClient();
@@ -248,59 +247,47 @@ Class RequestController extends HomeController{
         }
     }
     
-    private function submitOrderInfobyali($arr,$orderid){
-        $arr['total_fee'] = 1;
+    private function submitOrderInfobyali($arr,$orderid,$type){
          header("Content-type: text/html; charset=utf-8");
-        require_once('ThinkPHP/Library/Vendor/payInterface_alipay_js/class/ClientResponseHandler.class.php');
-        require_once ('ThinkPHP/Library/Vendor/payInterface_alipay_js/class/RequestHandler.class.php');
-        require_once ('ThinkPHP/Library/Vendor/payInterface_alipay_js/class/PayHttpClient.class.php');
-        require_once ('ThinkPHP/Library/Vendor/payInterface_alipay_js/Utils.class.php');
-        require_once ('ThinkPHP/Library/Vendor/payInterface_alipay_js/config/config.php');
+         
+        require_once("ThinkPHP/Library/Vendor/sdk/src/rest/config.php");
+        require_once("ThinkPHP/Library/Vendor/sdk/src/rest/network.php");
+        require_once("ThinkPHP/Library/Vendor/sdk/src/rest/api.php");
         
-        $this->resHandler = new \ClientResponseHandler();
-        $this->reqHandler = new \RequestHandler();
-        $this->pay = new \PayHttpClient();
-        $this->cfg = new \Config();
-
-        $this->reqHandler->setGateUrl($this->cfg->C('url'));
-        $this->reqHandler->setKey($this->cfg->C('key'));
-        
-        $this->reqHandler->setReqParams($arr,array('method'));
-        $this->reqHandler->setParameter('service','pay.alipay.jspay');//接口类型
-        $this->reqHandler->setParameter('mch_id',$this->cfg->C('mchId'));//必填项，商户号
-        $this->reqHandler->setParameter('version',$this->cfg->C('version'));
-		
-        //通知地址，必填项，接收平台通知的URL，需给绝对路径，255字符内格式如:http://wap.tenpay.com/tenpay.asp
-        //$notify_url = 'http://'.$_SERVER['HTTP_HOST'];
-        //$this->reqHandler->setParameter('notify_url',$notify_url.'/payInterface/request.php?method=callback');
-		$this->reqHandler->setParameter('notify_url','http://duobao.akng.net/Weixin/Request/callback?t='.$this->mynum);//
-        $this->reqHandler->setParameter('callback_url','http://duobao.akng.net/Weixin/My/orderDetail/id/'.$orderid);
-        $this->reqHandler->setParameter('nonce_str',mt_rand(time(),time()+rand()));//随机字符串，必填项，不长于 32 位
-		
-        $this->reqHandler->createSign();//创建签名
-        
-        $data = \Utils::toXml($this->reqHandler->getAllParameters());
-        //var_dump($data);
-        
-        $this->pay->setReqContent($this->reqHandler->getGateURL(),$data);
-        if($this->pay->call()){
-            $this->resHandler->setContent($this->pay->getResContent());
-            $this->resHandler->setKey($this->reqHandler->getKey());
-            if($this->resHandler->isTenpaySign()){
-                //当返回状态与业务结果都为0时才返回支付链接，其它结果请查看接口文档
-                if($this->resHandler->getParameter('status') == 0 && $this->resHandler->getParameter('result_code') == 0){
-                    echo json_encode(array('pay_url'=>$this->resHandler->getParameter('pay_url'),
-										'pay_info'=>$this->resHandler->getParameter('pay_info'),'status'=>0));
-                    exit();
-                }else{
-                    echo json_encode(array('status'=>500,'msg'=>'Error Code:'.$this->resHandler->getParameter('err_code').' Error Message:'.$this->resHandler->getParameter('err_msg')));
-                    exit();
-                }
-            }
-            echo json_encode(array('status'=>500,'msg'=>'Error Code:'.$this->resHandler->getParameter('status').' Error Message:'.$this->resHandler->getParameter('message')));
-        }else{
-            echo json_encode(array('status'=>500,'msg'=>'Response Code:'.$this->pay->getResponseCode().' Error Info:'.$this->pay->getErrInfo()));
+         $api = new \beecloud\rest\api();
+         $international = new \beecloud\rest\international();
+         $subscription = new \beecloud\rest\Subscriptions();
+         $auth = new \beecloud\rest\Auths();
+         $APP_ID = '5303b6b1-5281-4ec2-842f-1cb80280183c';
+         $APP_SECRET = 'a4b40b21-7e27-4e23-b526-ed08e8756edd';
+         $MASTER_SECRET = '088f838c-73ef-463d-8d54-5d867c7f42b6';
+         $TEST_SECRET = 'b38f720b-50a1-475f-bbbc-1e77b8ff3bee';
+         $api->registerApp($APP_ID, $APP_SECRET, $MASTER_SECRET, $TEST_SECRET);
+        //Test Model,只提供下单和支付订单查询的Sandbox模式,不写setSandbox函数或者false即live模式,true即test模式
+         $api->setSandbox(false);
+             
+        $data = array();
+        $data["timestamp"] =time();
+        //total_fee(int 类型) 单位分
+        $data["total_fee"] = $arr['total_fee'];
+        $data["bill_no"] = $orderid;
+        //title UTF8编码格式，32个字节内，最长支持16个汉字
+        $data["title"] = '支付';
+        //渠道类型:ALI_WEB 或 ALI_QRCODE 或 UN_WEB或JD_WAP或JD_WEB, BC_GATEWAY为京东、BC_WX_WAP、BC_ALI_WEB渠道时为必填, BC_ALI_WAP不支持此参数
+        $data["return_url"] = "http://duobao.akng.net/";
+        $data["optional"] = (object)array("order"=>$orderid);
+	if($type == 1){
+        	$data["channel"] = "BC_ALI_QRCODE";
         }
+	if($type == 2){
+        	$data["channel"] = "BC_NATIVE";
+	}
+        $result =  $api->bill($data);
+        $code_url = $result->code_url;
+        if($code_url){
+            exit(json_encode(array('ret'=>0,'url'=>$code_url)));    
+        }
+            
     }
 
 
@@ -535,6 +522,9 @@ Class RequestController extends HomeController{
      */
     public function callback(){
         require_once('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/class/ClientResponseHandler.class.php');
+        require_once ('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/config/config.php');
+        require_once ('ThinkPHP/Library/Vendor/payInterface_jsapi_wx/Utils.class.php');
+        $this->cfg = new \Config();
         $this->resHandler = new \ClientResponseHandler();
         $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
         $this->resHandler->setContent($xml);
@@ -618,6 +608,27 @@ Class RequestController extends HomeController{
             echo 'failure2';
         }
     }
+
+ public function beecallback(){
+	$data = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $dedate = json_decode($data,true);
+        
+        if($dedate['trade_success']){
+              $arr['status'] = 1;
+              $arr['pay_time'] =time();
+              $out_trade_no = $dedate['message_detail']['orderId'];
+
+              $orderData = M('WinOrder')->where(array('order_number'=>$out_trade_no))->find();
+              	if($orderData['status'] == 0){
+                    $ret = M('WinOrder')->where(array('order_number'=>$out_trade_no))->save($arr);
+                    if($ret){
+                        echo "susess";    
+                    }
+			  }	
+
+        }
+    }
+
 }
 
 

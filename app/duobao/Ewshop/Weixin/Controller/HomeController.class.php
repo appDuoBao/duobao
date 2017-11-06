@@ -28,7 +28,7 @@ class HomeController extends Controller {
 //		$wx_url		= $_SERVER['REQUEST_URI'];
 //		$wx_url_arr = explode('/',$wx_url);
 //		$_GET['code'] = $wx_url_arr[5];
-        $weixin = (C('weixin'));
+        	$weixin = (C('weixin'));
 
 		//微信自动登录注册
 		if($_GET['code']) {//微信code码

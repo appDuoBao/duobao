@@ -1,0 +1,70 @@
+<extend name="Public/base"/>
+<block name="body">
+
+	<div class="main-title">
+		<h2>发放优惠券</h2>
+	</div>
+
+	<div class="tab-wrap">
+
+		<div class="tab-content">
+
+			<form action="{:U()}" method="post" class="form-horizontal">
+
+				<!-- 基础 -->
+				<div id="tab1" class="tab-pane in tab1">
+ 					<div class="form-item">
+						<label class="item-label">
+							优惠券类型<span class="check-tips"></span>
+						</label>
+                        <div class="controls">
+                            <select name="yhj_type" id="yhj_type">
+                            	<volist name="typelist" id="list">
+                                <option value="{$list.id}" <if condition="$list['id']==$id">selected</if> >{$list.name}-[{$list.price}]</option>
+                                </volist>
+                            </select>                          
+                        </div>
+					</div>                          
+
+ 					<div class="form-item">
+						<label class="item-label">
+							优惠券序列号标识<span class="check-tips">（提示:优惠券序列号由”标识“加上十位”时间戳“加上四位随机数字组成）</span>
+						</label>
+						<div class="controls">
+							<input type="text" name="yhj_no" class="text input-large" value="">
+						</div>
+					</div>  
+                        
+ 					<div class="form-item">
+						<label class="item-label">
+							发放优惠券数量<span class="check-tips"></span>
+						</label>
+						<div class="controls">
+							<input type="text" name="yhj_num" class="text input-large" value="">
+						</div>
+					</div>  
+				</div>
+
+				<div class="form-item">
+                	<input type="hidden" name="type" value="{$info.type|default=''}">
+					<button type="submit" id="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+					<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+<script type="text/javascript">
+	//导航高亮
+	highlight_subnav('{:U('PromotionYhj/index')}');
+</script>
+</block>
+

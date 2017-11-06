@@ -1,0 +1,17 @@
+<include file="Public/header"/>
+<!-----------------------------------t------------------------------------>
+<div class="cj">
+<div class="cj_q">
+<div class="cj_w"><a href="{:U('Home/service/lists/catid/138')}" <if condition="I('catid') eq '138'">class="hover"</if>>常见问题</a><span>丨</span><a href="{:U('Home/service/lists/catid/137')}" <if condition="I('catid') eq '137'">class="hover"</if>>售后服务</a></div>
+<div class="cj_e">
+    <volist name="listinfos" id="vo">
+        <p><img src="__IMG__/cc1.jpg" /><a href="{:U('Home/service/shows/catid/'.$catid.'/id/'.$vo['id'])}">{$vo.title}</a></p>
+    </volist>
+</div>
+<div class="cj_r">
+{$page}
+</div>
+</div>
+</div>
+<!----------------------y-------------------->
+<include file="Public/footer"/>

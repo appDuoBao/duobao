@@ -1,0 +1,363 @@
+<extend name="Public/base"/>
+
+#tab1 table{border-right:1px solid #F00;border-bottom:1px solid #F00}
+
+#tab1 table td{border-left:1px solid #F00;border-top:1px solid #F00}
+
+<block name="body">
+
+	<div class="main-title">
+
+		<h2>
+
+			{$info['id']?'编辑':'新增'}订单
+
+		
+
+		</h2>
+
+	</div>
+
+	<ul class="tab-nav nav">
+
+	<li data-tab="tab1" class="current"><a href="javascript:void(0);">订单修改</a></li>
+
+	<li data-tab="tab2" ><a href="javascript:void(0);">订单详情</a>
+
+	
+
+	</li></ul>
+
+<div class="tab-content">						
+
+
+
+	<div id="tab1" class="tab-pane in tab1">
+
+	<form action="{:U()}" method="post" class="form-horizontal">
+
+	<input type="hidden" class="text input-large" name="tag" value="{$tag}">
+    <input type="hidden" class="text input-large" name="orderid" value="{$tag}">
+
+		<div class="form-item">
+
+			<label class="item-label">会员账号<span class="check-tips">（必填）</span></label>
+
+			<div class="controls">
+				<input type="text" class="text input-large" name="vname" value="{$vname}">
+			</div>
+            
+
+		</div>
+
+		<div class="form-item">
+
+			<label class="item-label">金额<span class="check-tips">（商品金额）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="total" value="{$info.total}">
+
+			</div>
+
+		</div>
+
+
+
+
+
+<div class="form-item">
+
+			<label class="item-label">总额<span class="check-tips">（总额）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="pricetotal" value="{$info.pricetotal}">
+
+			</div>
+
+		</div>
+
+		<div class="form-item">
+
+			<label class="item-label">会员备注<span class="check-tips">（备注）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="info" value="{$info.info}">
+
+			</div>
+
+		</div>
+<div class="form-item">
+
+
+
+			<label class="item-label">快递名称<span class="check-tips">（发货的快递名称）</span></label>
+
+
+
+			<div class="controls">
+
+
+
+<select name="tool"><volist id="vo" name="kuaidilist">
+								<option value="{$vo.type}" <if condition="$vo['type'] eq $info['tool']">selected="selected"</if>>{$vo.type}</option>
+							</volist></select>
+
+
+
+			</div>
+
+
+
+		</div>
+
+
+
+<div class="form-item">
+
+
+
+			<label class="item-label">快递单号<span class="check-tips">（发货的快递单号）</span></label>
+
+
+
+			<div class="controls">
+
+
+
+				<input type="text" class="text input-large" name="toolid" value="{$info.toolid}">
+
+
+
+			</div>
+
+
+
+</div>
+<div class="form-item">
+
+			<label class="item-label">运费<span class="check-tips">（发货的快递单号）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="shipprice" value="{$info.shipprice}">
+
+			</div>
+
+		</div>
+        
+<div class="form-item">
+
+			<label class="item-label">详细地址<span class="check-tips">（必填）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="address" value="{$info.address}">
+
+			</div>
+
+</div>
+<div class="form-item">
+
+			<label class="item-label">邮政编码<span class="check-tips"></span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="youbian" value="{$info.youbian}">
+
+			</div>
+
+</div>
+<div class="form-item">
+
+			<label class="item-label">联系电话<span class="check-tips">（必填）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="phone" value="{$info.phone}">
+
+			</div>
+
+</div>
+<div class="form-item">
+
+			<label class="item-label">收货人姓名<span class="check-tips">（必填）</span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="realname" value="{$info.realname}">
+
+			</div>
+
+</div>
+
+		<div class="form-item">
+
+			<label class="item-label">会员留言<span class="check-tips"></span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="message" value="{$info.message}" readonly>
+
+			</div>
+
+		</div>
+
+<div class="form-item">
+
+			<label class="item-label">订单状态<span class="check-tips">（必填）</span></label>
+
+			<div class="controls">
+
+<select name="status">
+	<option value="-1"  <if condition="($info.status eq -1)">selected="selected"</if> >待付款(货到付款不用选择此项)</option>
+    <option value="1" <if condition="($info.status eq 1)">selected="selected"</if> >待发货</option>
+    <option value="2" <if condition="($info.status eq 2)">selected="selected"</if> >待收货</option>
+    <option value="3" <if condition="($info.status eq 3)">selected="selected"</if> >已完成</option>
+    <option value="4" <if condition="($info.status eq 4)">selected="selected"</if> >已取消</option>					
+</select>
+
+
+			</div>
+</div>
+<div class="form-item">
+
+			<label class="item-label">支付方式<span class="check-tips">（必填）</span></label>
+			<div class="controls">
+                <label><input type="radio" name="ispay" value="{$info.ispay}" <if condition="($info.ispay neq -1)">checked="checked"</if> />在线支付</label>  
+                <label><input type="radio" name="ispay" value="-1" <if condition="($info.ispay eq -1)">checked="checked"</if> />货到付款</label>
+			</div>
+    </div>
+
+
+
+      <div class="form-item">
+
+			<label class="item-label">操作人<span class="check-tips"></span></label>
+
+			<div class="controls">
+
+				<input type="text" class="text input-large" name="assistant" value="{$info.assistant|default='暂无'}">
+
+			</div>
+
+		</div>
+
+		<div class="form-item">
+
+			<input type="hidden" name="id" value="{$info.id|default=''}">
+
+			<button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+
+			<button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+
+		</div>
+
+	</form></div>
+
+	
+
+	<div id="tab2" class="tab-pane  tab2">
+
+	<table  id="table" class="gridtable" width="100%">
+
+        <thead>
+
+            <tr>
+
+			 <th >商品编号</th>
+
+                <th >商品名</th>
+
+				<th >规格</th>
+
+                <th >价格</th>
+
+                <th >数量</th>
+
+                
+
+            </tr>
+
+        </thead>  </tbody>  <volist name="list" id="vo">  
+
+           <tr>
+
+		 <td align="center">{$vo.goodid}</td>
+
+                <td><A href="{:U('Home/Article/detail?id='.$vo['goodid'])}" > <img src="{$vo.goodid|get_cover_id|get_cover='path'}"  width="40" height="40"/>{$vo.goodname}</A></td>
+
+               <td align="center"> <span class="weight">{$vo.parameters|default="无"}</span></td>
+
+                <td align="center">{$vo.price}</td>
+
+                 <td align="center">{$vo.num}</td>
+
+                
+
+            </tr>
+
+          </volist>
+          <style type="text/css">
+          	.table-cell tr th{ background:#ededed;}
+			.table-cell tr th,.table-cell tr td{ padding:10px 10px; text-align:center;}
+          </style>
+          </tbody></table>  <BR/>  
+<table class="table-cell" width="100%">
+          	<tr>
+            	<th>收件人：</th>
+                <th>电话：</th>
+                <th>地址：</th>
+                <th>小计：</th>
+                <th>运费：</th>
+                <th>总金额：</th>
+                <th>下单时间：</th>
+            </tr>
+          	<tr>
+            	<td>{$info.realname}</td>
+                <td>{$info.phone}</td>
+                <td>{$info.address}</td>
+                <td>{$info.total}元 </td>
+                <td>{$info.shipprice}元</td>
+                <td>{$info.pricetotal}元</td>
+                <td>{$info.create_time||date='Y-m-d H:i:s',###}</td>
+            </tr>
+</table>
+		  </div>
+
+	</div>
+
+</block>
+
+<block name="script">
+
+<script type="text/javascript" charset="utf-8">
+
+	//导航高亮
+
+	highlight_subnav('{:U('index')}');
+
+	if($('ul.tab-nav').length){
+
+		//当有tab时，返回按钮不显示
+
+		$('.btn-return').hide();
+
+	}
+
+	$(function(){
+
+		//支持tab
+
+		showTab();
+
+	})
+
+
+
+</script>
+
+</block>
+

@@ -1,0 +1,37 @@
+<div class="zb_a">
+<div class="zb_p">
+<div class="zb_s"><p><img src="__IMG__/xx.png" /></p><p>400-8001-239</p></div>
+<div class="bottom_w">
+
+
+<think:nav name="nav" tree="true">
+<eq name="nav.type" value="2">
+    <eq name="nav.pid" value="0">
+        <ul>
+            <li class="bottom_r">{$nav.title}</li>
+            <if condition="is_array($nav['_'])">
+            <volist name="nav['_']" id="son"> 
+                <li><a rel="nofollow"  href="{:U($son['url'])}">{$son.title}</a></li>
+            </volist>
+            </if>
+        </ul>
+    </eq>
+</eq>
+</think:nav>
+
+</div>
+<div class="zb_d">
+<div class="zb_f"><img src="__IMG__/cc.png" /><p>微信公众号</p></div>
+<div class="zb_f"><img src="__IMG__/cc.png" /><p>微博公众号</p></div>
+<div class="cls"></div>
+</div>
+
+
+
+<div class="cls"></div>
+<p><span style=" text-align: center;"> {:C('WEB_SITE_ICP')}</p>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,179 @@
+<extend name="Public/base"/>
+
+
+
+<block name="body">
+
+	<div class="main-title">
+
+		<h2>评论管理</h2>
+
+	</div>
+
+
+
+	<div class="cf">
+
+		<a class="btn" href="{:U('add')}">新 增</a>
+
+		  <button class="btn ajax-post confirm" url="{:U('del')}" target-form="ids">删 除</button>
+
+         <!-- 高级搜索 -->
+
+        <div class="search-form fr cf">
+
+            <div class="sleft">
+
+                <input type="text" name="content" class="search-input" value="{:I('content')}" placeholder="内容">
+
+                <a class="sch-btn" href="javascript:;" id="search" url="__SELF__"><i class="btn-search"></i></a>
+
+            </div>
+
+        </div>
+
+	</div>
+
+
+
+	<div class="data-table table-striped">
+
+		 <table>
+
+			<thead>
+
+				<tr>
+
+					<th class="row-selected">
+
+					 <input class="checkbox check-all" type="checkbox">
+
+					</th>
+
+					<th width="5%">ID</th>	
+
+					<th width="10%">评论商品</th>
+
+                    <th width="10%">用户名</th>
+
+					<th width="50%">评论内容</th>
+
+                    <th width="15%">时间</th>
+
+					<th width="10%">操作</th>
+
+				</tr>
+
+			</thead>
+
+			<tbody>
+
+				<notempty name="list">
+
+				<volist name="list" id="message">
+
+					<tr>
+
+					<td><input class="ids row-selected" type="checkbox" name="id[]" value="{$message.id}"></td>
+
+						<td>{$message.id}</td>
+
+						<td><a href="{:U('/Home/Article/detail/?id='.$message['goodid'])}"  target="_blank">{$message.goodid|get_good_name}</a></td>
+
+						<td>{$message.uid|get_regname}</td>
+
+						<td>{$message.content}</td>
+
+                        <td>{$message.create_time|date='Y-m-d H:i:s',###}</td>
+
+						<td>
+                          <a title="编辑" href="{:U('edit?id='.$message['id'])}">编辑</a>
+                          <a class="confirm ajax-get" title="删除" href="{:U('del?id='.$message['id'])}">删除</a>
+                        </td>
+
+					</tr>
+
+				</volist>
+
+				<else/>
+				<td><input type="hidden" placeholder="" class="zm_u" name='reply_time' value="<?php echo time();?>"/></td>
+				<td colspan="6" class="text-center"> aOh! 暂时还没有内容! </td>
+
+				</notempty>
+
+			</tbody>
+
+		</table>
+
+       
+
+        <!-- 分页 -->
+
+        <div class="page">
+
+{$_page}
+
+        </div>
+
+	</div>
+
+</block>
+
+
+
+<block name="script">
+
+ <script type="text/javascript">
+
+        $(function() {
+
+            //搜索功能
+
+            $("#search").click(function() {
+
+                var url = "{:U()}";
+				
+                var query = $('.search-form').find('input').serialize();
+
+                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+
+                query = query.replace(/^&/g, '');
+
+                if (url.indexOf('?') > 0) {
+
+                    url += '&' + query;
+
+                } else {
+
+                    url += '?' + query;
+
+                }
+
+                window.location.href = url;
+
+            });
+
+            //回车搜索
+
+            $(".search-input").keyup(function(e) {
+
+                if (e.keyCode === 13) {
+
+                    $("#search").click();
+
+                    return false;
+
+                }
+
+            });
+
+            //导航高亮
+
+            highlight_subnav('{:U('index')}');
+
+
+        });
+
+    </script>
+
+</block>

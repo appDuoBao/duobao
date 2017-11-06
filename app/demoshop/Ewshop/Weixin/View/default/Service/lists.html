@@ -1,0 +1,22 @@
+<include file="Public/header"/>
+	<body>
+		<div>
+			<!--<nav class="w_title">
+				<a href="#">行业资讯</a>
+				<a class="w_nowList" href="#">活动通知</a>
+			</nav>-->
+			<article id="w_newsList">
+				<ul>
+				  <volist name="listinfos" id="vo">
+       <li>
+						<a href="{:U('Home/service/shows/catid/'.$catid.'/id/'.$vo['id'])}"><h5><i>•</i>{$vo.title}</h5></a>
+						<p>{$vo.create_time|date="Y-m-d",###}</p>
+						<p>{$vo.content|msubstr=###,0,200,'utf-8',flase}</p>
+					</li>
+    </volist>
+					
+				</ul>
+			</article>
+		</div>
+	</body>
+</html>
