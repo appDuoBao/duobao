@@ -159,17 +159,17 @@ class AutoController extends HomeController {
         $num_110_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>1,'status'=>1))->sum('money');//买小（55元）的订单数的总金额
         $num_110_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>2,'status'=>1))->sum('money');//买大（55元）的订单数的总金额
         if($num_56_small > $num_56_big){
-            $code_56_val = 2;//选择大的赢
+            $code_56_val = 1;//选择大的赢
         }elseif($num_56_small < $num_56_big){
-            $code_56_val = 1;//选择小的赢
+            $code_56_val = 2;//选择小的赢
         }else{
             $code_56_val = 0;//大小均可
         }
 
         if($num_110_small > $num_110_big){
-            $code_110_val = 2;//选择大的赢
+            $code_110_val = 1;//选择大的赢
         }elseif($num_110_small < $num_110_big){
-            $code_110_val = 1;//选择小的赢
+            $code_110_val = 2;//选择小的赢
         }else{
             $code_110_val = 0;//大小均可
         }

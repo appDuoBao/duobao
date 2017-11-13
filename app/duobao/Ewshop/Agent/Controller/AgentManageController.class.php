@@ -291,10 +291,12 @@ class AgentManageController extends ControlController {
     	    }
     		//按比例收益,这地方计算不对，应该是减去商品本身的价格
 	    }
-	    
+	   //判断分销商提佣金的方式
+	    $ratio_type=M('Join')->where('uid='.$agent_login)->getField('ratio_type'); 
 	    //计算用户数
 	    $sumuser = M('Member')->where('parent_id = '.$agent_login)->Count('uid');
 	    $this->assign('sumuser',$sumuser);
+		$this->assign('ratio_type',$ratio_type);
 		$this->assign('start_date',$start_date);
 	    $this->assign('end_date',$end_date);
 		$this->assign('uname',$loginfo['name']);

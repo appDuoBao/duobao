@@ -236,7 +236,7 @@
         var date = new Date();
         if((date.getHours()>=2 && date.getHours()<10) || (date.getHours()==1 && date.getMinutes()>55)){
             alert('请等待开战时间');
-            return false;
+            //return false;
         }
 
         if(type == 2){
@@ -391,9 +391,11 @@
          }
          
         var total_fee = $('.sumn').html();
-        var type = ptype;
+        var type =  $('#pay_type').val();
+
         var num = $(".btn2").val();
         var goods_type = $('#goods_type').val();
+	var fromtype = ptype;
         var lottery_time = $(".fnTimeCountDown").data('end');
         var goods_id = '{:I("get.id")}';
         var buyer_id = $("#buyer_id").val();
@@ -404,27 +406,66 @@
         $.ajax({
             type: 'post', //传送的方式,get/post
             url: './index.php?s=Weixin/Request/submitOrderInfo',
-            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:2,buyer_id:buyer_id,buyer_logon_id:buyer_id,buyer_id:''},
+            data: {total_fee:total_fee,type:type,num:num,goods_type:goods_type,lottery_time:lottery_time,goods_id:goods_id,ptype:ptype,buyer_id:buyer_id,buyer_logon_id:buyer_id,buyer_id:''},
             dataType: "json",
             success: function (res) {
                 
                 if(res.ret== 0){
-		      _At.pay(res.url);
-		     window.location.href = res.url;
-                     var options = {text: res.url};
-                    var canvas = BCUtil.createQrCode(options);
-                    var wording=document.createElement('p');
-		    var imgs = convertCanvasToImage(canvas);
-                    var element=document.getElementById("qrcode");
-                    element.appendChild(wording);
-                    element.appendChild(imgs);  
-		    $(".content").html(imgs);
-                }
+			if(ptype ==1){      
+				_AP.pay(res.url);
+		     		window.location.href = res.url;
+			}
+			if(ptype == 2){
+				wxcallpay(res.data);	
+			}
+                    //var options = {text: res.url};
+                    //var canvas = BCUtil.createQrCode(options);
+                    //var wording=document.createElement('p');
+		    //var imgs = convertCanvasToImage(canvas);
+                    //var element=document.getElementById("qrcode");
+                    //element.appendChild(wording);
+                    //element.appendChild(imgs);  
+		    //$(".content").html(imgs);
+                }else{
+		   alert(res.msg);
+		}
                 
             }
         });
          
       }
+function wxcallpay(result) {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall(result);
+        }
+    }
+
+function jsApiCall(ret) {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',{
+                            "appId" : ret.app_id, //公众号名称，由商户传入
+                            "timeStamp": ret.timestamp, //戳，自1970 年以来的秒数
+                            "nonceStr" : ret.nonce_str, //随机串
+                            "package" : ret.package,
+                            "signType" : ret.sign_type, //微信签名方式:
+                            "paySign" : ret.pay_sign//微信签名,
+             },
+            function(res){
+                if(res.err_msg == "get_brand_wcpay_request：ok" ) {
+			alert('支付成功');
+                }else{
+                    	alert('支付失败');
+                }
+            }
+        );
+    }
 function convertCanvasToImage(canvas){
 
      //新Image对象,可以理解为DOM;
@@ -523,7 +564,6 @@ function convertCanvasToImage(canvas){
         var total_fee = $('.sumn').html();
         var type = $('#pay_type').val();
         var num = $(".btn2").val();
-        var goods_type = $('#goods_type').val();
         var lottery_time = $(".fnTimeCountDown").data('end');
         var goods_id = '{:I("get.id")}';
         if(total_fee == ''  || type =='' || num =='' || lottery_time =='' || goods_id ==''){

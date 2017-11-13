@@ -172,7 +172,8 @@ Class RequestController extends HomeController{
             $arrali['buyer_logon_id'] =I("buyer_logon_id");
             $arrali['mch_create_ip'] = get_client_ip();
             $arrali['buyer_id'] = I("buyer_id");
-            $this->submitOrderInfobyali($arrali,$out_trade_no,$type);
+	    $arrali['openid'] = $openid;
+            $this->submitOrderInfobyali($arrali,$out_trade_no,$ptype);
        // }
         
     }
@@ -258,13 +259,6 @@ Class RequestController extends HomeController{
          $international = new \beecloud\rest\international();
          $subscription = new \beecloud\rest\Subscriptions();
          $auth = new \beecloud\rest\Auths();
-         $APP_ID = '5303b6b1-5281-4ec2-842f-1cb80280183c';
-         $APP_SECRET = 'a4b40b21-7e27-4e23-b526-ed08e8756edd';
-         $MASTER_SECRET = '088f838c-73ef-463d-8d54-5d867c7f42b6';
-         $TEST_SECRET = 'b38f720b-50a1-475f-bbbc-1e77b8ff3bee';
-         $api->registerApp($APP_ID, $APP_SECRET, $MASTER_SECRET, $TEST_SECRET);
-        //Test Model,只提供下单和支付订单查询的Sandbox模式,不写setSandbox函数或者false即live模式,true即test模式
-         $api->setSandbox(false);
              
         $data = array();
         $data["timestamp"] =time();
@@ -277,16 +271,39 @@ Class RequestController extends HomeController{
         $data["return_url"] = "http://duobao.akng.net/";
         $data["optional"] = (object)array("order"=>$orderid);
 	if($type == 1){
+         $APP_ID = 'f561d848-bb6a-4958-8eb6-21ed37f41a13';
+         $APP_SECRET = '96a3aa41-5ef5-42e9-a927-768229ddc890';
+         $MASTER_SECRET = '1162c1dc-4a0f-4d28-87e1-97db6bcb975c';
+         $TEST_SECRET = 'b38f720b-50a1-475f-bbbc-1e77b8ff3bee';
+         $api->registerApp($APP_ID, $APP_SECRET, $MASTER_SECRET, $TEST_SECRET);
+        //Test Model,只提供下单和支付订单查询的Sandbox模式,不写setSandbox函数或者false即live模式,true即test模式
+         $api->setSandbox(false);
         	$data["channel"] = "BC_ALI_QRCODE";
         }
 	if($type == 2){
-        	$data["channel"] = "BC_NATIVE";
+	 if(!$arr['openid']){
+		 exit(json_encode(array('ret'=>1,'msg'=>'openid is null')));	
+	 }
+         $APP_ID = '74b02851-f238-49fe-a64f-13470ca72ae4';
+         $APP_SECRET = 'a7b5c556-072e-40fd-a9ee-1e58205546d7';
+         $MASTER_SECRET = 'b15313a5-f330-4fcb-95e6-ec0d35bd5c6d';
+         $TEST_SECRET = 'b38f720b-50a1-475f-bbbc-1e77b8ff3bee';
+         $api->registerApp($APP_ID, $APP_SECRET, $MASTER_SECRET, $TEST_SECRET);
+        //Test Model,只提供下单和支付订单查询的Sandbox模式,不写setSandbox函数或者false即live模式,true即test模式
+         $api->setSandbox(false);
+       	 $data["channel"] = "BC_WX_JSAPI";
+	 $data['openid'] = $arr['openid'];
 	}
         $result =  $api->bill($data);
         $code_url = $result->code_url;
         if($code_url){
             exit(json_encode(array('ret'=>0,'url'=>$code_url)));    
         }
+	if($type == 2 && $result->resultCode == 0){
+	   exit(json_encode(array('ret'=>0,'data'=>$result)));
+	}else{
+	   exit(json_encode(array('ret'=>1,'msg'=>'system error')));
+	}
             
     }
 

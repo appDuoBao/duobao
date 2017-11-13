@@ -82,8 +82,7 @@ class UserController extends ControlController {
 		$join_user_id = M('Join')->where($mapj)->getField('uid',true);
 		if($join_user_id){
 			$map['uid'] = array("in", $join_user_id);
-		}
-		
+		}	
         $mobile = I('mobile');
         $mobile = trim($mobile);
         if ($mobile) {

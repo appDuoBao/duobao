@@ -1,6 +1,0 @@
-[ 2017-10-31T22:02:38+08:00 ] 223.20.175.119 /pay.php?s=/user/register.html
-ERR: 模板不存在:./Ewshop/Pay/View/User/register.html
-
-[ 2017-10-31T22:02:52+08:00 ] 223.20.175.119 /pay.php?s=/user/register.html
-ERR: 模板不存在:./Ewshop/Pay/View/User/register.html
-

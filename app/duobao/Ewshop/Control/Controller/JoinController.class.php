@@ -33,6 +33,7 @@ class JoinController extends ControlController {
             ->alias('j')
             ->where($map)
             ->join("LEFT JOIN ewshop_member AS u ON j.uid = u.uid")
+	    ->order("create_time DESC")
             ->select();
         $page = new Page(count($list),20);
         $arr = array();
