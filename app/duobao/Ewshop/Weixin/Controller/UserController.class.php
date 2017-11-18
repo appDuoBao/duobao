@@ -39,84 +39,85 @@ class UserController extends HomeController {
      * @author
      */
     public function register($username = '' , $password = '' , $email = '' , $mobile = ''){
-		$this->checkLogin();
-		
-        if (!C("USER_ALLOW_REGISTER")) {
-            $this->error("注册已关闭");
-        }
-        if (IS_POST) { //注册用户
-            empty($mobile) ? $this->error("手机号码不能为空！") : '';
-            $is_exist = M('UcenterMember')->where("username = {$mobile}")->find();
-			$Member = D("Member");
-            if($is_exist){
-				//$arr['parent_id'] = $_SESSION['parent_id'];//如果会员本身就存在，通过别人的分享二维码进入不会成为别人的分享会员
-				/*
-				$arr['nickname'] = $_SESSION['wx_info']['nickname'];
-				$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
-				$arr['sex'] = $_SESSION['wx_info']['sex'];	
-				*/
-				if($_SESSION['openid']){
-					$arr['openid'] = $_SESSION['openid'];
-					$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
-				}
-				
-                if ($Member->login($is_exist['id'])) { //登录用户
-                    //跳转首页
-                    $url = U("Index/index");
-                    header("Location: $url");
-                } else {
-                    $this->error($Member->getError());
-                }
-            }else{
-                $username             = $mobile;
-                $password             = 'ewangtx'.time().$mobile;
-                $phone       		  = $mobile;
-                /* 调用注册接口注册用户口注册用户 */
-                $User = new UserApi;
-                //返回ucentermember数据表用户主键id
-                $uid = $User->register($username , $password , $email , $phone);
+	$this->checkLogin();
+	if($_GET['code']){
+		//get user openid
+		$user = $this->getOpenid($_GET['code']);
+		$mem = D('Member');
+		$userinfo = $mem->where('openid = '.$user['openid'])->find();
+		if($userinfo){
+			if ($mem->login($userinfo['uid'])) { //登录用户
+				//跳转首页
+				$url = U("Index/index");
+				header("Location: $url");
+			} 
+		}else{//register
+		  $wxuser = $this->getWxuser($user['openid'],$user['access_token']);
+		  $_SESSION['wxuser']['openid']=$user['openid'];
+		  $_SESSION['wxuser']['nickname'] = $wxuser['nickname'];
+	          $_SESSION['wxuser']['headimgurl'] = $wxuser['headimgurl'];
+		  $_SESSION['wxuser']['parent_id'] = $_GET['parent_id'];
+		  $_SESSION['wxuser']['root_id'] = $_GET['root_id'];
+		}
+	}else{
+		if (IS_POST) {
+			$username             = $mobile;
+			$password             = 'ewangtx'.time().$mobile;
+			$phone                    = $mobile;
+			/* 调用注册接口注册用户口注册用户 */
+			$User = new UserApi;
+			//返回ucentermember数据表用户主键id
+			$uid = $User->register($username , $password , $email , $phone);
+			if ($Member->login($uid)) { //登录用户
+				$arr['nickname'] = ($_SESSION['wxuser']['nickname']) ? $_SESSION['wxuser']['nickname'] :  "wx".$mobile;
+				$arr['headimgurl'] = $_SESSION['wxuser']['headimgurl'];
+				$arr['openid'] = $_SESSION['wxuser']['openid'];
+				$arr['parent_id']=$_SESSION['wxuser']['parent_id'];
+				$arr['root_id']= $_SESSION['wxuser']['root_id'];
+				$Member->where(array('uid'=>$uid))->save($arr);
 
-                if ($uid > 0) { //注册成功
-                    // 调用登陆
-                    //$this->login($username , $password);
-					if ($Member->login($uid)) { //登录用户
-						$arr['parent_id'] = $_SESSION['parent_id'] ? $_SESSION['parent_id'] : $_GET['parent_id'];
-						$arr['branding_id'] = $_SESSION['branding_id'] ? $_SESSION['branding_id'] : $_GET['branding_id'];
-						$arr['root_id'] = $_SESSION['root_id'] ? $_SESSION['root_id'] : $_GET['root_id'];
-						if($_SESSION['wx_info']['nickname']){//当微信用户昵称为空时 设置手机号码为用户名
-							$arr['nickname'] = $_SESSION['wx_info']['nickname'];
-						}else{
-							$arr['nickname'] = "wx".$mobile;
-						}
-						if($_SESSION['wx_info']['headimgurl']){
-							$arr['headimgurl'] = $_SESSION['wx_info']['headimgurl'];
-						}
-						if($_SESSION['wx_info']['sex']){
-							$arr['sex'] = $_SESSION['wx_info']['sex'];
-						}
-						if($_SESSION['openid']){
-							$arr['openid'] = $_SESSION['openid'];
-						}
-						$Member->where(array('uid'=>$uid))->save($arr);
-		
-						//跳转首页
-						$url = U("Index/index");
-						header("Location: $url");
-					} else {
-						$this->error($Member->getError());
-					}					
-					
-                } else { //注册失败，显示错误信息
-                    $this->error($this->showRegError($uid));
-                }
-            }
-        } else {
-            $_SESSION['send_code'] = random(6 , 1);//生成随机加密码。发送手机短信使用
-            $this->meta_title = '会员注册';
-            $this->display('register');
-        }
+				//跳转首页
+				$url = U("Index/index");
+				header("Location: $url");
+			}
+		}else if($_SESSION['wxuser']){
+			$_SESSION['send_code'] = random(6 , 1);//生成随机加密码。发送手机短信使用
+			$this->assign('code' , $_GET['code']);
+			$this->meta_title = '会员注册';
+			$this->display('register');
+			return;
+
+		}else{
+			$uid = $_GET['parent_id'];
+			$root = $_GET['root_id'];
+			$shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/root_id/'.$root;
+			$wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+			header('Location:'.$wurl);
+		}
+	}
+
     }
-
+   function getOpenid($code){
+	   $userinfo=[];
+	   $weixin = (C('weixin'));
+	   $get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$weixin['appid'].'&secret='.$weixin['secret'].'&code='.$code.'&grant_type=authorization_code';
+	   $data = $this->get_by_curl($get_openid_url);
+	   $data = json_decode($data);
+	   $userinfo['openid']= $data->openid;
+	   $userinfo['access_token'] = $data->access_token;
+	   return $userinfo;
+   }
+ function getWxuser($openid,$access_token){
+	 $scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+	 $scope_res = json_decode($this->get_by_curl($scope_url));
+	 if($scope_res->errcode && $scope_res->errcode == 0){
+		 $wxuser['nickname'] = $scope_res->nickname;
+		 $wxuser['headimgurl'] = $scope_res->headimgurl;
+		 $wxuser['sex'] = $scope_res->sex;
+		 return $wxuser;
+	 }
+	return false;
+ }
     /**
      * 登录
      * @param string $username

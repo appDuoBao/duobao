@@ -159,17 +159,17 @@ class AutoController extends HomeController {
         $num_110_small = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>1,'status'=>1))->sum('money');//买小（55元）的订单数的总金额
         $num_110_big   = M('WinOrder')->where(array('lottery_time'=>$lottery_time,'goods_type'=>2,'utype'=>1, 'type'=>2,'status'=>1))->sum('money');//买大（55元）的订单数的总金额
         if($num_56_small > $num_56_big){
-            $code_56_val = 1;//选择大的赢
+            $code_56_val = 2;//选择大的赢
         }elseif($num_56_small < $num_56_big){
-            $code_56_val = 2;//选择小的赢
+            $code_56_val = 1;//选择小的赢
         }else{
             $code_56_val = 0;//大小均可
         }
 
         if($num_110_small > $num_110_big){
-            $code_110_val = 1;//选择大的赢
+            $code_110_val = 2;//选择大的赢
         }elseif($num_110_small < $num_110_big){
-            $code_110_val = 2;//选择小的赢
+            $code_110_val = 1;//选择小的赢
         }else{
             $code_110_val = 0;//大小均可
         }
@@ -178,7 +178,7 @@ class AutoController extends HomeController {
 		if($isLS==1){
 			$data = $this->getCodeRand2(0,0);//正常开奖
 		}else{
-        	$data = $this->getCodeRand2($code_56_val,$code_110_val);//开启优势规则
+        	$data = $this->getCodeRand2($code_56_val,$code_110_val,$isLS);//开启优势规则
 		}
         return $data;
     }
@@ -188,9 +188,10 @@ class AutoController extends HomeController {
      *
      * @param $code_56_val
      * @param $code_110_val
+	 * @param $control_type(0:控制，1:正常开奖，2:反向控制)
      * @author
      */
-    public function getCodeRand2($code_56_val = 0,$code_110_val = 0){
+    public function getCodeRand2($code_56_val = 0,$code_110_val = 0,$control_type = 1){
 		$data = array();
 		$time_H = date('H');
 /***   
@@ -282,21 +283,53 @@ class AutoController extends HomeController {
 					$code_56 =  $code%56 + 1;
 					$code_110   =  $code%110 + 1;
 					if($code_56_val == 0 && $code_110_val == 1){
-						if($code_110 <= 56) break;
+						if($control_type==0){
+							if($code_110 <= 56) break;
+						}else{
+							if($code_110>56 && $code_110<=110) break;
+						}
 					}elseif($code_56_val == 0 && $code_110_val == 2){
-						if($code_110>56 && $code_110<=110) break;
+						if($control_type==0){
+							if($code_110>56 && $code_110<=110) break;
+						}else {
+							if($code_110<=56) break;
+						}
 					}elseif($code_56_val == 1 && $code_110_val ==0){
-						if($code_56<=28) break;
+						if($control_type==0){
+							if($code_56<=28) break;
+						}else{
+							if($code_56>28 && $code_56<=56) break;
+						}
 					}elseif($code_56_val == 1 && $code_110_val ==1){
-						if($code_56<=28 && $code_110<=56) break;
+						if($control_type==0){
+							if($code_56<=28 && $code_110<=56) break;
+						}else{
+							if($code_56>28 && $code_56<=56 && $code_110>56 && $code_110<=110) break;
+						}
 					}elseif($code_56_val == 1 && $code_110_val ==2){
-						if($code_56<=28 && $code_110>56 && $code_110<=110) break;
+						if($control_type==0){
+							if($code_56<=28 && $code_110>56 && $code_110<=110) break;
+						}else{
+							if($code_56>28 && $code_56<=56 && $code_110<=56) break;
+						}
 					}elseif($code_56_val == 2 && $code_110_val ==0){
-						if($code_56>28 && $code_56<=56) break;
+						if($control_type==0){
+							if($code_56>28 && $code_56<=56) break;
+						}else{
+							if($code_56<=28) break;
+						}
 					}elseif($code_56_val == 2 && $code_110_val ==1){
-						if($code_56>28 && $code_56<=56 && $code_110<=56) break;
+						if($control_type==0){
+							if($code_56>28 && $code_56<=56 && $code_110<=56) break;
+						}else{
+							if( $code_56<=28 && $code_110>56 && $code_110<=110) break;
+						}
 					}elseif($code_56_val == 2 && $code_110_val ==2){
-						if($code_56>28 && $code_56<=56 && $code_110>56 && $code_110<=110) break;
+						if($control_type==0){
+							if($code_56>28 && $code_56<=56 && $code_110>56 && $code_110<=110) break;
+						}else{
+							if($code_56<=28 && $code_110<=56) break;
+						}
 					}
 				}	
 			}
