@@ -43,21 +43,25 @@ class UserController extends HomeController {
 	if($_GET['code']){
 		//get user openid
 		$user = $this->getOpenid($_GET['code']);
-		$mem = D('Member');
-		$userinfo = $mem->where('openid = '.$user['openid'])->find();
-		if($userinfo){
-			if ($mem->login($userinfo['uid'])) { //登录用户
-				//跳转首页
-				$url = U("Index/index");
-				header("Location: $url");
-			} 
-		}else{//register
-		  $wxuser = $this->getWxuser($user['openid'],$user['access_token']);
-		  $_SESSION['wxuser']['openid']=$user['openid'];
-		  $_SESSION['wxuser']['nickname'] = $wxuser['nickname'];
-	          $_SESSION['wxuser']['headimgurl'] = $wxuser['headimgurl'];
-		  $_SESSION['wxuser']['parent_id'] = $_GET['parent_id'];
-		  $_SESSION['wxuser']['root_id'] = $_GET['root_id'];
+		if($user){
+			$mem = D('Member');
+			$userinfo = $mem->where('openid = '.$user['openid'])->find();
+			if($userinfo){
+				if ($mem->login($userinfo['uid'])) { //登录用户
+					//跳转首页
+					$url = U("Index/index");
+					header("Location: $url");
+				} 
+			}else{//register
+				$wxuser = $this->getWxuser($user['openid'],$user['access_token']);
+				if($wxuser){
+					$_SESSION['wxuser']['openid']=$user['openid'];
+					$_SESSION['wxuser']['nickname'] = $wxuser['nickname'];
+					$_SESSION['wxuser']['headimgurl'] = $wxuser['headimgurl'];
+					$_SESSION['wxuser']['parent_id'] = $_GET['parent_id'];
+					$_SESSION['wxuser']['root_id'] = $_GET['root_id'];
+				}
+			}
 		}
 	}else{
 		if (IS_POST) {
@@ -102,15 +106,18 @@ class UserController extends HomeController {
 	   $weixin = (C('weixin'));
 	   $get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$weixin['appid'].'&secret='.$weixin['secret'].'&code='.$code.'&grant_type=authorization_code';
 	   $data = $this->get_by_curl($get_openid_url);
-	   $data = json_decode($data);
-	   $userinfo['openid']= $data->openid;
-	   $userinfo['access_token'] = $data->access_token;
-	   return $userinfo;
+	   if(isset($data->openid)){
+		   $data = json_decode($data);
+		   $userinfo['openid']= $data->openid;
+		   $userinfo['access_token'] = $data->access_token;
+		   return $userinfo;
+	   }
+	   return false;
    }
  function getWxuser($openid,$access_token){
 	 $scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
 	 $scope_res = json_decode($this->get_by_curl($scope_url));
-	 if($scope_res->errcode && $scope_res->errcode == 0){
+	 if(!isset($scope_res->errcode)){
 		 $wxuser['nickname'] = $scope_res->nickname;
 		 $wxuser['headimgurl'] = $scope_res->headimgurl;
 		 $wxuser['sex'] = $scope_res->sex;
