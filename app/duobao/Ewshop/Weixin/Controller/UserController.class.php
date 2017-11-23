@@ -45,7 +45,7 @@ class UserController extends HomeController {
 		$user = $this->getOpenid($_GET['code']);
 		if($user){
 			$mem = D('Member');
-			$userinfo = $mem->where('openid = '.$user['openid'])->find();
+			$userinfo = $mem->where('openid = "'.$user['openid'].'"')->find();
 			if($userinfo){
 				if ($mem->login($userinfo['uid'])) { //登录用户
 					//跳转首页
@@ -63,11 +63,31 @@ class UserController extends HomeController {
 				}
 			}
 		}
+			$this->meta_title = '会员注册';
+			$this->display('register');
+			return;
 	}else{
 		if (IS_POST) {
 			$username             = $mobile;
 			$password             = 'ewangtx'.time().$mobile;
 			$phone                    = $mobile;
+			$is_exist = M('UcenterMember')->where("username = {$mobile}")->find();
+			$Member = D("Member");
+			if ($Member->login($is_exist['id'])) {
+				if($_SESSION['wxuser']){
+					$arr['nickname'] = ($_SESSION['wxuser']['nickname']) ? $_SESSION['wxuser']['nickname'] :  "wx".$mobile;
+					$arr['headimgurl'] = $_SESSION['wxuser']['headimgurl'];
+					$arr['openid'] = $_SESSION['wxuser']['openid'];
+					$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
+
+				}
+				if ($Member->login($is_exist['id'])) { //登录用户
+					//跳转首页
+					$url = U("Index/index");
+					header("Location: $url");
+				}
+			}
+			
 			/* 调用注册接口注册用户口注册用户 */
 			$User = new UserApi;
 			//返回ucentermember数据表用户主键id
@@ -92,8 +112,10 @@ class UserController extends HomeController {
 			return;
 
 		}else{
-			$uid = $_GET['parent_id'];
-			$root = $_GET['root_id'];
+			$uid = $_GET['parent_id'] ? $_GET['parent_id'] : 0;
+			$root = $_GET['root_id'] ? $_GET['root_id'] : 0;
+			//eg :http://duobao.akng.net/Weixin/User/register/parent_id/231/root_id/74
+			$weixin = M ( "Wxsetting" )->where ( array ("id" => "1" ) )->find ();
 			$shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/root_id/'.$root;
 			$wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
 			header('Location:'.$wurl);
@@ -103,24 +125,25 @@ class UserController extends HomeController {
     }
    function getOpenid($code){
 	   $userinfo=[];
-	   $weixin = (C('weixin'));
-	   $get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$weixin['appid'].'&secret='.$weixin['secret'].'&code='.$code.'&grant_type=authorization_code';
+	   $weixin = M ( "Wxsetting" )->where ( array ("id" => "1" ) )->find ();
+	   $get_openid_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$weixin['appid'].'&secret='.$weixin['appsecret'].'&code='.$code.'&grant_type=authorization_code';
 	   $data = $this->get_by_curl($get_openid_url);
-	   if(isset($data->openid)){
-		   $data = json_decode($data);
-		   $userinfo['openid']= $data->openid;
-		   $userinfo['access_token'] = $data->access_token;
+	   $data = json_decode($data,true);
+	   if(isset($data['openid'])){
+		   $userinfo['openid']= $data['openid'];
+		   $userinfo['access_token'] = $data['access_token'];
 		   return $userinfo;
 	   }
 	   return false;
    }
  function getWxuser($openid,$access_token){
 	 $scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-	 $scope_res = json_decode($this->get_by_curl($scope_url));
-	 if(!isset($scope_res->errcode)){
-		 $wxuser['nickname'] = $scope_res->nickname;
-		 $wxuser['headimgurl'] = $scope_res->headimgurl;
-		 $wxuser['sex'] = $scope_res->sex;
+	 $scope_res = json_decode($this->get_by_curl($scope_url),true);
+	   error_log(print_r($scope_res,true),3,'/home/logs/my.log');
+	 if(!isset($scope_res['errcode'])){
+		 $wxuser['nickname'] = $scope_res['nickname'];
+		 $wxuser['headimgurl'] = $scope_res['headimgurl'];
+		 $wxuser['sex'] = $scope_res['sex'];
 		 return $wxuser;
 	 }
 	return false;
