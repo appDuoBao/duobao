@@ -39,11 +39,6 @@ class UserController extends HomeController {
      * @author
      */
     public function register($username = '' , $password = '' , $email = '' , $mobile = ''){
-	if($_GET['parent_id'])
-		$_SESSION['wxuser']['parent_id'] = $_GET['parent_id'];
-	if($_GET['root_id'])
-                 $_SESSION['wxuser']['root_id'] = $_GET['root_id'];
-
 	$this->checkLogin();
 	if($_GET['code']){
 		//get user openid
@@ -63,9 +58,16 @@ class UserController extends HomeController {
 					$_SESSION['wxuser']['openid']=$user['openid'];
 					$_SESSION['wxuser']['nickname'] = $wxuser['nickname'];
 					$_SESSION['wxuser']['headimgurl'] = $wxuser['headimgurl'];
+					$_SESSION['wxuser']['parent_id'] = $_GET['parent_id'];
+					$_SESSION['wxuser']['root_id'] = $_GET['root_id'];
 				}
 			}
 		}
+		
+			$this->meta_title = '会员注册';
+			$this->display('register');
+			return;
+	}else{
 		if (IS_POST) {
 			$username             = $mobile;
 			$password             = 'ewangtx'.time().$mobile;
@@ -89,7 +91,9 @@ class UserController extends HomeController {
 					$arr['openid'] = $_SESSION['wxuser']['openid'];
 					$Member->where(array('uid'=>$uid))->save($arr);
 					//跳转首页
-					$this->checkLogin();
+					error_log('register:'.$uid,3,'/home/wwwroot/logs/my.log');
+					$url = U("Index/index");
+					header("Location: $url");
 				}
 			}
 			if ($Member->login($is_exist['id'])) {
@@ -103,23 +107,20 @@ class UserController extends HomeController {
 				$ret =	$Member->where(array('uid'=>$is_exist["id"]))->save($arr);
 
 			}
+					error_log('login:'.$is_exist['id'],3,'/home/wwwroot/logs/my.log');
 					//跳转首页
 					$url = U("Index/index");
 					header("Location: $url");
 			}
 		}else if($_SESSION['wxuser']){
 			$_SESSION['send_code'] = random(6 , 1);//生成随机加密码。发送手机短信使用
+			$this->assign('code' , $_GET['code']);
 			$this->meta_title = '会员注册';
+			error_log('login-reg:',3,'/home/wwwroot/logs/my.log');
 			$this->display('register');
 			return;
 
 		}else{
-			$_SESSION['send_code'] = random(6 , 1);//生成随机加密码。发送手机短信使用
-			$this->meta_title = '会员注册';
-			$this->display('register');
-			return;
-		}
-	}else{
 			$uid = $_GET['parent_id'] ? $_GET['parent_id'] : 0;
 			$root = $_GET['root_id'] ? $_GET['root_id'] : 0;
 			//eg :http://duobao.akng.net/Weixin/User/register/parent_id/231/root_id/74
@@ -127,6 +128,7 @@ class UserController extends HomeController {
 			$shareurl ='http://' . $_SERVER['HTTP_HOST'] . '/Weixin/User/register/parent_id/'.$uid.'/root_id/'.$root;
 			$wurl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$weixin['appid']."&redirect_uri=".$shareurl."&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
 			header('Location:'.$wurl);
+		}
 	}
 
     }
@@ -146,6 +148,7 @@ class UserController extends HomeController {
  function getWxuser($openid,$access_token){
 	 $scope_url = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
 	 $scope_res = json_decode($this->get_by_curl($scope_url),true);
+	   error_log(print_r($scope_res,true),3,'/home/logs/my.log');
 	 if(!isset($scope_res['errcode'])){
 		 $wxuser['nickname'] = $scope_res['nickname'];
 		 $wxuser['headimgurl'] = $scope_res['headimgurl'];

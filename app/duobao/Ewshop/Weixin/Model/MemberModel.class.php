@@ -48,22 +48,6 @@ class MemberModel extends Model {
             $user        = $this->create(array("status" => 1));
             $user["uid"] = $uid;
             $user["status"] = 1;
-            if (!empty($_SESSION['openid'])) {//微信openid
-                $user["openid"] = $_SESSION['openid'];
-                $config = M("Wxsetting")->where(array("id"=>"1"))->find();
-
-                $options = array (
-                    'token' => $config ["token"], // 填写你设定的key
-                    'appid' => $config ["appid"], // 填写高级调用功能的app id
-                    'appsecret' => $config ["appsecret"], // 填写高级调用功能的密钥
-                );
-                $weObj = new \Common\Wechat\Wechat($options);
-                $userinfo = $weObj->getUserInfo($_SESSION['openid']);//静默模式获取关注会员信息
-
-                $user['parent_id'] = $_SESSION['parent_id'];
-                $user['nickname']   = $userinfo['nickname'];
-                $user['headimgurl'] = $userinfo['headimgurl'];
-            }
             if (!$this->add($user)) {
                 $this->error = "前台用户信息注册失败，请重试！";
                 return FALSE;
@@ -72,31 +56,6 @@ class MemberModel extends Model {
             $this->error = "用户未激活或已禁用！"; //应用级别禁用
             return FALSE;
         }
-
-        /*当用户存在但是openid为空时*/
-        if($user && empty($user['nickname']) ){
-            if(!empty($_SESSION['openid'])){//微信openid
-//                $this->where("uid = '{$user['uid']}'")->setField('openid',$_SESSION['openid']);
-                $user1['openid'] =$_SESSION['openid'];
-
-                $config = M ( "Wxsetting" )->where ( array ("id" => "1" ) )->find ();
-
-                $options = array (
-                    'token' => $config ["token"], // 填写你设定的key
-                    'appid' => $config ["appid"], // 填写高级调用功能的app id
-                    'appsecret' => $config ["appsecret"], // 填写高级调用功能的密钥
-                );
-                $weObj = new \Common\Wechat\Wechat($options);
-                $userinfo = $weObj->getUserInfo($_SESSION['openid']);//静默模式获取关注会员信息
-
-                $user1['parent_id'] = $_SESSION['parent_id'];
-                $user1['nickname']   = $userinfo['nickname'];
-                $user1['headimgurl'] = $userinfo['headimgurl'];
-                $this->where("uid = '{$user['uid']}'")->save($user1);
-            }
-        }
-
-
         /* 登录用户 */
         $this->autoLogin($user);
 
@@ -120,6 +79,8 @@ class MemberModel extends Model {
             /*当微信端用户退出时，将openid设置为空*/
             M('Member')->where("uid = {$cur_uid}")->setField('openid','');
         }
+	unset($_SESSION['onethink_home']);
+	unset($_SESSION['wxuser']);
         session("user_auth" , NULL);
         session("user_auth_sign" , NULL);
         session("onethink_home" , NULL);

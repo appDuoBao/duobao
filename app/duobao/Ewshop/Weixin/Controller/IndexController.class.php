@@ -53,7 +53,6 @@ class IndexController extends HomeController {
 //        }
 
         $data['time_end'] = $this->get_time_on_clock(time());//倒计时时间
-
         //最近中奖(中奖记录)
         $pk_list = M('WinExchange')->order('buy_time DESC')->limit(20)->select();
         foreach($pk_list as $key => $val){
@@ -66,12 +65,13 @@ class IndexController extends HomeController {
                 $pk_list[$key]['userinfo'] = M('Member')->field('uid,headimgurl,nickname')->where("uid = {$val['uid']}")->find();
             }
         }
-        $cmap['id'] = array('in',$codeid); 
-        $codarr = M('WinOrder')->where($cmap)->getField('id,type,period');//var_dump($codeid);exit;
-        foreach ($pk_list as $k=>$v) {
-            $pk_list[$k]['codeid'] = ($codarr[$v['order_id']]['type'] ==1) ? '小' : '大';
-        } 
-       
+	if(count($codeid)>0){
+		$cmap['id'] = array('in',$codeid); 
+		$codarr = M('WinOrder')->where($cmap)->getField('id,type,period');//var_dump($codeid);exit;
+		foreach ($pk_list as $k=>$v) {
+			$pk_list[$k]['codeid'] = ($codarr[$v['order_id']]['type'] ==1) ? '小' : '大';
+		} 
+	}
        // var_dump($pk_list);exit;
         $data['pk_list'] = $pk_list;
         
