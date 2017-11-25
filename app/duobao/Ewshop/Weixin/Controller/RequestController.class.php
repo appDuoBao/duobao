@@ -636,12 +636,16 @@ Class RequestController extends HomeController{
               $out_trade_no = $dedate['message_detail']['orderId'];
 
               $orderData = M('WinOrder')->where(array('order_number'=>$out_trade_no))->find();
-              	if($orderData['status'] == 0){
-                    $ret = M('WinOrder')->where(array('order_number'=>$out_trade_no))->save($arr);
-                    if($ret){
-                        echo "susess";    
-                    }
-			  }	
+	      if($orderData['status'] == 0){
+                      $time_end = $this->get_time_on_clock(time());//倒计时时间
+		      if($orderData['period'] != $this->getPeriod($time_end)){
+			   $arr['period'] = $this->getPeriod($time_end);
+		      }
+		      $ret = M('WinOrder')->where(array('order_number'=>$out_trade_no))->save($arr);
+		      if($ret){
+			      echo "susess";    
+		      }
+	      }	
 
         }
     }
