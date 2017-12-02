@@ -1,0 +1,43 @@
+ <footer>
+                <ul class="footer-link">
+                    <li>
+                      <a href="{:U('index')}"> 
+                        <if condition="$sytlei eq 1">
+                         <i  class="ico1 ico-index"></i> 
+                          <else/>
+                            <i  class="ico1 ico-indexn"></i> 
+                             </if> 
+                         </a>
+                        <span>首页</span>
+                    </li>
+                    <li>
+                       <a href="{:U('cardlist')}"> {$style}
+                         <if condition="$sytlec eq 1">
+                         <i class="ico1 ico-bank">
+                            <else/>
+                                 <i class="ico1 ico-bankn">
+                          </if>  
+                            </i> </a>
+                        <span>银行卡</span>
+                    </li>
+                    <li>
+                      <a href="{:U('recordlist')}"> 
+                          <if condition="$sytler eq 1">
+                            <i class="ico1 ico-record"></i>
+                          <else/>
+                             <i class="ico1 ico-recordn"></i>
+                            </if>
+                           </a>
+                        <span>转手记录</span>
+                    </li>
+                </ul>
+            </footer>
+        </div>
+         <script type="text/javascript" >
+               function test(){
+                    alert('aaabb');
+                }
+            </script>
+
+    </body>
+</html>
